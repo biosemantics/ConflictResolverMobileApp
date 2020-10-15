@@ -153,9 +153,9 @@ export default EquivTerm = (props) => {
                     </Text>
                 }
                 {
-                    options.sentences && options.sentences != "" &&
+                    // options.sentences && options.sentences != "" &&
                     <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>
-                        {" Used in: " + options.sentences}
+                        {options.sentences != "" ? " Used in: " + options.sentences : " "}
                     </Text>
                 }
                 <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
@@ -209,9 +209,9 @@ export default EquivTerm = (props) => {
                         }
                     </View>
                 </TouchableOpacity>
-                <View style={{borderWidth: 1, borderRadius: 4, width: 120, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                     <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                        <Text style={{padding: 3}}>Other's reasons</Text>
+                        <Text style={{padding: 3}}>Other's comments</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -254,10 +254,10 @@ export default EquivTerm = (props) => {
             />
 
             <CommentsModal
-                popupTitle="Other's reasons"
+                popupTitle="Other's comments"
                 comments={options.reasons}
                 isVisible={commentsModal}
-                noneText="No reasons"
+                noneText="No comments"
                 handleYes={()=> {
                     setCommentsModal(false);
                 }}
