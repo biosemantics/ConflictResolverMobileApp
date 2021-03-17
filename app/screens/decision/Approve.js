@@ -367,6 +367,7 @@ export default Approve = (props) => {
             <CommentsModal
                 popupTitle="Other's comments"
                 comments={options.comments}
+                term={task.term}
                 isVisible={commentsModal}
                 handleYes={()=> {
                     setCommentsModal(false);

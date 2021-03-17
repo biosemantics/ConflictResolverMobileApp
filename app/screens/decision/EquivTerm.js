@@ -257,6 +257,7 @@ export default EquivTerm = (props) => {
                 popupTitle="Other's comments"
                 comments={options.reasons}
                 isVisible={commentsModal}
+                term={task.term}
                 noneText="No comments"
                 handleYes={()=> {
                     setCommentsModal(false);

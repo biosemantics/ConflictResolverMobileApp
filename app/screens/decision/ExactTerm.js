@@ -244,6 +244,7 @@ export default ExactTerm = (props) => {
             <CommentsModal
                 popupTitle="Other's comments"
                 comments={options.reasons}
+                term={task.term}
                 isVisible={commentsModal}
                 noneText="No comments"
                 handleYes={()=> {

@@ -48,6 +48,7 @@ export default CommentsModal = (props) => {
     var noneText = (props.noneText ? props.noneText : 'No comments');
     var cancel = (props.cancel ? props.cancel : 'Cancel');
     const comments = props.comments;
+    const term = props.term;
     const deviceWidth = Dimensions.get("window").width;
     const deviceHeight = Platform.OS === "ios"
       ? Dimensions.get("window").height
@@ -62,7 +63,9 @@ export default CommentsModal = (props) => {
                     {
                         comments && comments.length > 0 &&
                         comments.map((comment, index) => (
-                            <Text key={"comment"+index} style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginTop:10}}>{comment.comment}</Text>
+                            <View key={"comment"+index}>
+                                <Text style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginTop:10}}><Text style={{ fontWeight: 'bold' }}>{comment.comment}</Text>: Commented on <Text style={{ color: 'blue' }}>{term}</Text> by <Text style={{ color: 'red' }}>{comment.username}</Text></Text>
+                            </View>
                         ))
                     }
                     {

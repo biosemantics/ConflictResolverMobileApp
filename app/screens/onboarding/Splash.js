@@ -9,7 +9,7 @@ export default Splash = ( props ) => {
     <View style={styles.container}>
       <View>
         <Text style={styles.text}>
-          Conflict Solver
+          Conflict Resolver
         </Text>
         <Image
           source={require('../../assets/images/logo.png')}
