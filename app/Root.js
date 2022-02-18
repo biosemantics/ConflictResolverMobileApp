@@ -19,6 +19,7 @@ import Approve from './screens/decision/Approve';
 import AddTerm from './screens/decision/AddTerm';
 import ExactTerm from './screens/decision/ExactTerm';
 import EquivTerm from './screens/decision/EquivTerm';
+import Disputed from './screens/decision/Disputed';
 
 const Root = createStackNavigator({
   Splash: {
@@ -47,13 +48,16 @@ const Root = createStackNavigator({
   },
   EquivTerm: {
     screen: EquivTerm
-  }
-}, 
-{
-  initialRouteName: 'Splash',
-  headerMode: 'none',
-  navigationOptions: {
-    gesturesEnabled: false
   },
-})
+  Disputed: {
+    screen: Disputed
+  }
+},
+  {
+    initialRouteName: 'Splash',
+    headerMode: 'none',
+    navigationOptions: {
+      gesturesEnabled: false
+    },
+  })
 export default createAppContainer(Root);
