@@ -2,17 +2,20 @@
 import React, { useState, useEffect } from "react"
 import { View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, SafeAreaView, StyleSheet, TouchableHighlight } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faL, faMicrophone } from '@fortawesome/free-solid-svg-icons'
 import Voice from '@react-native-community/voice';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import NavHeader from "../../components/NavHeader";
+import { Picker } from '@react-native-community/picker';
 
-
-export default function Disputed() {
+export default function Disputed(props) {
     const [pitch, setPitch] = useState('');
     const [error, setError] = useState('');
     const [end, setEnd] = useState('');
     const [started, setStarted] = useState('');
-    
+    const [termType, setTermType] = useState('');
+
+
     const [results, setResults] = useState([]);
     const [activebtn, setActivebtn] = useState(0);
     const [dropDown1, setDropDown1] = useState(false);
@@ -22,7 +25,7 @@ export default function Disputed() {
     const [input2, setinput2] = useState('');
     const [input3, setinput3] = useState('');
     const [input4, setinput4] = useState('');
-   
+
 
 
 
@@ -112,9 +115,23 @@ export default function Disputed() {
         if (clickedValue == 'disable') {
             setDropDown1(true);
             setDropDown2(false);
-        } else if (clickedValue == 'disable2') {
+            if (dropDown1 == true) {
+                setDropDown1(false);
+                setDropDown2(true);
+            }
+        }
+
+        else if (clickedValue == 'disable2') {
             setDropDown2(true);
             setDropDown1(false);
+            if (dropDown2 == true) {
+                setDropDown1(true);
+                setDropDown2(false);
+            }
+        }
+        else {
+            setDropDown1(false);
+            setDropDown2(false);
         }
     }
 
@@ -171,10 +188,18 @@ export default function Disputed() {
 
     return (
         <ScrollView>
-            <View>
+            <View style={{ marginHorizontal: 12, marginVertical: 5 }}>
                 <View>
-                    <View style={{ alignItems: 'center', marginTop: 10 }}>
-                        <Text style={{ fontSize: 20, color: '#544ea3' }}>Flattened</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, }}>
+                        <NavHeader
+
+                            size={22}
+                            bold={true}
+                            navigation={props.navigation}
+                            onBackFunc={() => props.navigation.goBack()}
+                            headerText='Flattened'
+                        />
+
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 25 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#544ea3' }}>Definition:  </Text>
@@ -204,7 +229,7 @@ export default function Disputed() {
                 </View>
 
 
-                <Text style={{margin:15,fontSize:20,padding:10,color:'red',fontWeight:'bold'}}>You are able to select only one Drop Down from Ist && Second</Text>
+                <Text style={{ margin: 15, fontSize: 20, padding: 10, color: 'red', fontWeight: 'bold' }}>What action should be taken to address the disputes?</Text>
 
                 {/* //First DropDown With Speech Recognition */}
                 <View style={{
@@ -212,11 +237,11 @@ export default function Disputed() {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    width: '100%',
+                    width: '90%',
                     marginTop: 10,
                 }}>
-                    <Text style={{ fontSize: 18 }}>
-                        Drop Down Ist
+                    <Text style={{ fontSize: 16 }}>
+                        Add a new term to express the needed concept
                     </Text>
                     <TouchableOpacity onPress={() => {
                         handleChange('disable');
@@ -234,7 +259,7 @@ export default function Disputed() {
                             {
                                 <View>
                                     <View style={{ flexDirection: 'row', marginLeft: 30, marginTop: 10 }}>
-                                        <TextInput placeholder="Enter the new item" style={{ width: '95%', borderWidth: 1, height: 40 }} defaultValue={input1}/>
+                                        <TextInput placeholder="Enter the new item" style={{ width: '95%', borderWidth: 1, height: 40 }} defaultValue={input1} />
                                         <TouchableOpacity style={{ position: 'absolute', left: '85%', top: '20%' }} onPress={() => start(1)} >
                                             <FontAwesomeIcon icon={faMicrophone} size={25} />
                                         </TouchableOpacity>
@@ -245,48 +270,31 @@ export default function Disputed() {
                                             <FontAwesomeIcon icon={faMicrophone} size={25} />
                                         </TouchableOpacity>
                                     </View>
-                                </View>
-                            }
-                        </View>
-                    )
-                }
+                                    {/* //Existing value Section */}
+                                    <View style={{ marginHorizontal: 30, width: "90%" }}>
+                                        <Picker
+                                            style={{ height: 50 }}
+                                            selectedValue={termType}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                setTermType(itemValue);
+                                            }}>
+                                            <Picker.Item value='' label='Select superclass if quality' />
+                                            <Picker.Item label="Structure" value="Structure" />
+                                            <Picker.Item label="Character" value="Character" />
+                                        </Picker>
+                                        <Picker
+                                            style={{ height: 50, marginTop: 10 }}
+                                            selectedValue={termType}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                setTermType(itemValue);
+                                            }}>
+                                            <Picker.Item value='' label='Select superclass if structure' />
+                                            <Picker.Item label="Structure" value="Structure" />
+                                            <Picker.Item label="Character" value="Character" />
+                                        </Picker>
+                                    </View>
 
-                {/* //Existing value Section */}
-                <View style={{ marginTop: 10, marginLeft: 30 }}>
-                    <TextInput placeholder="Select superclass if quality" style={{ width: '90%', borderWidth: 1, height: 40, borderColor: 'gray', borderRadius: 10 }} selectTextOnFocus={false} editable={false} />
-                    <TextInput placeholder="Select superclass if Structure" style={{ width: '90%', borderWidth: 1, height: 40, marginTop: 10, borderColor: 'gray', borderRadius: 10 }} selectTextOnFocus={false} editable={false} />
-                </View>
-
-
-
-                {/* //Second DropDown with Speech Recognition */}
-                <View style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    marginTop: 10,
-                }}>
-                    <Text style={{ fontSize: 18 }}>
-                        Drop Down 2nd
-                    </Text>
-                    <TouchableOpacity onPress={() => {
-                        handleChange('disable2');
-                    }}>
-                        {
-                            dropDown2 ?
-                                <AntDesignIcon name="caretup" size={25} />
-                                : <AntDesignIcon name="caretdown" size={25} />
-                        }
-                    </TouchableOpacity>
-                </View>
-
-                {
-                    dropDown2 && (
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
-                            {
-                                <View>
+                                    {/* Second input and mic field */}
                                     <View style={{ flexDirection: 'row', marginLeft: 30, marginTop: 10 }}>
                                         <TextInput placeholder="Enter an example Sentence" style={{ width: '95%', borderWidth: 1, height: 40 }} defaultValue={input3} />
                                         <TouchableOpacity style={{ position: 'absolute', left: '85%', top: '20%' }} onPress={() => start(3)}>
@@ -305,23 +313,79 @@ export default function Disputed() {
                     )
                 }
 
-                {/* Another Existing Section */}
-                <Text style={{ fontWeight: 'bold', fontSize: 16, marginTop: 20, alignItems: 'center' }}>Suggest an existing term for the needed concept</Text>
-                <View style={{ marginTop: 10, marginLeft: 30 }}>
-                    <TextInput placeholder="Select the term if quality" style={{ width: '90%', borderWidth: 1, height: 40, borderColor: 'gray', borderRadius: 10 }} editable={false} selectTextOnFocus={false} />
-                    <TextInput placeholder="Select the term if Structure" style={{ width: '90%', borderWidth: 1, height: 40, marginTop: 10, borderColor: 'gray', borderRadius: 10 }} editable={false} selectTextOnFocus={false} />
+                {/* //Second DropDown with Speech Recognition */}
+                <View style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '90%',
+                    marginTop: 10,
+                }}>
+                    <Text style={{ fontSize: 16 }}>
+                        Suggest an existing term for the needed concept
+                    </Text>
+                    <TouchableOpacity onPress={() => {
+                        handleChange('disable2');
+                    }}>
+                        {
+                            dropDown2 ?
+                                <AntDesignIcon name="caretup" size={25} />
+                                : <AntDesignIcon name="caretdown" size={25} />
+                        }
+                    </TouchableOpacity>
                 </View>
+
+                {
+                    dropDown2 && (
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
+                            {
+
+                                < View style={{ marginTop: 10, marginLeft: 20, width: "90%" }}>
+                                    {/* Another Existing Section */}
+
+                                    <Picker
+                                        style={{ height: 50 }}
+                                        selectedValue={termType}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            setTermType(itemValue);
+                                        }}>
+                                        <Picker.Item value='' label='Select the term if quality' />
+                                        <Picker.Item label="Structure" value="Structure" />
+                                        <Picker.Item label="Character" value="Character" />
+                                    </Picker>
+                                    <Picker
+                                        style={{ height: 50, marginTop: 10 }}
+                                        selectedValue={termType}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            setTermType(itemValue);
+                                        }}>
+                                        <Picker.Item value='' label='Select the term if Structure' />
+                                        <Picker.Item label="Structure" value="Structure" />
+                                        <Picker.Item label="Character" value="Character" />
+                                    </Picker>
+                                </View>
+
+
+                            }
+                        </View>
+
+                    )
+                }
+
+
+
 
                 {/* Comment and Submit Section */}
                 <View style={{ alignItems: 'center' }}>
-                    <TextInput placeholder="Enter a record comment" />
+                    <TextInput placeholder="Enter a record comment" style={{ backgroundColor: '#e8e8e8', width: '80%', borderRadius: 50 }} />
                     <TouchableOpacity style={{ width: '80%', alignItems: 'center', backgroundColor: '#544ea3', padding: 5, borderRadius: 50, margin: 10 }} >
                         <Text style={{ color: 'white', fontSize: 20 }}>Submit</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View >
 
-        </ScrollView>
+        </ScrollView >
     );
 }
 
