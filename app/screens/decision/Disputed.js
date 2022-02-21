@@ -119,7 +119,7 @@ export default function Disputed(props) {
                 setDropDown1(false);
                 setDropDown2(true);
             }
-        }
+        }  
 
         else if (clickedValue == 'disable2') {
             setDropDown2(true);
