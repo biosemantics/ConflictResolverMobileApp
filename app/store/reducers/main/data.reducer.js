@@ -6,7 +6,8 @@ const initialState = {
   approveOptions: [],
   addTermOptions: [],
   exactTermOptions: [],
-  equivTermOptions: []
+  equivTermOptions: [],
+  disputedOptions: [],
 };
 
 export default (state = initialState, action) => {
@@ -23,6 +24,8 @@ export default (state = initialState, action) => {
       return {...state, exactTermOptions: action.payload};
     case Actions.SET_EQUIVTERM_OPTIONS:
       return {...state, equivTermOptions: action.payload};
+      case Actions.SET_DISPUTED_OPTIONS:
+        return {...state, disputedOptions: action.payload};
     default:
       return state;
   }

@@ -15,7 +15,9 @@ import { set_equivTerm_options } from '../../store/actions'
 import { set_tasks } from '../../store/actions'
 
 export default EquivTerm = (props) => {
+
     const [task, setTask] = useState(props.navigation.getParam('task',{}));
+
     const [optionIndexes, setOptionIndexes] = useState([]);
     const [none, setNone] = useState(false);
     const [isNone, setIsNone] = useState(false);

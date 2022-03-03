@@ -9,7 +9,7 @@ import Task from './Task';
 
 
 import api from '../../api/tasks';
-import { set_tasks } from '../../store/actions'
+import { set_disputed_options, set_tasks } from '../../store/actions'
 import { set_quality } from '../../store/actions'
 import { set_structure } from '../../store/actions'
 
@@ -65,6 +65,12 @@ export default HomeLayout = (props) => {
                 dispatch(set_tasks(result.data.task_data));
                 setTabID(id);
             });
+            api.getDisputed().then(result=>{
+                console.log('jdhjsdsdgshdghsdsjdhdgjsgdjsgdsdgsdgjsgj');
+                console.log(result.data);
+                dispatch(set_disputed_options(result.data));
+                setTabID(id);
+            });
         }
     }
 
@@ -78,6 +84,9 @@ export default HomeLayout = (props) => {
         api.getTasks(auth.expertId).then(result=>{
             console.log(result.data);
             dispatch(set_tasks(result.data.task_data));
+        });
+        api.getDisputed().then(result=>{
+            dispatch(set_disputed_options(result.data));
         });
         api.getStructure().then(result => {
             let structures = [];

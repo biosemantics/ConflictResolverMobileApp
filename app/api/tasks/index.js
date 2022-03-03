@@ -145,6 +145,13 @@ export default api = {
 
     return await axios.get(apiUrl, {params: data});
   },
+
+  getDisputed: async () => {
+
+    let apiUrl = 'http://shark.sbs.arizona.edu:8080/dispute/all';
+
+    return await axios.get(apiUrl);
+  },
   
   getQuality : async () => {
     

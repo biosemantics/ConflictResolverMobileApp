@@ -9,9 +9,14 @@ import Disputed from '../decision/Disputed';
 export default Tasks = (props) => {
     const auth = useSelector(state => state.main.auth);
     const tasks = useSelector(state => state.main.data.tasks);
-    console.log(tasks);
+    const disputedOptions = useSelector(state => state.main.data.disputedOptions);
+
     tasks.map((item) => {
-        console.log(item.type)
+        // console.log(item.type)
+    })
+
+    disputedOptions.map((item) =>{
+        // console.log(item.label);
     })
 
     const [isUnCategory, setIsUnCategory] = useState(true);
@@ -30,12 +35,20 @@ export default Tasks = (props) => {
             addTerm: 'AddTerm',
             exact: 'ExactTerm',
             equiv: 'EquivTerm',
-            dispu: 'DisPuted'
+            dispu: 'Disputed'
         }
-        console.log('dispu', task);
+        // console.log("jsdddddffffffff1111111111111111111111wdsdsssdddddddddd");
+        // console.log(task);
         // if (!task.isSolved){
         props.navigation.navigate(url[task.type], { task });
         // }
+    }
+
+    const onTask1 = (id) => {
+        const disputed = disputedOptions.find(a => a.id == id)
+        
+        props.navigation.navigate('Disputed', { disputed });
+
     }
     return (
         <ScrollView style={{ backgroundColor: '#ffffff' }}>
@@ -191,16 +204,17 @@ export default Tasks = (props) => {
                     disPuted && (
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
                             {
-                                <TouchableOpacity onPress={() => props.navigation.navigate('Disputed')}>
-                                    <Text> Flattened</Text>
-                                </TouchableOpacity>
-                                // tasks.filter(task => (task.type == 'dispu' && (task.status == 'open' || task.status == 'tough'))).map((item, index) => (
-                                //     <TouchableOpacity key={'task_' + index} style={{ width: '50%', alignContent: 'center', alignItems: 'center' }} onPress={() => onTask(item.termId)}>
-                                //         <Text style={{ color: item.isSolved ? 'green' : 'red', fontWeight: item.status == 'tough' ? 'bold' : 'normal' }}>
-                                //             {item.term}({item.count})
-                                //         </Text>
-                                //     </TouchableOpacity>
-                                // ))
+                                // <TouchableOpacity onPress={() => props.navigation.navigate('Disputed')}>
+                                //     <Text> Flattened</Text>
+                                // </TouchableOpacity>
+                                 
+                                disputedOptions.map((item, index) => (
+                                    <TouchableOpacity key={'task_' + index} style={{ width: '50%', alignContent: 'center', alignItems: 'center' }} onPress={() => onTask1(item.id)} >
+                                        <Text style={{ color: item.isSolved ? 'green' : 'red', fontWeight: item.status == 'tough' ? 'bold' : 'normal' }}>
+                                            {item.label}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))
                             }
                         </View>
                     )

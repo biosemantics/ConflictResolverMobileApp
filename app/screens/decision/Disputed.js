@@ -7,8 +7,12 @@ import Voice from '@react-native-community/voice';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from "../../components/NavHeader";
 import { Picker } from '@react-native-community/picker';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Disputed(props) {
+
+    const [disputed, setDisputed] = useState(props.navigation.getParam('disputed', {}));
+
     const [pitch, setPitch] = useState('');
     const [error, setError] = useState('');
     const [end, setEnd] = useState('');
@@ -25,9 +29,6 @@ export default function Disputed(props) {
     const [input2, setinput2] = useState('');
     const [input3, setinput3] = useState('');
     const [input4, setinput4] = useState('');
-
-
-
 
     const [partialResults, setPartialResults] = useState([]);
     const [startRec, setStartRec] = useState(0);
@@ -119,7 +120,7 @@ export default function Disputed(props) {
                 setDropDown1(false);
                 setDropDown2(true);
             }
-        }  
+        }
 
         else if (clickedValue == 'disable2') {
             setDropDown2(true);
@@ -187,46 +188,49 @@ export default function Disputed(props) {
     };
 
     return (
-        <ScrollView>
-            <View style={{ marginHorizontal: 12, marginVertical: 5 }}>
-                <View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, }}>
-                        <NavHeader
+        <View style={{ marginHorizontal: 20, marginVertical: 20, display:'flex', }}>
+            <ScrollView>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <NavHeader
 
-                            size={22}
-                            bold={true}
-                            navigation={props.navigation}
-                            onBackFunc={() => props.navigation.goBack()}
-                            headerText='Flattened'
-                        />
-
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 25 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#544ea3' }}>Definition:  </Text>
-                        <Text style={{ color: '#544ea3' }}>not provided</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
-                            <Text style={{ color: '#544ea3' }}>Deprecations </Text>reasons:</Text>
-                        <Text>  same as compressed</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                        <Text>Anton Reznik</Text>
-                        <Text>2020-04-30</Text>
-                    </View>
-
-                    <View style={{ marginTop: 5 }}>
-                        <Text>
-                            <Text style={{ fontWeight: 'bold' }}>Dispute reason: in the following situations</Text>,
-                            <Text>Flattened is appropriate, but compressed is misleading.
-                            </Text>
-                        </Text>
-                        <Text style={{ marginTop: 5 }}><Text style={{ fontWeight: 'bold' }}>Proposed definition for restored </Text><Text>flattened: to become level or smooth</Text></Text>
-                    </View>
-                    <View style={{ marginTop: 5 }}>
-                        <Text>Disputed by Hong Cut.</Text>
-                    </View>
+                        size={22}
+                        bold={true}
+                        navigation={props.navigation}
+                        onBackFunc={() => props.navigation.goBack()}
+                        headerText='Flattened'
+                    />
                 </View>
+                <View style={ [Styles.rowText, { marginTop:20 }] }>
+                    <Text>
+                    <Text style={[ Styles.rowDefinition, { color: '#544ea3' }]}>Definition:  </Text>
+                    <Text style={Styles.TextMain} >{disputed.definition}</Text>
+                    </Text>
+                </View>
+                <View style={ Styles.rowText }>
+                    <Text style={Styles.TextMain}>
+                        <Text style={[ Styles.rowDefinition, { color: '#544ea3' }]}>Deprecations reasons: </Text>
+                        <Text style={Styles.TextMain}>{disputed.deprecated_reason}</Text>
+                    </Text>
+                </View>
+
+                <View style={Styles.rowText}>
+                    <Text style={Styles.TextMain}>
+                        <Text style={Styles.rowDefinition }>Dispute reason: </Text>
+                        <Text style={Styles.TextMain}>{disputed.disputed_reason}</Text>
+                    </Text>
+                </View>
+
+                <View style={Styles.rowText}>
+                    <Text style={Styles.TextMain}>
+                        <Text style={Styles.rowDefinition }>Proposed definition for restored </Text>
+                        <Text style={Styles.TextMain}>{disputed.new_definition}</Text>
+                    </Text>
+                </View>
+                <View style={Styles.rowText}>
+                    <Text style={Styles.rowDefinition }>Disputed by </Text>
+                    <Text style={Styles.TextMain}>{disputed.disputed_by}</Text>
+                </View>
+
 
 
                 <Text style={{ margin: 15, fontSize: 20, padding: 10, color: 'red', fontWeight: 'bold' }}>What action should be taken to address the disputes?</Text>
@@ -383,10 +387,24 @@ export default function Disputed(props) {
                         <Text style={{ color: 'white', fontSize: 20 }}>Submit</Text>
                     </TouchableOpacity>
                 </View>
-            </View >
-
-        </ScrollView >
+            </ScrollView >
+        </View >
     );
 }
 
-
+const Styles = StyleSheet.create({
+    rowText: {
+        flexDirection: 'row',
+        justifyContent:'flex-start',
+       
+    },
+    rowDefinition:{
+        fontWeight: 'bold',
+        fontSize: 16,
+        alignSelf:'auto',
+    },
+    TextMain:{
+        fontSize:16,
+        flex: 1,
+    }
+})
