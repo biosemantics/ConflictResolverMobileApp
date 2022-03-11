@@ -2,7 +2,6 @@ import baseUrl from '../baseUrl';
 import axios from 'axios';
 
 export const registerUser = (email, username, firstname, lastname, password) => {
-  // let formdata = new FormData();
   const user = {
     email,
     username,
@@ -10,9 +9,7 @@ export const registerUser = (email, username, firstname, lastname, password) => 
     lastname,
     password
   };
-  // const keys = Object.keys(user);
-  // keys.map(key => formdata.append(key, user[key]));
-
+  
   let apiUrl = baseUrl + 'Register/RegisterExpert.php';
 
   return axios.get(apiUrl, 
@@ -30,9 +27,5 @@ export const login = (username, password) => {
   keys.map(key => formdata.append(key, user[key]));
 
   let apiUrl = baseUrl + 'Login/LoginExpert.php';
-  console.log(apiUrl);
-  console.log(formdata);
-  console.log(axios.post(apiUrl, formdata));
   return axios.post(apiUrl, formdata);
-  // return axios.get(apiUrl, user);
 };

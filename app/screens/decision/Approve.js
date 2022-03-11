@@ -204,9 +204,6 @@ export default Approve = (props) => {
                 {
                     options && options.definition &&
                     options.definition.map((item, index) => {
-                        // const checkColor = selection.find( (sel, index) => sel && !options.approveData.find(it => it.sentenceId == options.sentence[index].id)) ? 'lightpink' : 'lightblue';
-                        // const color = options.approveData.find( it => (it.definitionId == item.id && selection[options.sentence.findIndex(sen => sen.id == it.sentenceId)])) ? checkColor :'white';
-                        // console.log(color);
                         return (
                             <View key={'sentence'+index}>
                                 <View style={{flexDirection: 'column', marginBottom: 10/*, backgroundColor: color*/}}>

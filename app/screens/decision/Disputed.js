@@ -8,6 +8,8 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from "../../components/NavHeader";
 import { Picker } from '@react-native-community/picker';
 import { useDispatch, useSelector } from 'react-redux';
+import api from '../../api/tasks';
+import { set_quality_item , set_structure_item } from "../../store/actions";
 
 export default function Disputed(props) {
 
@@ -17,13 +19,18 @@ export default function Disputed(props) {
     const [error, setError] = useState('');
     const [end, setEnd] = useState('');
     const [started, setStarted] = useState('');
-    const [termType, setTermType] = useState('');
+    const [qualityType, setQualityType] = useState('');
+    const [structureType, setStructureType ] = useState('');
 
+    const [qualityType2, setQualityType2] = useState('');
+    const [structureType2, setStructureType2 ] = useState('');
 
     const [results, setResults] = useState([]);
     const [activebtn, setActivebtn] = useState(0);
     const [dropDown1, setDropDown1] = useState(false);
     const [dropDown2, setDropDown2] = useState(false);
+    const [qualityItems, setQualityItems] = useState([]);
+    const [structureItems, setStructureItems] = useState([]);
 
     const [input1, setinput1] = useState('');
     const [input2, setinput2] = useState('');
@@ -33,7 +40,7 @@ export default function Disputed(props) {
     const [partialResults, setPartialResults] = useState([]);
     const [startRec, setStartRec] = useState(0);
 
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         //Setting callbacks for the process status
@@ -47,6 +54,7 @@ export default function Disputed(props) {
             //destroy the process after switching the screen
             Voice.destroy().then(Voice.removeAllListeners);
         };
+
     }, []);
 
     useEffect(() => {
@@ -72,7 +80,106 @@ export default function Disputed(props) {
             setResults([]);
         }
 
+        api.getQualityItem().then(result=>{
+            let qualityItem = [];
+            
+            qualityItem.push({
+                id: result.data.data.details[0].IRI,
+                name: result.data.text
+            });
+            
+            qualityItem = getQualityItem(result.data.children, qualityItem);
+            if (qualityItem.length > 0){
+                setQualityItems(qualityItem)
+            }
+            dispatch(set_quality_item(qualityItem));
+        });
+
+        api.getStructureItem().then(result=>{
+            let structureItem = [];
+            
+            structureItem.push({
+                id: result.data.data.details[0].IRI,
+                name: result.data.text
+            });
+            
+            structureItem = getQualityItem(result.data.children, structureItem);
+            if (structureItem.length > 0){
+                setStructureItems(structureItem)
+            }
+            dispatch(set_structure_item(structureItem));
+        });
+
     }, [activebtn, results]);
+
+    
+    const getQualityItem = (data, qualityItem) => {
+        if (data){
+            console.log("data");
+            console.log(data);
+            data.forEach(element => {
+                if(element.children){
+                    getQualityItem(element.children, qualityItem);
+                } else {
+                    qualityItem.push({
+                        id: element.data.details[0].IRI,
+                        name: element.text
+                    });
+                }
+                
+            });
+        }
+
+        return qualityItem;
+
+    }
+
+    const getStructureItem = (data, structureItem) => {
+        if (data){
+            console.log("data");
+            console.log(data);
+            data.forEach(element => {
+                if(element.children){
+                    getStructureItem(element.children, structureItem);
+                } else {
+                    structureItem.push({
+                        id: element.data.details[0].IRI,
+                        name: element.text
+                    });
+                }
+                
+            });
+        }
+        return structureItem;
+    }
+
+    // console.log('hello');
+    // console.log(username);
+
+    // const submitData = () =>{
+    //     if ( dropDown1 == true ){
+
+    //         api.submitNewTerm(username, ontology, term, superclassIRI, definition, elucidation, createdBy, creationDate, definitionSrc, examples, logicDefinition).then(result => {
+    //             console.log(result.data);                
+    //         });
+
+    //         api.submitDisputedterm(user, ontology, term, classIRI, decisionExperts, decisionDate).then(result => {
+    //             console.log(result.data);
+    //         });
+    //     }
+    //     else if ( dropDown2 == true ){
+    //         submitDisputedterm(user, ontology, term, classIRI, decisionExperts, decisionDate).then(result => {
+    //             console.log(result.data);
+    //         });
+    //     }
+        
+    // }
+
+
+
+
+
+
 
     const start = (inputName) => {
         setActivebtn(inputName);
@@ -176,11 +283,10 @@ export default function Disputed(props) {
     }
 
     const stopRecognizing = async () => {
-        // console.log('hi');
-        //Stops listening for speech
+      
         try {
             await Voice.stop();
-            // console.log('hi');
+            
         } catch (e) {
             //eslint-disable-next-line
             console.error(e);
@@ -200,6 +306,7 @@ export default function Disputed(props) {
                         headerText='Flattened'
                     />
                 </View>
+
                 <View style={ [Styles.rowText, { marginTop:20 }] }>
                     <Text>
                     <Text style={[ Styles.rowDefinition, { color: '#544ea3' }]}>Definition:  </Text>
@@ -276,25 +383,48 @@ export default function Disputed(props) {
                                     </View>
                                     {/* //Existing value Section */}
                                     <View style={{ marginHorizontal: 30, width: "90%" }}>
+                                
                                         <Picker
                                             style={{ height: 50 }}
-                                            selectedValue={termType}
-                                            onValueChange={(itemValue, itemIndex) => {
-                                                setTermType(itemValue);
-                                            }}>
-                                            <Picker.Item value='' label='Select superclass if quality' />
-                                            <Picker.Item label="Structure" value="Structure" />
-                                            <Picker.Item label="Character" value="Character" />
+                                            mode="dropdown"
+                                            selectedValue={qualityType}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                setQualityType(itemValue, itemIndex)
+                                            }
+                                        >
+                                            { qualityItems.map((item, index) => {
+                                                return (
+                                                    <Picker.Item
+                                                        label={item.name}
+                                                        value={item.id}
+                                                        key={index}
+                                                    />
+                                                );
+
+                                            })}
+
                                         </Picker>
+
                                         <Picker
-                                            style={{ height: 50, marginTop: 10 }}
-                                            selectedValue={termType}
-                                            onValueChange={(itemValue, itemIndex) => {
-                                                setTermType(itemValue);
-                                            }}>
-                                            <Picker.Item value='' label='Select superclass if structure' />
-                                            <Picker.Item label="Structure" value="Structure" />
-                                            <Picker.Item label="Character" value="Character" />
+                                            style={{ height: 50 }}
+                                            mode="dropdown"
+                                            selectedValue={structureType}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                //alert(selectedValue)
+                                                setStructureType(itemValue, itemIndex)
+                                            }
+                                        >
+                                            { structureItems.map((item, index) => {
+                                                return (
+                                                    <Picker.Item
+                                                        label={item.name}
+                                                        value={item.id}
+                                                        key={index}
+                                                    />
+                                                );
+
+                                            })}
+
                                         </Picker>
                                     </View>
 
@@ -349,25 +479,48 @@ export default function Disputed(props) {
                                     {/* Another Existing Section */}
 
                                     <Picker
-                                        style={{ height: 50 }}
-                                        selectedValue={termType}
-                                        onValueChange={(itemValue, itemIndex) => {
-                                            setTermType(itemValue);
-                                        }}>
-                                        <Picker.Item value='' label='Select the term if quality' />
-                                        <Picker.Item label="Structure" value="Structure" />
-                                        <Picker.Item label="Character" value="Character" />
-                                    </Picker>
-                                    <Picker
-                                        style={{ height: 50, marginTop: 10 }}
-                                        selectedValue={termType}
-                                        onValueChange={(itemValue, itemIndex) => {
-                                            setTermType(itemValue);
-                                        }}>
-                                        <Picker.Item value='' label='Select the term if Structure' />
-                                        <Picker.Item label="Structure" value="Structure" />
-                                        <Picker.Item label="Character" value="Character" />
-                                    </Picker>
+                                            style={{ height: 50 }}
+                                            mode="dropdown"
+                                            selectedValue={qualityType2}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                //alert(selectedValue)
+                                                setQualityType2(itemValue, itemIndex)
+                                            }
+                                        >
+                                            { qualityItems.map((item, index) => {
+                                                return (
+                                                    <Picker.Item
+                                                        label={item.name}
+                                                        value={item.id}
+                                                        key={index}
+                                                    />
+                                                );
+
+                                            })}
+
+                                        </Picker>
+
+                                        <Picker
+                                            style={{ height: 50 }}
+                                            mode="dropdown"
+                                            selectedValue={structureType2}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                //alert(selectedValue)
+                                                setStructureType2(itemValue, itemIndex)
+                                            }
+                                        >
+                                            { structureItems.map((item, index) => {
+                                                return (
+                                                    <Picker.Item
+                                                        label={item.name}
+                                                        value={item.id}
+                                                        key={index}
+                                                    />
+                                                );
+
+                                            })}
+
+                                        </Picker>
                                 </View>
 
 
@@ -383,7 +536,9 @@ export default function Disputed(props) {
                 {/* Comment and Submit Section */}
                 <View style={{ alignItems: 'center' }}>
                     <TextInput placeholder="Enter a record comment" style={{ backgroundColor: '#e8e8e8', width: '80%', borderRadius: 50 }} />
-                    <TouchableOpacity style={{ width: '80%', alignItems: 'center', backgroundColor: '#544ea3', padding: 5, borderRadius: 50, margin: 10 }} >
+                    <TouchableOpacity 
+                        style={Styles.button} 
+                        onPress={() => submitData()}>
                         <Text style={{ color: 'white', fontSize: 20 }}>Submit</Text>
                     </TouchableOpacity>
                 </View>
@@ -406,5 +561,13 @@ const Styles = StyleSheet.create({
     TextMain:{
         fontSize:16,
         flex: 1,
-    }
+    },
+    button:{ 
+        width: '80%', 
+        alignItems: 'center', 
+        backgroundColor: '#544ea3', 
+        padding: 5, 
+        borderRadius: 50, 
+        margin: 10 
+    },
 })

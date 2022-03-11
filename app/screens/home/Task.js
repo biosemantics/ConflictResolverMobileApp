@@ -12,11 +12,11 @@ export default Tasks = (props) => {
     const disputedOptions = useSelector(state => state.main.data.disputedOptions);
 
     tasks.map((item) => {
-        // console.log(item.type)
+    
     })
 
     disputedOptions.map((item) =>{
-        // console.log(item.label);
+        
     })
 
     const [isUnCategory, setIsUnCategory] = useState(true);
@@ -37,11 +37,9 @@ export default Tasks = (props) => {
             equiv: 'EquivTerm',
             dispu: 'Disputed'
         }
-        // console.log("jsdddddffffffff1111111111111111111111wdsdsssdddddddddd");
-        // console.log(task);
-        // if (!task.isSolved){
+   
         props.navigation.navigate(url[task.type], { task });
-        // }
+       
     }
 
     const onTask1 = (id) => {
@@ -231,6 +229,7 @@ export default Tasks = (props) => {
                         }
                     </TouchableOpacity>
                 </View>
+                
             </View>
         </ScrollView>
     )

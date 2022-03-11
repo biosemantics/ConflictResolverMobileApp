@@ -8,6 +8,8 @@ const initialState = {
   exactTermOptions: [],
   equivTermOptions: [],
   disputedOptions: [],
+  qualityItem: [],
+  structureItem: [],
 };
 
 export default (state = initialState, action) => {
@@ -26,6 +28,10 @@ export default (state = initialState, action) => {
       return {...state, equivTermOptions: action.payload};
       case Actions.SET_DISPUTED_OPTIONS:
         return {...state, disputedOptions: action.payload};
+      case Actions.SET_QUALITY_ITEM:
+        return {...state, qualityItem: action.payload};
+      case Actions.SET_STRUCTURE_ITEM:
+        return {...state, structureItem: action.payload};
     default:
       return state;
   }

@@ -61,13 +61,10 @@ export default HomeLayout = (props) => {
         }
         else if (id == 1){
             api.getTasks(auth.expertId).then(result=>{
-                console.log(result.data);
                 dispatch(set_tasks(result.data.task_data));
                 setTabID(id);
             });
             api.getDisputed().then(result=>{
-                console.log('jdhjsdsdgshdghsdsjdhdgjsgdjsgdsdgsdgjsgj');
-                console.log(result.data);
                 dispatch(set_disputed_options(result.data));
                 setTabID(id);
             });
