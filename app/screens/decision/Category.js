@@ -42,7 +42,6 @@ export default Category = (props) => {
 
     const getTerm = () => {
         api.getOptions(task.termId, auth.expertId).then(result => {
-            console.log(result);
             if (result.data.options_data && result.data.options_data.data && result.data.options_data.decisions) {
                 let temp = [...optionIndexes];
                 result.data.options_data.data.map((indOption, index) => {
@@ -114,7 +113,6 @@ export default Category = (props) => {
                 choices.push(options.data[indOpt].option_);
             });
             api.submitDecesions(auth.expertId, task.termId, choices, comment).then(result => {
-                console.log('decision', result);
                 if (result.data.error) {
 
                 }
@@ -127,8 +125,7 @@ export default Category = (props) => {
             });
         } else {
             api.submitDecesion(auth.expertId, task.termId, group, comment).then(result => {
-                console.log('decision', result);
-                if (result.data.error) {
+               if (result.data.error) {
 
                 }
                 else if (result.data.error == false) {

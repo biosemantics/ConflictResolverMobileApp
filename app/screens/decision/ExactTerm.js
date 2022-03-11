@@ -37,7 +37,6 @@ export default ExactTerm = (props) => {
 
     const getTerm = () => {
         api.getExactOptions(task.termId, auth.expertId).then(result=>{
-            console.log(result);
             if (result.data.options_data && result.data.options_data.data ) {
                 if (result.data.options_data.countSolution != 0) {
                     if (result.data.options_data.decisions.length == 0) {
@@ -89,7 +88,6 @@ export default ExactTerm = (props) => {
     const submitDecesion = async () => {
         if (none == false) {
             api.submitExactDecesions(auth.expertId, task.termId, optionIndexes, reason).then(result => {
-                console.log('decision', result);
                 if (result.data.error){
 
                 }
@@ -102,7 +100,6 @@ export default ExactTerm = (props) => {
             });
         } else {
             api.submitExactDecesionsNone(auth.expertId, task.termId, reason).then(result => {
-                console.log('decision', result);
                 if (result.data.error){
 
                 }

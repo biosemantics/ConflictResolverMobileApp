@@ -52,7 +52,6 @@ export default HomeLayout = (props) => {
     const onChangTab = (id) => {
         if (id == 0) {
             api.getCount(auth.expertId).then(result=>{
-                console.log(result);
                 if (result.data.count != completedCount) {
                     setCompletedCount(result.data.count);
                 }
@@ -73,13 +72,11 @@ export default HomeLayout = (props) => {
 
     useEffect(() => {
         api.getCount(auth.expertId).then(result=>{
-            console.log(result);
             if (result.data.count != completedCount) {
                 setCompletedCount(result.data.count);
             }
         })
         api.getTasks(auth.expertId).then(result=>{
-            console.log(result.data);
             dispatch(set_tasks(result.data.task_data));
         });
         api.getDisputed().then(result=>{
@@ -92,7 +89,6 @@ export default HomeLayout = (props) => {
                 name: ""
             });
             getStructure(result.data, structures, 2);
-            console.log(structures);
             dispatch(set_structure(structures));
         });
         api.getQuality().then(result => {

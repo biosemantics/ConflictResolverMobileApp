@@ -12,6 +12,7 @@ import api from '../../api/tasks';
 import { set_quality_item , set_structure_item } from "../../store/actions";
 
 export default function Disputed(props) {
+    const auth = useSelector(state => state.main.auth);
 
     const [disputed, setDisputed] = useState(props.navigation.getParam('disputed', {}));
 
@@ -32,7 +33,7 @@ export default function Disputed(props) {
     const [qualityItems, setQualityItems] = useState([]);
     const [structureItems, setStructureItems] = useState([]);
 
-    const [input1, setinput1] = useState('');
+    const [newTerm, setNewTerm] = useState('');
     const [input2, setinput2] = useState('');
     const [input3, setinput3] = useState('');
     const [input4, setinput4] = useState('');
@@ -58,12 +59,10 @@ export default function Disputed(props) {
     }, []);
 
     useEffect(() => {
-        console.log('value of active button: ', activebtn);
-        console.log('value of results: ', results);
         if (results.length > 0) {
             var msg = results[0];
             if (activebtn == 1) {
-                setinput1(msg);
+                setNewTerm(msg);
                 msg = '';
             } if (activebtn == 2) {
                 setinput2(msg);
@@ -115,8 +114,6 @@ export default function Disputed(props) {
     
     const getQualityItem = (data, qualityItem) => {
         if (data){
-            console.log("data");
-            console.log(data);
             data.forEach(element => {
                 if(element.children){
                     getQualityItem(element.children, qualityItem);
@@ -136,8 +133,6 @@ export default function Disputed(props) {
 
     const getStructureItem = (data, structureItem) => {
         if (data){
-            console.log("data");
-            console.log(data);
             data.forEach(element => {
                 if(element.children){
                     getStructureItem(element.children, structureItem);
@@ -153,60 +148,28 @@ export default function Disputed(props) {
         return structureItem;
     }
 
-    // console.log('hello');
-    // console.log(username);
-
-    // const submitData = () =>{
-    //     if ( dropDown1 == true ){
-
-    //         api.submitNewTerm(username, ontology, term, superclassIRI, definition, elucidation, createdBy, creationDate, definitionSrc, examples, logicDefinition).then(result => {
-    //             console.log(result.data);                
-    //         });
-
-    //         api.submitDisputedterm(user, ontology, term, classIRI, decisionExperts, decisionDate).then(result => {
-    //             console.log(result.data);
-    //         });
-    //     }
-    //     else if ( dropDown2 == true ){
-    //         submitDisputedterm(user, ontology, term, classIRI, decisionExperts, decisionDate).then(result => {
-    //             console.log(result.data);
-    //         });
-    //     }
-        
-    // }
-
-
-
-
-
-
-
+    
     const start = (inputName) => {
         setActivebtn(inputName);
-        // console.log('hello',inputName);
-        // console.log('helloVal',activebtn);
         startRecognizing(inputName);
     }
     const onSpeechStart = (e) => {
         //Invoked when .start() is called without error
-        console.log('onSpeechStart: ', e);
     };
 
     const onSpeechEnd = (e) => {
         //Invoked when SpeechRecognizer stops recognition
-        console.log('onSpeechEnd: ', e);
     };
 
     const onSpeechError = (e) => {
         //Invoked when an error occurs.
-        console.log('onSpeechError: ', e);
         setError(JSON.stringify(e.error));
     };
 
     const saveValue = (msg) => {
 
         if (activebtn == 1) {
-            setinput1(msg);
+            setNewTerm(msg);
         } else if (activebtn == 2) {
             setinput2(msg);
         } else if (activebtn == 3) {
@@ -219,7 +182,6 @@ export default function Disputed(props) {
     };
 
     const handleChange = (clickedValue) => {
-        // console.log(clickedValue);
         if (clickedValue == 'disable') {
             setDropDown1(true);
             setDropDown2(false);
@@ -248,7 +210,6 @@ export default function Disputed(props) {
 
         let msg = '';
         setResults(e.value);
-        // console.log('onSpeechResults: ', e.value[0]);
         if (e.value.length > 0) {
             msg = e.value[0];
         } else {
@@ -260,12 +221,10 @@ export default function Disputed(props) {
 
     const onSpeechPartialResults = (e) => {
         //Invoked when any results are computed
-        // console.log('onSpeechPartialResults: ', e);
         setPartialResults(e.value);
     };
 
     const startRecognizing = async (inputName) => {
-        console.log('here', activebtn);
         //Starts listening for speech for a specific locale
         try {
             await Voice.start('en-US');
@@ -303,7 +262,7 @@ export default function Disputed(props) {
                         bold={true}
                         navigation={props.navigation}
                         onBackFunc={() => props.navigation.goBack()}
-                        headerText='Flattened'
+                        headerText={disputed.label}
                     />
                 </View>
 
@@ -370,7 +329,7 @@ export default function Disputed(props) {
                             {
                                 <View>
                                     <View style={{ flexDirection: 'row', marginLeft: 30, marginTop: 10 }}>
-                                        <TextInput placeholder="Enter the new item" style={{ width: '95%', borderWidth: 1, height: 40 }} defaultValue={input1} />
+                                        <TextInput placeholder="Enter the new item" style={{ width: '95%', borderWidth: 1, height: 40 }} defaultValue={newTerm} />
                                         <TouchableOpacity style={{ position: 'absolute', left: '85%', top: '20%' }} onPress={() => start(1)} >
                                             <FontAwesomeIcon icon={faMicrophone} size={25} />
                                         </TouchableOpacity>
@@ -529,9 +488,6 @@ export default function Disputed(props) {
 
                     )
                 }
-
-
-
 
                 {/* Comment and Submit Section */}
                 <View style={{ alignItems: 'center' }}>

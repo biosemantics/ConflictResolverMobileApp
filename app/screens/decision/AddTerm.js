@@ -54,7 +54,6 @@ export default Category = (props) => {
 
     const getTerm = () => {
         api.getAddTermOptions(task.termId, auth.expertId).then(result=>{
-            console.log(result);
             
             if (result.data.curComment != "") {
                 setComment(result.data.curComment);
@@ -270,7 +269,6 @@ export default Category = (props) => {
         }
 
         api.solveAddTermConflict(task.termId, auth.expertId, termType, subPartString, superPartString, alwaysHasPartString, alwaysPartOfString, maybePartOfString, subclassOf, synonyms.map(sy=>sy.expertId), synonyms.map(sy=>sy.synonym), comment).then(result=>{
-            console.log(result);
             api.getTasks(auth.expertId).then(result=>{
                 dispatch(set_tasks(result.data.task_data));
                 props.navigation.goBack();
@@ -468,10 +466,7 @@ export default Category = (props) => {
                                 <Text style={{color: 'black'}}>
                                     Fill in the blanks below if applicable.
                                 </Text>
-                                {/* <Text style={{color: 'black'}}>
-                                    [selection] always has part of {task.term}.
-                                </Text> */}
-                                
+                       
                                 <View style={{ marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
                                     <View style={{ alignItems: 'center'}}>
                                         <View style={{width: '70%'}}>

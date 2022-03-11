@@ -32,7 +32,6 @@ export default Login = ( props ) => {
 
   const onLogin = () => {
     login(username, password).then(result => {
-      console.log(result.data);
       if (result.data.error) {
         setMessage(result.data.message);
         setErrorInfoModal(true);
@@ -42,7 +41,6 @@ export default Login = ( props ) => {
         props.navigation.navigate('HomeLayout');
       }
     }).catch( err => {
-      console.log(err);
       let msg = 'Connection error. Please check your network connection.';
       switch (err.response.status) {
         case 404:

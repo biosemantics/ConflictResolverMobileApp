@@ -48,7 +48,6 @@ export default RegisterUser = ( props ) => {
 
   const onResigerUser = () => {
     registerUser(email, username, firstname, lastname, password).then(result => {
-      console.log(result.data);
       if (result.data.error) {
         setMessage(result.data.message);
         setErrorInfoModal(true);
@@ -60,7 +59,6 @@ export default RegisterUser = ( props ) => {
           props.navigation.navigate('HomeLayout');
       }
     }).catch( err => {
-      console.log(err);
       let msg = 'Connection error. Please check your network connection.';
       switch (err.response.status) {
         case 404:

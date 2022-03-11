@@ -80,10 +80,6 @@ export default DeclineModal = (props) => {
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
     const declineTerm = () => {
-        console.log(reason);
-        console.log(alternativeTerm);
-        console.log(auth.expertId);
-        console.log(task.termId);
         api.declineTerm(task.termId, auth.expertId, reason, alternativeTerm).then(() => {
             props.handleYes();
         });

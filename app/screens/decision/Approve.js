@@ -45,7 +45,6 @@ export default Approve = (props) => {
 
     const getTerm = () => {
         api.getApproveOptions(task.termId, auth.expertId).then(result=>{
-            console.log(result);
             if (result.data.curComment != "") {
                 setComment(result.data.curComment);
             }
@@ -59,16 +58,13 @@ export default Approve = (props) => {
 
     const clearDefinition = (definitionId) => {
         let tmp = options;
-        console.log(definitionId);
         while (true) {
             let index = tmp.approveData.findIndex(it => it.definitionId == definitionId);
-            console.log(index);
             if (index < 0) {
                 break;
             }
             tmp.approveData.splice(index, 1);
         }
-        console.log(tmp);
         dispatch(set_approve_options(tmp));
         selection.map((sel, index) => {
             setSelection[index](!sel);
@@ -86,18 +82,13 @@ export default Approve = (props) => {
             setNoSentencewarningModal(true);
         } else {
             const sentenceIds = options.sentence.filter((it, index) => selection[index]).map(it => it.id);
-            // api.setDefinition(auth.expertId, sentenceIds, definitionId).then(result => {
-            //     console.log(result);
-            //     dispatch(set_approve_options(result.data));
-            // });
+         
             let tmp = options;
-            console.log(sentenceIds);
             sentenceIds.map(sId => {
                 if (!tmp.approveData.find(it => it.sentenceId == sId && it.definitionId == definitionId)) {
                     tmp.approveData.push({sentenceId: sId, definitionId});
                 }
             })
-            console.log(tmp);
             dispatch(set_approve_options(tmp));
             selection.map((sel, index) => {
                 if (sel) {
@@ -108,7 +99,6 @@ export default Approve = (props) => {
     }
     const addDefinition = () => {
         api.addDefinition(task.termId, auth.expertId, newDefinition).then(result => {
-            console.log(result);
             dispatch(set_approve_options({...options,...result.data}));
             setNewDefinition('');
         })
@@ -116,7 +106,6 @@ export default Approve = (props) => {
 
     const removeDefinition = (id) => {
         api.removeDefinition(task.termId, auth.expertId, id).then(result => {
-            console.log(result);
             dispatch(set_approve_options({...options,...result.data}));
             setNewDefinition('');
         })
@@ -145,7 +134,6 @@ export default Approve = (props) => {
                 }
             })
         }
-        console.log(canSubmit);
         if (canSubmit == 0) {
             setWarningModal(true);
         } else {
@@ -160,7 +148,6 @@ export default Approve = (props) => {
 
     const onConfirmSubmit = () => {
         api.setDefinition(task.termId, auth.expertId, options.approveData.map(item => item.sentenceId), options.approveData.map(item => item.definitionId), comment).then(result => {
-            console.log(result);
             api.getTasks(auth.expertId).then(result=>{
                 dispatch(set_tasks(result.data.task_data));
                 props.navigation.goBack();
@@ -262,11 +249,7 @@ export default Approve = (props) => {
                     }
                     <View style={styles.inputContainer}>
                         <TextInput placeholder="Enter or record new definition" style={{color: '#003458', width: '75%', marginLeft: 5}} onChangeText={txt => {setNewDefinition(txt)}}>{newDefinition}</TextInput>
-                        {/*
-                            <TouchableOpacity style={{...styles.button, backgroundColor: 'green'}}>
-                                <FontAwesomeIcon name="microphone" size={20} color="white"/>
-                            </TouchableOpacity>
-                        */}
+        
                         <TouchableOpacity style={{...styles.button, backgroundColor: '#013458'}} onPress={() => {addDefinition()}}>
                             <FontAwesomeIcon name="plus" size={20} color={"white"}/>
                         </TouchableOpacity>
