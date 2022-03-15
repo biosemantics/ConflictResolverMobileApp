@@ -1,4 +1,4 @@
-import baseUrl from '../baseUrl';
+import {baseUrl, myUrl} from '../baseUrl';
 import axios from 'axios';
 
 export default api = {
@@ -89,20 +89,21 @@ export default api = {
     );
   },
 
-  submitNewTerm : async (username, ontology, term, superclassIRI, definition, elucidation, createdBy, creationDate, definitionSrc, examples, logicDefinition) => {
-    const data = {user: username, ontology, term, superclassIRI, definition, elucidation, createdBy, creationDate, definitionSrc, examples, logicDefinition};
-
-    let apiUrl = 'http://shark.sbs.arizona.edu:8080/class';
+  submitNewTerm : async (user1, ontology, newTerm, pickerStructure, newDefinition, elucidation,  user, newDate, definitionSrc, example1, logicDefinition) => {
+    
+    const data = {user: user1, ontology, term: newTerm, superclassIRI: pickerStructure, definition: newDefinition, elucidation, createdBy: user, creationDate: newDate, definitionSrc, examples:example1, logicDefinition};
+  
+   let apiUrl = myUrl + 'class';
 
     return await axios.post(apiUrl,
       {params: data}
     );
   },
 
-  submitDisputedterm : async (user, ontology, term, classIRI, decisionExperts, decisionDate) => {
-    const data = {user, ontology, term, classIRI, decisionExperts, decisionDate};
-
-    let apiUrl = 'http://shark.sbs.arizona.edu:8080/rnsynonym';
+  submitDisputedterm : async (user, ontology, newTerm, pickerStructure, decisionExperts, newDate) => {
+    const data = {user, ontology, term:newTerm, classIRI:pickerStructure, decisionExperts, decisionDate:newDate};
+   
+    let apiUrl = myUrl + 'rnsynonym';
 
     return await axios.post(apiUrl,
       {params: data}
@@ -167,13 +168,13 @@ export default api = {
 
   getDisputed: async () => {
 
-    let apiUrl = 'http://shark.sbs.arizona.edu:8080/dispute/all';
+    let apiUrl = myUrl + 'dispute/all';
 
     return await axios.get(apiUrl);
   },
   
   getQualityItem: async () => {
-    let apiUrl = 'http://shark.sbs.arizona.edu:8080/carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=quality';
+    let apiUrl = myUrl + 'carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=quality';
 
     return await axios.get(apiUrl);
 
@@ -181,7 +182,7 @@ export default api = {
   },
 
   getStructureItem: async () => {
-    let apiUrl = 'http://shark.sbs.arizona.edu:8080/carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=anatomical%20structure';
+    let apiUrl = myUrl + 'carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=anatomical%20structure';
 
     return await axios.get(apiUrl);
   },

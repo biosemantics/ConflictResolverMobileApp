@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 // import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 export default class NavHeader extends React.Component {
@@ -32,7 +32,8 @@ export default class NavHeader extends React.Component {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.backBtn} onPress={()=> onBackFunc()}>
-          <Image source={require('../assets/images/back-arrow_2.png')} />
+          {/* <Image source={require('../assets/images/back_arrow_2.png')} /> */}
+          <AntDesignIcon name="left" size={25} />
         </TouchableOpacity>
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
