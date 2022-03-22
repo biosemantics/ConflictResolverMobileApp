@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput } from 'react-native';
-import { Picker } from '@react-native-community/picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
 import { useDispatch, useSelector } from 'react-redux';

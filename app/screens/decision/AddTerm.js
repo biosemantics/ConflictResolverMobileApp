@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Component, Fragment} from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput} from 'react-native';
 import Modal from "react-native-modal";
-import {Picker} from '@react-native-community/picker';
+// import {Picker} from '@react-native-community/picker';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -343,7 +343,7 @@ export default Category = (props) => {
                                 }
                             </Text>
                             <View style={{borderWidth: 1}}>
-                                <Picker
+                                {/* <Picker
                                     style={{height: 30, width: 140}}
                                     selectedValue={termType}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -351,7 +351,7 @@ export default Category = (props) => {
                                     }}>
                                     <Picker.Item label="Structure" value="Structure" />
                                     <Picker.Item label="Character" value="Character" />
-                                </Picker>
+                                </Picker> */}
                             </View>
                         </View>
                         {

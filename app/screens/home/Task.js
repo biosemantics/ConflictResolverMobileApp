@@ -188,7 +188,7 @@ export default Tasks = (props) => {
                 }
                 <View style={styles.header}>
                     <Text style={{ fontSize: 18 }}>
-                        Disputed Deprecations
+                        Disputed Deprecations data
                     </Text>
                     <TouchableOpacity onPress={() => { setDisputed(!disPuted) }}>
                         {

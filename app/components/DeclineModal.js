@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import Modal from "react-native-modal";
-import {Dimensions} from 'react-native';
-import {Picker} from '@react-native-community/picker';
+import { Dimensions } from 'react-native';
+// import Picker from '@react-native-picker/picker'
 import PropTypes from 'prop-types'
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import api from '../api/tasks';
 import PopupConfirm from './PopupConfirm';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -30,7 +31,7 @@ export default DeclineModal = (props) => {
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
-        }, 
+        },
         modalContent: {
             width: '90%',
             display: 'flex',
@@ -76,8 +77,8 @@ export default DeclineModal = (props) => {
     var cancel = (props.cancel ? props.cancel : 'Cancel');
     const deviceWidth = Dimensions.get("window").width;
     const deviceHeight = Platform.OS === "ios"
-      ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+        ? Dimensions.get("window").height
+        : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
     const declineTerm = () => {
         api.declineTerm(task.termId, auth.expertId, reason, alternativeTerm).then(() => {
@@ -88,22 +89,22 @@ export default DeclineModal = (props) => {
     const showConfirmModal = () => {
         setConfirmModal(true);
     }
-
+    const myTerm = ["Structure", "Character"]
     return (
         <View>
             <Modal isVisible={props.isVisible}
-            deviceWidth={deviceWidth}
-            deviceHeight={deviceHeight}>
+                deviceWidth={deviceWidth}
+                deviceHeight={deviceHeight}>
                 <View style={styles.modalContainer} >
                     <View style={styles.modalContent}>
-                        <Text style={{...styles.text, fontSize:19, lineHeight:24, marginTop:20, fontWeight:'bold'}}>{"Reject the Term"}</Text>
-                        <Text style={{...styles.text, fontSize:17, lineHeight:22, marginTop:10, marginLeft:10, marginRight:10, marginBottom:10, color:'black'}}>Why {task.term} is not good?</Text>
+                        <Text style={{ ...styles.text, fontSize: 19, lineHeight: 24, marginTop: 20, fontWeight: 'bold' }}>{"Reject the Term"}</Text>
+                        <Text style={{ ...styles.text, fontSize: 17, lineHeight: 22, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 10, color: 'black' }}>Why {task.term} is not good?</Text>
                         <View style={styles.inputContainer}>
-                            <TextInput placeholder="Enter the reason why you decline the term." style={{color: '#003458', marginLeft: 5}} multiline={true} numberOfLines={3} onChangeText={txt => {setReason(txt)}}>{reason}</TextInput>
+                            <TextInput placeholder="Enter the reason why you decline the term." style={{ color: '#003458', marginLeft: 5 }} multiline={true} numberOfLines={3} onChangeText={txt => { setReason(txt) }}>{reason}</TextInput>
                         </View>
-                        <Text style={{...styles.text, fontSize:17, lineHeight:22, marginTop:10, marginLeft:10, marginRight:10, marginBottom:10, color:'black'}}>Choose a term to replace {task.term}</Text>
-                        <View style={{...styles.inputContainer, justifyContent:'center', width:'50%', borderWidth: 0}}>
-                            <Picker
+                        <Text style={{ ...styles.text, fontSize: 17, lineHeight: 22, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 10, color: 'black' }}>Choose a term to replace {task.term}</Text>
+                        <View style={{ ...styles.inputContainer, justifyContent: 'center', width: '50%', borderWidth: 0 }}>
+                            {/* <Picker
                                 style={{height: 30, width: 140}}
                                 selectedValue={termType}
                                 onValueChange={(itemValue, itemIndex) => {
@@ -111,9 +112,34 @@ export default DeclineModal = (props) => {
                                 }}>
                                 <Picker.Item label="Structure" value="Structure" />
                                 <Picker.Item label="Character" value="Character" />
-                            </Picker>
+                            </Picker> */}
+                            <SelectDropdown
+                                //ref={dropdownRef}
+                                style={{ height: 50 }}
+                                data={myTerm}
+                                onSelect={(selectedItem, index) => {
+                                    setTermType(selectedItem)
+                                    //setPickerStructure(selectedItem.id)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    return selectedItem
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    return item
+                                }}
+                                defaultButtonText={"Select Item"}
+                                dropdownIconPosition="right"
+                                dropdownBackgroundColor='#fff'
+                               // buttonStyle={Styles.dropdown1BtnStyle}
+                                renderDropdownIcon={(isOpened) => {
+                                    return (
+                                        <AntDesignIcon name={isOpened ? "caretup" : "caretdown"} size={20} />
+                                    );
+                                }}
+                            >
+                            </SelectDropdown>
                         </View>
-                        <View style={{...styles.inputContainer, justifyContent:'flex-start', width:'80%', borderRadius:1}}>
+                        <View style={{ ...styles.inputContainer, justifyContent: 'flex-start', width: '80%', borderRadius: 1 }}>
                             {
                                 termType === 'Character' &&
                                 <SearchableDropdown
@@ -193,18 +219,18 @@ export default DeclineModal = (props) => {
                                 />
                             }
                         </View>
-                        <Text style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginBottom:20, color:'#F4463A'}}>{message}</Text>
-                        <View style={{flexDirection:'row',}}>
-                            <View style={{width:'50%', alignItems:'center', justifyContent:'center', height: 48, borderColor:'#BCC0C3', borderTopWidth:1, borderRightWidth: 1}}>
+                        <Text style={{ ...styles.text, fontSize: 15, lineHeight: 20, marginLeft: 10, marginRight: 10, marginBottom: 20, color: '#F4463A' }}>{message}</Text>
+                        <View style={{ flexDirection: 'row', }}>
+                            <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', height: 48, borderColor: '#BCC0C3', borderTopWidth: 1, borderRightWidth: 1 }}>
                                 <TouchableOpacity style={styles.button} onPress={showConfirmModal} disabled={(reason == '')}>
-                                    <Text style={{...styles.text, fontSize:19, lineHeight:24, color: ((reason == '') ? '#BFCFDB' : '#003458')}}>
+                                    <Text style={{ ...styles.text, fontSize: 19, lineHeight: 24, color: ((reason == '') ? '#BFCFDB' : '#003458') }}>
                                         {yes}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={{width:'50%', alignItems:'center', justifyContent:'center', height: 48, borderColor:'#BCC0C3', borderTopWidth:1}}>
+                            <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', height: 48, borderColor: '#BCC0C3', borderTopWidth: 1 }}>
                                 <TouchableOpacity style={styles.button} onPress={() => { if (props.handleCancel) props.handleCancel(); }}>
-                                    <Text style={{...styles.text, fontSize:19, lineHeight:24, color:'#E94C36'}}>
+                                    <Text style={{ ...styles.text, fontSize: 19, lineHeight: 24, color: '#E94C36' }}>
                                         {cancel}
                                     </Text>
                                 </TouchableOpacity>
@@ -213,16 +239,16 @@ export default DeclineModal = (props) => {
                     </View>
                 </View>
             </Modal>
-            
+
             <PopupConfirm
                 popupTitle="Are you sure to reject the term?"
                 message={"You will not be able to change this decision after reject."}
                 isVisible={confirmModal}
-                handleYes={()=> {
+                handleYes={() => {
                     setConfirmModal(false);
                     declineTerm();
                 }}
-                handleCancel={()=>{setConfirmModal(false)}}
+                handleCancel={() => { setConfirmModal(false) }}
             />
         </View>
     );
@@ -230,6 +256,6 @@ export default DeclineModal = (props) => {
 
 
 DeclineModal.propTypes = {
-    handleYes : PropTypes.func.isRequired,
-    handleCancel : PropTypes.func.isRequired,
+    handleYes: PropTypes.func.isRequired,
+    handleCancel: PropTypes.func.isRequired,
 }

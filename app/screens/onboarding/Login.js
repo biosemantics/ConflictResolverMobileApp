@@ -13,8 +13,8 @@ import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/actions/main';
 
 export default Login = ( props ) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('abc');
+  const [password, setPassword] = useState('aaa123');
 
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
@@ -32,6 +32,7 @@ export default Login = ( props ) => {
 
   const onLogin = () => {
     login(username, password).then(result => {
+      console.log(result.data);
       if (result.data.error) {
         setMessage(result.data.message);
         setErrorInfoModal(true);

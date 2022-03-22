@@ -15,6 +15,7 @@ import { set_structure } from '../../store/actions'
 
 import { useDispatch, useSelector } from 'react-redux';
 
+
 const getStructure = (data, structures, index) => {
     structures.push({
         id: index,
@@ -69,13 +70,16 @@ export default HomeLayout = (props) => {
             });
         }
     }
+    const [message, setMessage] = useState('');
+    const [errorInfoModal, setErrorInfoModal] = useState(false);
 
     useEffect(() => {
+    
         api.getCount(auth.expertId).then(result=>{
             if (result.data.count != completedCount) {
                 setCompletedCount(result.data.count);
             }
-        })
+        });
         api.getTasks(auth.expertId).then(result=>{
             dispatch(set_tasks(result.data.task_data));
         });
@@ -99,7 +103,7 @@ export default HomeLayout = (props) => {
             });
             getQuality(result.data, qualities, 2);
             dispatch(set_quality(qualities));
-        })
+        });
     }, [])
 
     const renderContent =  () => {
@@ -109,7 +113,7 @@ export default HomeLayout = (props) => {
             <Home navigation={props.navigation} completedCount={completedCount}/>
           );
       } 
-      else {
+      else if (tabID == 1){
           return (
             <Task navigation={props.navigation}/>
           );
@@ -123,6 +127,12 @@ export default HomeLayout = (props) => {
             <View style={{marginTop: 18, width: '100%', height: deviceHeight - 220}}>
                 { renderContent() }
             </View>
+            <PopupAlert
+                popupTitle="Error"
+                message={message}
+                isVisible={errorInfoModal}
+                handleOK={()=>{setErrorInfoModal(false)}}
+            />
         </View>
     )
 }

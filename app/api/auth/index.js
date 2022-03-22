@@ -1,4 +1,4 @@
-import baseUrl from '../baseUrl';
+import {baseUrl} from '../baseUrl';
 import axios from 'axios';
 
 export const registerUser = (email, username, firstname, lastname, password) => {
