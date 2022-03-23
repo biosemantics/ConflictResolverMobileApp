@@ -19,8 +19,13 @@ import { set_addTerm_options } from '../../store/actions'
 import { set_tasks } from '../../store/actions'
 
 export default Category = (props) => {
+    console.log("ddsf");
+    console.log(props);
     
     const [task, setTask] = useState(props.navigation.getParam('task',{}));
+    console.log("hello");
+    console.log(task);
+    
     const [confirmModal, setConfirmModal] = useState(false);
     const [declineModal, setDeclineModal] = useState(false);
     const [termType, setTermType] = useState('');
@@ -44,6 +49,9 @@ export default Category = (props) => {
     const options = useSelector(state => state.main.data.addTermOptions);
     const quailtyData = useSelector(state => state.main.metaData.quality);
     const structureData = useSelector(state => state.main.metaData.structure);
+
+    console.log('quality data');
+    console.log(quailtyData);
 
     const dispatch = useDispatch();
 

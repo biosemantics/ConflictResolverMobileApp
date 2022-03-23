@@ -36,6 +36,13 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "ontologyConflictSolver-tvOS";
 		};
+		7421F40527E99B4200634215 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7421F40127E99B4100634215 /* Voice.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC0729B51EF78E41004EBC83;
+			remoteInfo = Voice;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +66,7 @@
 		5DA3C262AEB6C54656C9C0DC /* Pods-ontologyConflictSolver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ontologyConflictSolver.release.xcconfig"; path = "Target Support Files/Pods-ontologyConflictSolver/Pods-ontologyConflictSolver.release.xcconfig"; sourceTree = "<group>"; };
 		6B291D872D4D9C7E281BD32C /* libPods-ontologyConflictSolver-ontologyConflictSolver-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ontologyConflictSolver-ontologyConflictSolver-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DADB3CCEE4AACAAED817300 /* libPods-ontologyConflictSolver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ontologyConflictSolver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7421F40127E99B4100634215 /* Voice.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Voice.xcodeproj; path = "../node_modules/@react-native-voice/voice/ios/Voice.xcodeproj"; sourceTree = "<group>"; };
 		74D6CDBE27E09B890056211D /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		74D6CDBF27E09B890056211D /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		74D6CDC027E09B890056211D /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -183,6 +191,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		7421F40227E99B4100634215 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7421F40627E99B4200634215 /* libVoice.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		74D6CDBD27E098AE0056211D /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +209,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				7421F40127E99B4100634215 /* Voice.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -365,6 +382,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7421F40227E99B4100634215 /* Products */;
+					ProjectRef = 7421F40127E99B4100634215 /* Voice.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ontologyConflictSolver */,
@@ -374,6 +397,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7421F40627E99B4200634215 /* libVoice.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libVoice.a;
+			remoteRef = 7421F40527E99B4200634215 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {

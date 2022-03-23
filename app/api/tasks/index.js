@@ -92,13 +92,18 @@ export default api = {
     );
   },
 
-  submitNewTerm : async (user1, ontology, newTerm, pickerStructure, newDefinition, elucidation,  user, newDate, definitionSrc, example1, logicDefinition) => {
-    
-    const data = {user: user1, ontology, term: newTerm, superclassIRI: pickerStructure, definition: newDefinition, elucidation, createdBy: user, creationDate: newDate, definitionSrc, examples:example1, logicDefinition};
+  submitNewTerm : async (expertId, termId, newTerm, newDefinition, pickerStructure, input3, input4, newExisting, input5, type1) => {
+    let formdata = new FormData();
 
-    let apiUrl = myUrl + 'class';
-  
-    return await axios.post(apiUrl, data );
+    const data = {expertId, termId, newTerm, definition: newDefinition, superclass: pickerStructure, sentence: input3, taxa: input4, newOrExisting: '1', comment: input5, type: '1' };
+
+    const keys = Object.keys(data);  
+    keys.map(key => formdata.append(key, data[key]));
+    console.log("hello "+ formdata)
+   // let apiUrl = myUrl + 'class';
+    let apiUrl = 'https://conflictresolver.lusites.xyz/dev/DailyOperations/ProcessDisputedDecision.php';
+
+    return await axios.post(apiUrl, formdata );
   },
 
   submitDisputedterm : async (user, ontology, term1, pickerStructure, decisionExperts, newDate) => {
@@ -144,7 +149,7 @@ export default api = {
   
   getAddTermOptions : async (termId, expertId) => {
     const data = {termId, expertId};
-
+    console.log(termId);
     let apiUrl = baseUrl + 'DailyOperations/GetAddTermOptions.php';
 
     return await axios.get(apiUrl, {params: data});
@@ -165,12 +170,15 @@ export default api = {
 
     return await axios.get(apiUrl, {params: data});
   },
+ 
+  getDisputed: async (expertId) => {
 
-  getDisputed: async () => {
+    // let apiUrl = myUrl + 'dispute/all';
+    const data = {expertId};
 
-    let apiUrl = myUrl + 'dispute/all';
-
-    return await axios.get(apiUrl); 
+    let apiUrl = 'https://conflictresolver.lusites.xyz/dev/DailyOperations/GetDisputedDeprecations.php?expertId=66';
+ 
+    return await axios.get(apiUrl ); 
   },
   
   getQualityItem: async () => {

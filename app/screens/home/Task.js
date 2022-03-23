@@ -14,9 +14,10 @@ export default Tasks = (props) => {
     tasks.map((item) => {
     
     })
-
-    disputedOptions.map((item) =>{
         
+    disputedOptions.map((item) =>{
+        console.log("disputedOptions.expertSolutions");
+       
     })
 
     const [isUnCategory, setIsUnCategory] = useState(true);
@@ -37,16 +38,19 @@ export default Tasks = (props) => {
             equiv: 'EquivTerm',
             dispu: 'Disputed'
         }
-   
+        
         props.navigation.navigate(url[task.type], { task });
        
     }
 
-    const onTask1 = (id) => {
-        const disputed = disputedOptions.find(a => a.id == id)
+    const onTask1 = (termId) => {
+        const disputed = disputedOptions.find(t => t.termId == termId)
+        
+        const url = {
+            dispu: 'Disputed'
+        }
         
         props.navigation.navigate('Disputed', { disputed });
-
     }
     return (
         <ScrollView style={{ backgroundColor: '#ffffff' }}>
@@ -188,7 +192,7 @@ export default Tasks = (props) => {
                 }
                 <View style={styles.header}>
                     <Text style={{ fontSize: 18 }}>
-                        Disputed Deprecations data
+                        Disputed Deprecations
                     </Text>
                     <TouchableOpacity onPress={() => { setDisputed(!disPuted) }}>
                         {
@@ -202,14 +206,16 @@ export default Tasks = (props) => {
                     disPuted && (
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
                             {
-                                // <TouchableOpacity onPress={() => props.navigation.navigate('Disputed')}>
-                                //     <Text> Flattened</Text>
-                                // </TouchableOpacity>
-                                 
+                               // disputedOptions.filter(disputed => (disputed.type))
                                 disputedOptions.map((item, index) => (
-                                    <TouchableOpacity key={'task_' + index} style={{ width: '50%', alignContent: 'center', alignItems: 'center' }} onPress={() => onTask1(item.id)} >
-                                        <Text style={{ color: item.isSolved ? 'green' : 'red', fontWeight: item.status == 'tough' ? 'bold' : 'normal' }}>
-                                            {item.label}
+                                    // let len = item.expertSolutions,
+                                    // var arrayLength = len.length 
+                                        
+                                    <TouchableOpacity key={'task_' + index} style={{ width: '50%', alignContent: 'center', alignItems: 'center' }}
+                                     onPress={() => onTask1(item.termId)} 
+                                     >
+                                        <Text style={{ color: item.solutionGiven ? 'green' : 'red', fontWeight: item.status == 'tough' ? 'bold' : 'normal' }}>
+                                            {item.term}({item.expertSolutions.length})
                                         </Text>
                                     </TouchableOpacity>
                                 ))
