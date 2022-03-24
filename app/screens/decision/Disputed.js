@@ -30,12 +30,8 @@ import {set_disputed_options, set_tasks} from '../../store/actions';
 
 export default function Disputed(props) {
   const auth = useSelector((state) => state.main.auth);
-  // console.log("dhjgsfhdgsjhdfsf");
-  // console.log(props);
 
   const [disputed, setDisputed] = useState(props.navigation.getParam('disputed', {}));
-  // console.log("helloooo");
-  // console.log(disputed);
 
   const [pitch, setPitch] = useState('');
   const [error, setError] = useState('');
@@ -61,6 +57,8 @@ export default function Disputed(props) {
   const [input3, setinput3] = useState('');
   const [input4, setinput4] = useState('');
   const [input5, setinput5] = useState('');
+  const [newExist, setNewExist] = useState('');
+  const [myType, setMyType] = useState('');
 
   const [example, setExample] = useState('');
   const [superClass, setSuperClass] = useState(qualityType);
@@ -191,103 +189,61 @@ export default function Disputed(props) {
     if (structureItem.length > 0) {
       setStructureItems(structureItem);
     }
-    // // console.log("structureItemsfdgdfg");
     return structureItems;
     // return structureItem;
   };
 
-  // const user = auth.username;
-  const user = '';
-
-  // const term1 = disputed.label;
-
   const submitData = () => {
-    const example1 = input3 + ' ' + input4;
-
-    // if (dropDown1 == true) {
-      if ( pickerStructure == '') {
-        setMessage('fields are empty');
-        setErrorInfoModal(true);
-      } else {
-        api
-          .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, input5)
-          .then((result) => {
-            api.getDisputed().then((result) => {
-              dispatch(set_disputed_options(result.data));
-              props.navigation.goBack();
-            });
-           
-          })
-          .catch((err) => {
-            let msg = 'Connection error. Please check your network connection.';
-            switch (err.response.status) {
-              case 404:
-                msg = 'Server not found';
-                break;
-              case 403:
-                msg = 'You are forbidden.';
-                break;
-              case 401:
-                msg = 'You are unautherized';
-                break;
-              case 500:
-                msg = 'internal Server Error';
-                break;
-            }
-            setMessage(msg);
-            setErrorInfoModal(true);
-          });
-        // api.submitDisputedterm(user, ontology, newTerm, pickerStructure, decisionExperts, newDate)
-        //   .then((result) => {
-        //     if (result.data.error) {
-        //       setMessage(result.data.message);
-        //       setErrorInfoModal(true);
-        //     }
-        //     // console.log("no response");
-        //   })
-        //   .catch((err) => {
-        //     let msg = 'Connection error. Please check your network connection.';
-        //     switch (err.response.status) {
-        //       case 404:
-        //         msg = 'Server not found';
-        //         break;
-        //       case 403:
-        //         msg = 'You are forbidden.';
-        //         break;
-        //       case 401:
-        //         msg = 'You are unautherized';
-        //         break;
-        //     }
-        //     setMessage(msg);
-        //     setErrorInfoModal(true);
-        //   });
+    if (dropDown1 == true) {
+      if (checked == 'Quality') {
+        var newExist1 = '1';
+        var myType1 = '1';
+      } else if (checked == 'Structure') {
+        var newExist1 = '1';
+        var myType1 = '2';
       }
-    // } else if (dropDown2 == true) {
-    //   api
-    //     .submitDisputedterm(user, ontology, term1, pickerStructure, decisionExperts, date)
-    //     .then((result) => {
-    //       if (result.data) {
-    //         setMessage(result.data);
-    //         setErrorInfoModal(true);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       let msg = 'Connection error. Please check your network connection.';
-    //       switch (err.response.status) {
-    //         case 404:
-    //           msg = 'Server not found';
-    //           break;
-    //         case 403:
-    //           msg = 'You are forbidden.';
-    //           break;
-    //         case 401:
-    //           msg = 'You are unautherized';
-    //           break;
-    //       }
-    //       setMessage(msg);
-    //       setErrorInfoModal(true);
-    //     });
-    // }
+    } else if (dropDown2 == true) {
+      if (checked == 'Quality') {
+        var newExist1 = '2';
+        var myType1 = '1';
+      } else if (checked == 'Structure') {
+        var newExist1 = '2';
+        var myType1 = '2';
+      }
+    }
+
+    if (pickerStructure == '') {
+      setMessage('fields are empty');
+      setErrorInfoModal(true);
+    } else {
+      api
+        .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
+        .then((result) => {
+          api.getDisputed().then((result) => {
+            dispatch(set_disputed_options(result.data));
+            props.navigation.goBack();
+          });
+        })
+        .catch((err) => {
+          let msg = 'Connection error. Please check your network connection.';
+          switch (err.response.status) {
+            case 404:
+              msg = 'Server not found';
+              break;
+            case 403:
+              msg = 'You are forbidden.';
+              break;
+            case 401:
+              msg = 'You are unautherized';
+              break;
+            case 500:
+              msg = 'internal Server Error';
+              break;
+          }
+          setMessage(msg);
+          setErrorInfoModal(true);
+        });
+    }
   };
 
   const start = (inputName) => {
@@ -395,26 +351,33 @@ export default function Disputed(props) {
     Platform.OS === 'ios' ? Dimensions.get('window').height : require('react-native-extra-dimensions-android').get('REAL_WINDOW_HEIGHT');
 
   return (
-    <View style={{marginHorizontal: 20, marginVertical: 20, display: 'flex'}}>
-      <ScrollView style={{height: deviceHeight - 270}} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
+    // <View style={{marginHorizontal: 20, marginVertical: 20, display: 'flex'}}>
+      <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
+      
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
+          <NavHeader 
+            size={22} 
+            bold={true} 
+            navigation={props.navigation} 
+            onBackFunc={() => props.navigation.goBack()} 
+            headerText={disputed.term} 
+          />
         </View>
 
-        <View style={[Styles.rowText, {marginTop: 20}]}>
+        <View style={[Styles.rowText, {marginTop: 20,}]}>
           <Text>
-            <Text style={[Styles.rowDefinition, {color: '#544ea3'}]}>Definition: </Text>
+            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
             <Text style={Styles.TextMain}>{disputed.term}</Text>
           </Text>
         </View>
-        <View style={Styles.rowText}>
+        <View style={([Styles.rowText], {marginBottom: 10,width:'100%',paddingLeft:10 })}>
           <Text style={Styles.TextMain}>
-            <Text style={[Styles.rowDefinition, {color: '#544ea3'}]}>Deprecations reasons: </Text>
+            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
             <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
           </Text>
         </View>
 
-        <View style={Styles.rowText}>
+        <View style={([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width:'100%',paddingLeft:10})}>
           <Text style={Styles.TextMain}>
             <Text style={Styles.rowDefinition}>Dispute reason: </Text>
             <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
@@ -431,17 +394,132 @@ export default function Disputed(props) {
           <Text style={Styles.rowDefinition}>Disputed by </Text>
           <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
         </View>
+      
+        <View style={{ width:'100%', padding:10, marginTop: 0}}>
+          <Text
+            style={{
+              // margin: 15,
+              fontSize: 16,
+              padding: 5,
+              color: '#fff',
+              // fontWeight: 'bold',
+              backgroundColor: 'green'
+            }}>
+            What action should be taken to address this disputes?
+          </Text>
+        </View>
 
-        <Text
+        <View
           style={{
-            margin: 15,
-            fontSize: 20,
-            padding: 10,
-            color: 'red',
-            fontWeight: 'bold',
+            display: 'flex',
+            flexDirection: 'row',
+            // alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '90%',
+            paddingLeft:10,
+            marginTop: 10,
           }}>
-          What action should be taken to address the disputes?
-        </Text>
+          <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
+          <TouchableOpacity
+            onPress={() => {
+              handleChange('disable2');
+            }}>
+            {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
+          </TouchableOpacity>
+        </View>
+
+        {dropDown2 && (
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            {
+              <View style={{marginHorizontal: 30, width: '90%'}}>
+                {/* Another Existing Section */}
+                <TouchableOpacity
+                  onPress={() => {
+                    setChecked('Quality');
+                    //; dropdownRef.current.reset()
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton
+                    value="Quality"
+                    status={checked === 'Quality' ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setChecked('Quality');
+                      //; dropdownRef.current.reset()
+                    }}
+                  />
+                  <Text style={{margin: 8}}>Quantity</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setChecked('Structure');
+                    //; dropdownRef.current.reset()
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton
+                    value="Structure"
+                    style={{
+                      borderWidth: 2,
+                      color: 'black',
+                      backgroundColor: 'red',
+                      borderRadius: 2,
+                    }}
+                    status={checked === 'Structure' ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setChecked('Structure');
+                      //; dropdownRef.current.reset()
+                    }}
+                  />
+                  <Text style={{margin: 8}}>Structure</Text>
+                </TouchableOpacity>
+
+                <SearchableDropdown
+                  onItemSelect={(item) => {
+                    console.log('@LOGGG', item);
+                    let newArr = [...optionIndexes];
+                    newArr = [];
+                    setOptionIndexes(newArr);
+                    setPickerStructure(item.id);
+                    setCharacterDefaultIndex(item.id - 1);
+                  }}
+                  defaultIndex={2}
+                  containerStyle={{padding: 5, width: '96%'}}
+                  itemStyle={{
+                    padding: 10,
+                    marginTop: 2,
+                    backgroundColor: '#ddd',
+                    borderColor: '#bbb',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                  itemTextStyle={{color: '#222'}}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={checked === 'Quality' ? qualityItems : structureItems}
+                  defaultIndex={0}
+                  resetValue={false}
+                  textInputProps={{
+                    placeholder: 'Enter a quality name ',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                  }}
+                  listProps={{nestedScrollEnabled: true}}
+                />
+              </View>
+            }
+          </View>
+        )}
 
         {/* //First DropDown With Speech Recognition */}
         <View
@@ -451,6 +529,7 @@ export default function Disputed(props) {
             // alignItems: 'center',
             justifyContent: 'space-between',
             width: '90%',
+            paddingLeft:10,
             marginTop: 10,
           }}>
           <Text style={{fontSize: 16, width: '100%'}}>Add a new term to express the needed concept</Text>
@@ -558,7 +637,7 @@ export default function Disputed(props) {
                     defaultIndex={0}
                     resetValue={false}
                     textInputProps={{
-                      placeholder: 'AAAEnter a quality name ',
+                      placeholder: 'Enter a quality name ',
                       underlineColorAndroid: 'transparent',
                       style: {
                         padding: 12,
@@ -567,36 +646,10 @@ export default function Disputed(props) {
                         borderRadius: 5,
                       },
                     }}
+                    listProps={{nestedScrollEnabled: true}}
                   />
                   {/* </ScrollView> */}
                   {/* </ScrollView> */}
-
-                  {/* <SelectDropdown
-                                            ref={dropdownRef}
-                                            style={{ height: 50 }}
-                                            //data={qualityItems}
-                                            data={checked === 'Quality' ? qualityItems : structureItems}
-                                            onSelect={(selectedItem, index) => {
-                                                setPickerStructure(selectedItem.id)
-                                            }}
-                                            // defaultButtonText={"Select Quantity"}
-                                            defaultButtonText={checked === 'Quality' ? "Select Quantity" : "Select Structure"}
-                                            dropdownIconPosition="right"
-                                            dropdownBackgroundColor='#fff'
-                                            buttonStyle={Styles.dropdown1BtnStyle}
-                                            renderDropdownIcon={(isOpened) => {
-                                                return (
-                                                    <AntDesignIcon name={isOpened ? "caretup" : "caretdown"} size={20} />
-                                                );
-                                            }}
-                                            buttonTextAfterSelection={(selectedItem, index) => {
-                                                return selectedItem.name
-                                            }}
-                                            rowTextForSelection={(item, index) => {
-                                                return item.name
-                                            }}
-                                        >
-                                        </SelectDropdown> */}
                 </View>
 
                 {/* Second input and mic field */}
@@ -629,150 +682,11 @@ export default function Disputed(props) {
         )}
 
         {/* //Second DropDown with Speech Recognition */}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            // alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '90%',
-            marginTop: 10,
-          }}>
-          <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
-          <TouchableOpacity
-            onPress={() => {
-              handleChange('disable2');
-            }}>
-            {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
-          </TouchableOpacity>
-        </View>
-
-        {dropDown2 && (
-          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {
-              <View>
-                <View style={{marginHorizontal: 30, width: '90%'}}>
-                  {/* Another Existing Section */}
-                  <TouchableOpacity
-                    onPress={() => {
-                      setChecked('Quality');
-                      //; dropdownRef.current.reset()
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginLeft: 10,
-                    }}>
-                    <RadioButton
-                      value="Quality"
-                      status={checked === 'Quality' ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        setChecked('Quality');
-                        //; dropdownRef.current.reset()
-                      }}
-                    />
-                    <Text style={{margin: 8}}>Quantity</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setChecked('Structure');
-                      //; dropdownRef.current.reset()
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginLeft: 10,
-                    }}>
-                    <RadioButton
-                      value="Structure"
-                      style={{
-                        borderWidth: 2,
-                        color: 'black',
-                        backgroundColor: 'red',
-                        borderRadius: 2,
-                      }}
-                      status={checked === 'Structure' ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        setChecked('Structure');
-                        //; dropdownRef.current.reset()
-                      }}
-                    />
-                    <Text style={{margin: 8}}>Structure</Text>
-                  </TouchableOpacity>
-
-                  <SearchableDropdown
-                    onItemSelect={(item) => {
-                      console.log('@LOGGG', item);
-                      let newArr = [...optionIndexes];
-                      newArr = [];
-                      setOptionIndexes(newArr);
-                      setPickerStructure(item.id);
-                      setCharacterDefaultIndex(item.id - 1);
-                    }}
-                    defaultIndex={2}
-                    containerStyle={{padding: 5, width: '96%'}}
-                    itemStyle={{
-                      padding: 10,
-                      marginTop: 2,
-                      backgroundColor: '#ddd',
-                      borderColor: '#bbb',
-                      borderWidth: 1,
-                      borderRadius: 5,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{maxHeight: 140}}
-                    items={checked === 'Quality' ? qualityItems : structureItems}
-                    defaultIndex={0}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'AAAEnter a quality name ',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: 12,
-                        borderWidth: 1,
-                        borderColor: '#ccc',
-                        borderRadius: 5,
-                      },
-                    }}
-                  />
-                  {/* <SelectDropdown
-                                            ref={dropdownRef}
-                                            style={{ height: 50 }}
-                                            data={qualityItems}
-                                            data={checked === 'Quality' ? qualityItems : structureItems}
-                                            onSelect={(selectedItem, index) => {
-                                                // // console.log("name", selectedItem.name)
-
-                                                setPickerStructure(selectedItem.id)
-                                            }}
-                                            buttonTextAfterSelection={(selectedItem, index) => {
-                                                return selectedItem.name
-                                            }}
-                                            rowTextForSelection={(item, index) => {
-                                                return item.name
-                                            }}
-                                            // defaultButtonText={"Select Quantity"}
-                                            defaultButtonText={checked === 'Quality' ? "Select Quantity" : "Select Structure"}
-                                            dropdownIconPosition="right"
-                                            dropdownBackgroundColor='#fff'
-                                            buttonStyle={Styles.dropdown1BtnStyle}
-                                            renderDropdownIcon={(isOpened) => {
-                                                return (
-                                                    <AntDesignIcon name={isOpened ? "caretup" : "caretdown"} size={20} />
-                                                );
-                                            }}
-                                        >
-                                        </SelectDropdown> */}
-                </View>
-              </View>
-            }
-          </View>
-        )}
 
         {/* Comment and Submit Section */}
         <View style={{alignItems: 'center', marginTop: 10}}>
           <TextInput
-            placeholder="Enter a record comment"
+            placeholder="Enter or record comment"
             style={{
               backgroundColor: '#e8e8e8',
               width: '80%',
@@ -806,7 +720,8 @@ export default function Disputed(props) {
           }}
         />
       </ScrollView>
-    </View>
+      
+    // </View>
   );
 }
 
@@ -814,6 +729,8 @@ const Styles = StyleSheet.create({
   rowText: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    width:'100%',
+    paddingLeft:10,
   },
   rowDefinition: {
     fontWeight: 'bold',

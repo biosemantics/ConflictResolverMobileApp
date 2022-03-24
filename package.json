@@ -19,6 +19,8 @@
     "@react-native-picker/picker": "^2.4.0",
     "@react-native-voice/voice": "^3.2.3",
     "axios": "^0.19.2",
+    "babel-preset-react-native": "^4.0.1",
+    "events": "^3.3.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-eject": "^0.1.2",
@@ -45,13 +47,8 @@
     "@babel/core": "^7.9.0",
     "@babel/runtime": "^7.9.2",
     "@react-native-community/eslint-config": "^1.0.0",
-    "babel-jest": "^25.3.0",
     "eslint": "^6.8.0",
-    "jest": "^25.3.0",
     "metro-react-native-babel-preset": "^0.59.0",
     "react-test-renderer": "16.11.0"
-  },
-  "jest": {
-    "preset": "react-native"
   }
 }
