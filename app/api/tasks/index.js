@@ -9,7 +9,6 @@ export default api = {
     const keys = Object.keys(data);
     keys.map(key => formdata.append(key, data[key]));
     
-    console.log(formdata);
     let apiUrl = baseUrl + 'DailyOperations/GetCount.php';
     
     return axios.post(apiUrl, 
@@ -28,7 +27,6 @@ export default api = {
       formdata
     );
 
-    console.log(apiUrl, response)
     return response
   },
 
@@ -99,9 +97,7 @@ export default api = {
 
     const keys = Object.keys(data);  
     keys.map(key => formdata.append(key, data[key]));
-    console.log("hello ");
-    console.log(formdata);
-   // let apiUrl = myUrl + 'class';
+   
     let apiUrl = baseUrl + 'DailyOperations/ProcessDisputedDecision.php';
 
     return await axios.post(apiUrl, formdata );
@@ -109,7 +105,6 @@ export default api = {
 
   submitDisputedterm : async (user, ontology, term1, pickerStructure, decisionExperts, newDate) => {
     const data = {user, ontology, term:term1, classIRI:pickerStructure, decisionExperts, decisionDate:newDate};
-    console.log(data);
   
     let apiUrl = myUrl + 'nrsynonym';
 
@@ -150,7 +145,7 @@ export default api = {
   
   getAddTermOptions : async (termId, expertId) => {
     const data = {termId, expertId};
-    console.log(termId);
+  
     let apiUrl = baseUrl + 'DailyOperations/GetAddTermOptions.php';
 
     return await axios.get(apiUrl, {params: data});
@@ -175,11 +170,10 @@ export default api = {
   getDisputed: async (expertId) => {
 
     // let apiUrl = myUrl + 'dispute/all';
-   
+   const data = {expertId}
 
     let apiUrl = baseUrl + 'DailyOperations/GetDisputedDeprecations.php?expertId=' + expertId;
- 
-    return await axios.get(apiUrl ); 
+   return await axios.get(apiUrl); 
   },
   
   getQualityItem: async () => {
