@@ -44,6 +44,7 @@ export default function Disputed(props) {
   const [structureType2, setStructureType2] = useState('');
 
   const [pickerStructure, setPickerStructure] = useState('');
+  const [pickerStructure2, setPickerStructure2] = useState('');
 
   const [results, setResults] = useState([]);
   const [activebtn, setActivebtn] = useState(0);
@@ -74,7 +75,10 @@ export default function Disputed(props) {
   const [startRec, setStartRec] = useState(0);
 
   const [characterDefaultIndex, setCharacterDefaultIndex] = useState(0);
+  const [characterDefaultIndex2, setCharacterDefaultIndex2] = useState(0);
+  
   const [optionIndexes, setOptionIndexes] = useState([]);
+  const [optionIndexes2, setOptionIndexes2] = useState([]);
 
   let today = new Date();
   let date = today.getFullYear() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getDate();
@@ -84,6 +88,8 @@ export default function Disputed(props) {
   const [isSelected, setSelection] = useState(false);
 
   const [checked, setChecked] = React.useState('Quality');
+  const [superPart, setSuperPart] = useState([]);
+
 
   const dispatch = useDispatch();
 
@@ -103,9 +109,7 @@ export default function Disputed(props) {
     };
   }, []);
 
-
   useEffect(() => {
-
     if (results.length > 0) {
       var msg = results[0];
       if (activebtn == 1) {
@@ -352,7 +356,7 @@ export default function Disputed(props) {
   const deviceHeight =
     Platform.OS === 'ios' ? Dimensions.get('window').height : require('react-native-extra-dimensions-android').get('REAL_WINDOW_HEIGHT');
 
-    const customRef = useRef({});
+  const customRef = useRef({});
   return (
     // <View style={{marginHorizontal: 20, marginVertical: 20, display: 'flex'}}>
     <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
@@ -459,6 +463,7 @@ export default function Disputed(props) {
                   setChecked('Structure');
                   setPickerStructure('');
                   setCharacterDefaultIndex(0);
+                  console.log('quality');
                 }}
                 style={{
                   flexDirection: 'row',
@@ -478,15 +483,14 @@ export default function Disputed(props) {
                     setChecked('Structure');
                     setPickerStructure('');
                     setCharacterDefaultIndex(0);
-                    console.log("@COMING HERE")
-                  console.log("@LOGGG", customRef)
-                  // customRef.current?.input.clear()
+                    console.log('@COMING HERE');
                   }}
                 />
                 <Text style={{margin: 8}}>Structure</Text>
               </TouchableOpacity>
               {checked == 'Quality' ? (
                 <SearchableDropdown
+                  // ref={customRef}
                   multi={true}
                   onItemSelect={(item) => {
                     let newArr = [...optionIndexes];
@@ -499,9 +503,6 @@ export default function Disputed(props) {
                     setOptionIndexes(['']);
                     setPickerStructure('');
                     setCharacterDefaultIndex(0);
-
-                    // const items = this.state.selectedItems.filter((sitem) => sitem.id !== item.id);
-                    // this.setState({ selectedItems: items });
                   }}
                   defaultIndex={2}
                   containerStyle={{padding: 5, width: '96%'}}
@@ -533,15 +534,14 @@ export default function Disputed(props) {
                 />
               ) : (
                 <SearchableDropdown
-                ref={customRef}
+                  ref={customRef}
                   onItemSelect={(item) => {
                     console.log('@LOGGG', item);
-                    let newArr = [...optionIndexes];
+                    let newArr = [...optionIndexes2];
                     newArr = [];
-                    setOptionIndexes(newArr);
-                    setPickerStructure(item.id);
-                    setCharacterDefaultIndex(item.id - 1);
-
+                    setOptionIndexes2(newArr);
+                    setPickerStructure2(item.id);
+                    setCharacterDefaultIndex2(item.id - 1);
                   }}
                   onRemoveItem={(item) => {
                     setOptionIndexes([]);
@@ -654,6 +654,7 @@ export default function Disputed(props) {
                     setChecked('Structure');
                     setPickerStructure('');
                     setCharacterDefaultIndex(0);
+                    //resetValue
                     //; dropdownRef.current.reset()
                   }}
                   style={{
@@ -674,6 +675,7 @@ export default function Disputed(props) {
                       setChecked('Structure');
                       setPickerStructure('');
                       setCharacterDefaultIndex(0);
+                      //                      customRef = resetValue={true}
                       //; dropdownRef.current.reset()
                     }}
                   />
@@ -681,9 +683,10 @@ export default function Disputed(props) {
                 </TouchableOpacity>
                 {checked == 'Quality' ? (
                   <SearchableDropdown
-                  multi={true}
+                    multi={true}
+                    onTextChange={(pickerStructure) => console.log(pickerStructure)}
                     onItemSelect={(item) => {
-                      console.log('@LOGGG', item);
+                      console.log('@LOGGG111', item);
                       let newArr = [...optionIndexes];
                       newArr = [];
                       setOptionIndexes(newArr);
@@ -741,7 +744,7 @@ export default function Disputed(props) {
                     itemTextStyle={{color: '#222'}}
                     itemsContainerStyle={{maxHeight: 140}}
                     //items={checked === 'Quality' ? qualityItems : structureItems}
-                    items ={structureItems}
+                    items={structureItems}
                     defaultIndex={0}
                     resetValue={false}
                     textInputProps={{
@@ -786,12 +789,12 @@ export default function Disputed(props) {
       {/* //Second DropDown with Speech Recognition */}
 
       {/* Comment and Submit Section */}
-      <View style={{alignItems: 'center', marginTop: 10}}>
+      <View style={{marginHorizontal: 30, marginTop: 10, width: '90%'}}>
         <TextInput
           placeholder="Enter or record comment"
           style={{
             backgroundColor: '#e8e8e8',
-            width: '80%',
+            width: '95%',
             height: 40,
             borderRadius: 50,
             paddingLeft: 20,
