@@ -534,14 +534,14 @@ export default function Disputed(props) {
                 />
               ) : (
                 <SearchableDropdown
-                  ref={customRef}
+                 // ref={customRef}
                   onItemSelect={(item) => {
                     console.log('@LOGGG', item);
-                    let newArr = [...optionIndexes2];
+                    let newArr = [...optionIndexes];
                     newArr = [];
-                    setOptionIndexes2(newArr);
-                    setPickerStructure2(item.id);
-                    setCharacterDefaultIndex2(item.id - 1);
+                    setOptionIndexes(newArr);
+                    setPickerStructure(item.id);
+                    setCharacterDefaultIndex(item.id - 1);
                   }}
                   onRemoveItem={(item) => {
                     setOptionIndexes([]);
