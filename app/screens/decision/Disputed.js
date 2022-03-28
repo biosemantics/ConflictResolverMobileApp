@@ -663,14 +663,14 @@ export default function Disputed(props) {
                 </TouchableOpacity>
               </View>
               <View style={Styles.inputView}>
-              <KeyboardAvoidingView behavior="position">
+              
                 <TextInput
                   placeholder="Enter a definition"
                   style={Styles.inputBoxView}
                   value={newDefinition}
                   onChangeText={(text) => setNewDefinition(text)}
                 />
-                </KeyboardAvoidingView>
+               
                 <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
                   <FontAwesomeIcon icon={faMicrophone} size={25} />
                 </TouchableOpacity>
@@ -821,7 +821,7 @@ export default function Disputed(props) {
 
               {/* Second input and mic field */}
               <View style={Styles.inputView}>
-              <KeyboardAvoidingView behavior="position">
+           
                 <TextInput
                   placeholder="Enter an example Sentence"
                   style={Styles.inputBoxView}
@@ -829,7 +829,7 @@ export default function Disputed(props) {
                   // onChangeText={input3}
                   onChangeText={(text) => setinput3(text)}
                 />
-                </KeyboardAvoidingView>
+             
                 <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
                   <FontAwesomeIcon icon={faMicrophone} size={25} />
                 </TouchableOpacity>
