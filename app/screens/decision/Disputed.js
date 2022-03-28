@@ -11,20 +11,23 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleLeft, faL, faMicrophone} from '@fortawesome/free-solid-svg-icons';
-// import Voice from '@react-native-community/voice';
 import Voice from '@react-native-voice/voice';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from '../../components/NavHeader';
-// import { Picker } from '@react-native-community/picker';
 import {useDispatch, useSelector} from 'react-redux';
 import api from '../../api/tasks';
 import {set_quality_item, set_structure_item} from '../../store/actions';
 import PopupAlert from '../../components/PopupAlert';
+import WarningModal from '../../components/WarningModal';
+import PopupConfirm from '../../components/PopupConfirm';
+import PrimaryButton from '../../components/PrimaryButton';
+
 import {Checkbox, RadioButton} from 'react-native-paper';
-import SelectDropdown from 'react-native-select-dropdown';
+//import SelectDropdown from 'react-native-select-dropdown';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {set_disputed_options, set_tasks} from '../../store/actions';
 
@@ -69,6 +72,9 @@ export default function Disputed(props) {
   const [logicDefinition, setlogicDefinition] = useState('');
   const [decisionExperts, setDecisionExperts] = useState('');
 
+  const [warningModal, setWarningModal] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+
   const [ontology, setOntology] = useState('carex');
 
   const [partialResults, setPartialResults] = useState([]);
@@ -76,7 +82,7 @@ export default function Disputed(props) {
 
   const [characterDefaultIndex, setCharacterDefaultIndex] = useState(0);
   const [characterDefaultIndex2, setCharacterDefaultIndex2] = useState(0);
-  
+
   const [optionIndexes, setOptionIndexes] = useState([]);
   const [optionIndexes2, setOptionIndexes2] = useState([]);
 
@@ -89,7 +95,6 @@ export default function Disputed(props) {
 
   const [checked, setChecked] = React.useState('Quality');
   const [superPart, setSuperPart] = useState([]);
-
 
   const dispatch = useDispatch();
 
@@ -200,6 +205,69 @@ export default function Disputed(props) {
   };
 
   const submitData = () => {
+    // if (dropDown1 == true) {
+    //   if (checked == 'Quality') {
+    //     var newExist1 = '1';
+    //     var myType1 = '1';
+    //   } else if (checked == 'Structure') {
+    //     var newExist1 = '1';
+    //     var myType1 = '2';
+    //   }
+    // } else if (dropDown2 == true) {
+    //   if (checked == 'Quality') {
+    //     var newExist1 = '2';
+    //     var myType1 = '1';
+    //   } else if (checked == 'Structure') {
+    //     var newExist1 = '2';
+    //     var myType1 = '2';
+    //   }
+    // }
+
+    var canSubmit = 0;
+    if (pickerStructure != '') {
+      canSubmit = 1;
+    }
+    if (canSubmit === 0) {
+      setWarningModal(true);
+    } else {
+      setConfirmModal(true);
+    }
+
+    // if (pickerStructure == '') {
+    //   setMessage('fields are empty');
+    //   setErrorInfoModal(true);
+    // } else {
+    //   api
+    //     .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
+    //     .then((result) => {
+    //       api.getDisputed(auth.expertId).then((result) => {
+    //         dispatch(set_disputed_options(result.data));
+    //         props.navigation.goBack();
+    //       });
+    //     })
+    //     .catch((err) => {
+    //       let msg = 'Connection error. Please check your network connection.';
+    //       switch (err.response.status) {
+    //         case 404:
+    //           msg = 'Server not found';
+    //           break;
+    //         case 403:
+    //           msg = 'You are forbidden.';
+    //           break;
+    //         case 401:
+    //           msg = 'You are unautherized';
+    //           break;
+    //         case 500:
+    //           msg = 'internal Server Error';
+    //           break;
+    //       }
+    //       setMessage(msg);
+    //       setErrorInfoModal(true);
+    //     });
+    // }
+  };
+
+  const submitNewTerm = async () => {
     if (dropDown1 == true) {
       if (checked == 'Quality') {
         var newExist1 = '1';
@@ -217,39 +285,18 @@ export default function Disputed(props) {
         var myType1 = '2';
       }
     }
+    api
+      .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
+      .then((result) => {
+        if (result.data.error) {
 
-    if (pickerStructure == '') {
-      setMessage('fields are empty');
-      setErrorInfoModal(true);
-    } else {
-      api
-        .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
-        .then((result) => {
+        } else if (result.data.error == false) {
           api.getDisputed(auth.expertId).then((result) => {
             dispatch(set_disputed_options(result.data));
             props.navigation.goBack();
           });
-        })
-        .catch((err) => {
-          let msg = 'Connection error. Please check your network connection.';
-          switch (err.response.status) {
-            case 404:
-              msg = 'Server not found';
-              break;
-            case 403:
-              msg = 'You are forbidden.';
-              break;
-            case 401:
-              msg = 'You are unautherized';
-              break;
-            case 500:
-              msg = 'internal Server Error';
-              break;
-          }
-          setMessage(msg);
-          setErrorInfoModal(true);
-        });
-    }
+        }
+      });
   };
 
   const start = (inputName) => {
@@ -446,7 +493,7 @@ export default function Disputed(props) {
                   justifyContent: 'flex-start',
                   marginLeft: 10,
                 }}>
-                <RadioButton
+                <RadioButton.Android
                   value="Quality"
                   status={checked === 'Quality' ? 'checked' : 'unchecked'}
                   onPress={() => {
@@ -470,7 +517,7 @@ export default function Disputed(props) {
                   justifyContent: 'flex-start',
                   marginLeft: 10,
                 }}>
-                <RadioButton
+                <RadioButton.Android
                   value="Structure"
                   style={{
                     borderWidth: 2,
@@ -489,93 +536,97 @@ export default function Disputed(props) {
                 <Text style={{margin: 8}}>Structure</Text>
               </TouchableOpacity>
               {checked == 'Quality' ? (
-                <SearchableDropdown
-                  // ref={customRef}
-                  multi={true}
-                  onItemSelect={(item) => {
-                    let newArr = [...optionIndexes];
-                    newArr = [];
-                    setOptionIndexes(newArr);
-                    setPickerStructure(item.id);
-                    setCharacterDefaultIndex(item.id - 1);
-                  }}
-                  onRemoveItem={(item) => {
-                    setOptionIndexes(['']);
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                  }}
-                  defaultIndex={2}
-                  containerStyle={{padding: 5, width: '96%'}}
-                  itemStyle={{
-                    padding: 10,
-                    marginTop: 2,
-                    backgroundColor: '#ddd',
-                    borderColor: '#bbb',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{maxHeight: 140}}
-                  //items={checked === 'Quality' ? qualityItems : structureItems}
-                  items={qualityItems}
-                  defaultIndex={0}
-                  resetValue={false}
-                  textInputProps={{
-                    placeholder: 'Enter a quality name ',
-                    underlineColorAndroid: 'transparent',
-                    style: {
-                      padding: 12,
+                <KeyboardAvoidingView behavior="position">
+                  <SearchableDropdown
+                    // ref={customRef}
+                    multi={true}
+                    onItemSelect={(item) => {
+                      let newArr = [...optionIndexes];
+                      newArr = [];
+                      setOptionIndexes(newArr);
+                      setPickerStructure(item.id);
+                      setCharacterDefaultIndex(item.id - 1);
+                    }}
+                    onRemoveItem={(item) => {
+                      setOptionIndexes(['']);
+                      setPickerStructure('');
+                      setCharacterDefaultIndex(0);
+                    }}
+                    defaultIndex={2}
+                    containerStyle={{padding: 5, width: '96%'}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
                       borderWidth: 1,
-                      borderColor: '#ccc',
                       borderRadius: 5,
-                    },
-                  }}
-                  listProps={{nestedScrollEnabled: true}}
-                />
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 140}}
+                    //items={checked === 'Quality' ? qualityItems : structureItems}
+                    items={qualityItems}
+                    defaultIndex={0}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Enter a quality name ',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                      },
+                    }}
+                    listProps={{nestedScrollEnabled: true}}
+                  />
+                </KeyboardAvoidingView>
               ) : (
-                <SearchableDropdown
-                 // ref={customRef}
-                  onItemSelect={(item) => {
-                    console.log('@LOGGG', item);
-                    let newArr = [...optionIndexes];
-                    newArr = [];
-                    setOptionIndexes(newArr);
-                    setPickerStructure(item.id);
-                    setCharacterDefaultIndex(item.id - 1);
-                  }}
-                  onRemoveItem={(item) => {
-                    setOptionIndexes([]);
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                  }}
-                  defaultIndex={2}
-                  containerStyle={{padding: 5, width: '96%'}}
-                  itemStyle={{
-                    padding: 10,
-                    marginTop: 2,
-                    backgroundColor: '#ddd',
-                    borderColor: '#bbb',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{maxHeight: 140}}
-                  //items={checked === 'Quality' ? qualityItems : structureItems}
-                  items={structureItems}
-                  defaultIndex={2}
-                  resetValue={false}
-                  textInputProps={{
-                    placeholder: 'Enter a Structure name ',
-                    underlineColorAndroid: 'transparent',
-                    style: {
-                      padding: 12,
+                <KeyboardAvoidingView behavior="position">
+                  <SearchableDropdown
+                    // ref={customRef}
+                    onItemSelect={(item) => {
+                      console.log('@LOGGG', item);
+                      let newArr = [...optionIndexes];
+                      newArr = [];
+                      setOptionIndexes(newArr);
+                      setPickerStructure(item.id);
+                      setCharacterDefaultIndex(item.id - 1);
+                    }}
+                    onRemoveItem={(item) => {
+                      setOptionIndexes([]);
+                      setPickerStructure('');
+                      setCharacterDefaultIndex(0);
+                    }}
+                    defaultIndex={2}
+                    containerStyle={{padding: 5, width: '96%'}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
                       borderWidth: 1,
-                      borderColor: '#ccc',
                       borderRadius: 5,
-                    },
-                  }}
-                  listProps={{nestedScrollEnabled: true}}
-                />
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 140}}
+                    //items={checked === 'Quality' ? qualityItems : structureItems}
+                    items={structureItems}
+                    defaultIndex={2}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Enter a Structure name ',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                      },
+                    }}
+                    listProps={{nestedScrollEnabled: true}}
+                  />
+                </KeyboardAvoidingView>
               )}
             </View>
           }
@@ -612,12 +663,14 @@ export default function Disputed(props) {
                 </TouchableOpacity>
               </View>
               <View style={Styles.inputView}>
+              <KeyboardAvoidingView behavior="position">
                 <TextInput
                   placeholder="Enter a definition"
                   style={Styles.inputBoxView}
                   value={newDefinition}
                   onChangeText={(text) => setNewDefinition(text)}
                 />
+                </KeyboardAvoidingView>
                 <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
                   <FontAwesomeIcon icon={faMicrophone} size={25} />
                 </TouchableOpacity>
@@ -636,7 +689,7 @@ export default function Disputed(props) {
                     justifyContent: 'flex-start',
                     marginLeft: 10,
                   }}>
-                  <RadioButton
+                  <RadioButton.Android
                     value="Quality"
                     status={checked === 'Quality' ? 'checked' : 'unchecked'}
                     onPress={() => {
@@ -662,7 +715,7 @@ export default function Disputed(props) {
                     justifyContent: 'flex-start',
                     marginLeft: 10,
                   }}>
-                  <RadioButton
+                  <RadioButton.Android
                     value="Structure"
                     style={{
                       borderWidth: 2,
@@ -682,88 +735,93 @@ export default function Disputed(props) {
                   <Text style={{margin: 8}}>Structure</Text>
                 </TouchableOpacity>
                 {checked == 'Quality' ? (
-                  <SearchableDropdown
-                    multi={true}
-                    onTextChange={(pickerStructure) => console.log(pickerStructure)}
-                    onItemSelect={(item) => {
-                      console.log('@LOGGG111', item);
-                      let newArr = [...optionIndexes];
-                      newArr = [];
-                      setOptionIndexes(newArr);
-                      setPickerStructure(item.id);
-                      setCharacterDefaultIndex(item.id - 1);
-                    }}
-                    defaultIndex={2}
-                    containerStyle={{padding: 5, width: '96%'}}
-                    itemStyle={{
-                      padding: 10,
-                      marginTop: 2,
-                      backgroundColor: '#ddd',
-                      borderColor: '#bbb',
-                      borderWidth: 1,
-                      borderRadius: 5,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{maxHeight: 140}}
-                    // items={checked === 'Quality' ? qualityItems : structureItems}
-                    items={qualityItems}
-                    defaultIndex={0}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'Enter a quality name ',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: 12,
+                  <KeyboardAvoidingView behavior="position">
+                    <SearchableDropdown
+                      multi={true}
+                      onTextChange={(pickerStructure) => console.log(pickerStructure)}
+                      onItemSelect={(item) => {
+                        console.log('@LOGGG111', item);
+                        let newArr = [...optionIndexes];
+                        newArr = [];
+                        setOptionIndexes(newArr);
+                        setPickerStructure(item.id);
+                        setCharacterDefaultIndex(item.id - 1);
+                      }}
+                      defaultIndex={2}
+                      containerStyle={{padding: 5, width: '96%'}}
+                      itemStyle={{
+                        padding: 10,
+                        marginTop: 2,
+                        backgroundColor: '#ddd',
+                        borderColor: '#bbb',
                         borderWidth: 1,
-                        borderColor: '#ccc',
                         borderRadius: 5,
-                      },
-                    }}
-                    listProps={{nestedScrollEnabled: true}}
-                  />
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{maxHeight: 140}}
+                      // items={checked === 'Quality' ? qualityItems : structureItems}
+                      items={qualityItems}
+                      defaultIndex={0}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: 'Enter a quality name ',
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: 12,
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                        },
+                      }}
+                      listProps={{nestedScrollEnabled: true}}
+                    />
+                  </KeyboardAvoidingView>
                 ) : (
-                  <SearchableDropdown
-                    onItemSelect={(item) => {
-                      console.log('@LOGGG', item);
-                      let newArr = [...optionIndexes];
-                      newArr = [];
-                      setOptionIndexes(newArr);
-                      setPickerStructure(item.id);
-                      setCharacterDefaultIndex(item.id - 1);
-                    }}
-                    defaultIndex={2}
-                    containerStyle={{padding: 5, width: '96%'}}
-                    itemStyle={{
-                      padding: 10,
-                      marginTop: 2,
-                      backgroundColor: '#ddd',
-                      borderColor: '#bbb',
-                      borderWidth: 1,
-                      borderRadius: 5,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{maxHeight: 140}}
-                    //items={checked === 'Quality' ? qualityItems : structureItems}
-                    items={structureItems}
-                    defaultIndex={0}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'Enter a Structure name ',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: 12,
+                  <KeyboardAvoidingView behavior="position">
+                    <SearchableDropdown
+                      onItemSelect={(item) => {
+                        console.log('@LOGGG', item);
+                        let newArr = [...optionIndexes];
+                        newArr = [];
+                        setOptionIndexes(newArr);
+                        setPickerStructure(item.id);
+                        setCharacterDefaultIndex(item.id - 1);
+                      }}
+                      defaultIndex={2}
+                      containerStyle={{padding: 5, width: '96%'}}
+                      itemStyle={{
+                        padding: 10,
+                        marginTop: 2,
+                        backgroundColor: '#ddd',
+                        borderColor: '#bbb',
                         borderWidth: 1,
-                        borderColor: '#ccc',
                         borderRadius: 5,
-                      },
-                    }}
-                    listProps={{nestedScrollEnabled: true}}
-                  />
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{maxHeight: 140}}
+                      //items={checked === 'Quality' ? qualityItems : structureItems}
+                      items={structureItems}
+                      defaultIndex={0}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: 'Enter a Structure name ',
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: 12,
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                        },
+                      }}
+                      listProps={{nestedScrollEnabled: true}}
+                    />
+                  </KeyboardAvoidingView>
                 )}
               </View>
 
               {/* Second input and mic field */}
               <View style={Styles.inputView}>
+              <KeyboardAvoidingView behavior="position">
                 <TextInput
                   placeholder="Enter an example Sentence"
                   style={Styles.inputBoxView}
@@ -771,6 +829,7 @@ export default function Disputed(props) {
                   // onChangeText={input3}
                   onChangeText={(text) => setinput3(text)}
                 />
+                </KeyboardAvoidingView>
                 <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
                   <FontAwesomeIcon icon={faMicrophone} size={25} />
                 </TouchableOpacity>
@@ -811,10 +870,6 @@ export default function Disputed(props) {
           marginRight={20}
           marginBottom={5}
         />
-
-        {/* <TouchableOpacity style={Styles.button} onPress={() => submitData()}>
-            <Text style={{color: 'white', fontSize: 20}}>Submit</Text>
-          </TouchableOpacity> */}
       </View>
       <PopupAlert
         popupTitle="Message"
@@ -822,6 +877,31 @@ export default function Disputed(props) {
         isVisible={errorInfoModal}
         handleOK={() => {
           setErrorInfoModal(false);
+        }}
+      />
+      <WarningModal
+        popupTitle="Warning"
+        message={'You need to select at least one category.'}
+        isVisible={warningModal}
+        handleYes={() => {
+          setWarningModal(false);
+        }}
+        handleCancel={() => {
+          setWarningModal(false);
+        }}
+      />
+
+      <PopupConfirm
+        popupTitle="Are you sure to submit?"
+        // stateMessage={stateMessage}
+        message={'You will not be able to change this decision after submit.'}
+        isVisible={confirmModal}
+        handleYes={() => {
+          setConfirmModal(false);
+          submitNewTerm();
+        }}
+        handleCancel={() => {
+          setConfirmModal(false);
         }}
       />
     </ScrollView>

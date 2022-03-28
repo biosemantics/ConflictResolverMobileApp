@@ -11,6 +11,7 @@ import DeclineModal from '../../components/DeclineModal';
 import WarningModal from '../../components/WarningModal';
 import PopupConfirm from '../../components/PopupConfirm';
 import CommentsModal from '../../components/CommentsModal';
+import PrimaryButton from '../../components/PrimaryButton';
 
 import api from '../../api/tasks';
 import { set_options } from '../../store/actions'

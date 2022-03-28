@@ -8,7 +8,7 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import api from '../api/tasks';
 import PopupConfirm from './PopupConfirm';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default DeclineModal = (props) => {

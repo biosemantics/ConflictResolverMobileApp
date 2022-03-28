@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput} from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { Checkbox } from 'react-native-paper';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -24,7 +24,7 @@ export default Approve = (props) => {
     ((new Array(task.sCount)).fill(null)).map((it, index) => {
         [selection[index], setSelection[index]] = useState(false);
     })
-
+  
     const [newDefinition, setNewDefinition] = useState(null);
     const [confirmModal, setConfirmModal] = useState(false);
     const [declineModal, setDeclineModal] = useState(false);
@@ -33,6 +33,7 @@ export default Approve = (props) => {
     const [comment, setComment] = useState("");
     const [stateMessage, setStateMessage] = useState('');
     const [commentsModal, setCommentsModal] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     const auth = useSelector(state => state.main.auth);
     const options = useSelector(state => state.main.data.approveOptions);
@@ -263,18 +264,20 @@ export default Approve = (props) => {
                     options.sentence.map((item, index) => (
                         <View key={'sentence'+index} style={{flexDirection: 'row', alignItems: 'center'}}>
                             {selection[index] ?
-                                <CheckBox
-                                    value = {true}
-                                    onValueChange = {(val)=>{
+                                <Checkbox.Android
+                                    status={checked ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        setChecked(!checked),
                                         setSelection[index](false);
                                     }}
-                                />
+                                    />
                                 :
-                                <CheckBox
-                                    value = {false}
-                                    onValueChange = {(val)=>{
-                                        setSelection[index](true);
-                                    }}
+                                <Checkbox.Android
+                                status={checked ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setChecked(!checked),
+                                    setSelection[index](true);
+                                }}
                                 />
                             }
                             <Text style={{marginRight: 10, paddingRight: 10}}>{index+1}. "{item.sentence}"</Text>

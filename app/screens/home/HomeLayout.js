@@ -64,7 +64,7 @@ export default HomeLayout = (props) => {
                 dispatch(set_tasks(result.data.task_data));
                 setTabID(id);
             });
-            api.getDisputed().then(result=>{
+            api.getDisputed(auth.expertId).then(result=>{
                 dispatch(set_disputed_options(result.data));
                 setTabID(id);
             });
@@ -83,7 +83,7 @@ export default HomeLayout = (props) => {
         api.getTasks(auth.expertId).then(result=>{
             dispatch(set_tasks(result.data.task_data));
         });
-        api.getDisputed().then(result=>{
+        api.getDisputed(auth.expertId).then(result=>{
             dispatch(set_disputed_options(result.data));
         
         });

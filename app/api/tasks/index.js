@@ -200,7 +200,7 @@ export default api = {
   getQuality : async () => {
     // let apiUrl = 'http://shark.sbs.arizona.edu:8080/carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=quality';
 
-    return await axios.get(apiUrl);
+    // return await axios.get(apiUrl);
    
   },
 
@@ -208,7 +208,7 @@ export default api = {
     
     // let apiUrl = 'http://shark.sbs.arizona.edu:8080/carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=anatomical%20structure';
     
-    return await axios.get(apiUrl);
+    // return await axios.get(apiUrl);
 
   },
 }
