@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -25,6 +25,7 @@ export default ExactTerm = (props) => {
     const [reason, setReason] = useState("");
     const [placeholder, setPlaceholder] = useState("");
     const [commentsModal, setCommentsModal] = useState(false);
+    const [comment, setComment] = useState('');
 
     const auth = useSelector(state => state.main.auth);
     const options = useSelector(state => state.main.data.exactTermOptions);
@@ -135,6 +136,7 @@ export default ExactTerm = (props) => {
     return (
         <>
         <ScrollView contentContainerStyle={{backgroundColor: "#fff", flexDirection: 'column', justifyContent: 'space-between'}} keyboardShouldPersistTaps="handled">
+        <KeyboardAvoidingView behavior="position">
             <NavHeader
                 headerText={task.term}
                 size={22}
@@ -194,6 +196,16 @@ export default ExactTerm = (props) => {
                         }
                     </View>
                 </TouchableOpacity>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="record or enter a comment"
+                        style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                        onChangeText={(txt) => {
+                        setComment(txt);
+                        }}>
+                        {comment}
+                    </TextInput>
+                </View>
                 <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                     <TouchableOpacity onPress={() => setCommentsModal(true)}>
                         <Text style={{padding: 3}}>Other's comments</Text>
@@ -249,7 +261,7 @@ export default ExactTerm = (props) => {
                 }}
                 handleCancel={()=>{setCommentsModal(false)}}
             />
-
+        </KeyboardAvoidingView>
         </ScrollView>
         </>
     )

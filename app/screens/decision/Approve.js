@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -159,6 +159,7 @@ export default Approve = (props) => {
     return (
         <>
         <ScrollView contentContainerStyle={{backgroundColor: "#fff", flexDirection: 'column', justifyContent: 'space-between'}}>
+        <KeyboardAvoidingView behavior="position">
             <NavHeader
                 headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
                 size={22}
@@ -249,7 +250,7 @@ export default Approve = (props) => {
                         </Text>
                     }
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Enter or record new definition" style={{color: '#003458', width: '75%', marginLeft: 5}} onChangeText={txt => {setNewDefinition(txt)}}>{newDefinition}</TextInput>
+                        <TextInput placeholder="Enter or record new definition" style={{color: '#003458', width: '75%', marginLeft: 5, height:50}} onChangeText={txt => {setNewDefinition(txt)}}>{newDefinition}</TextInput>
         
                         <TouchableOpacity style={{...styles.button, backgroundColor: '#013458'}} onPress={() => {addDefinition()}}>
                             <FontAwesomeIcon name="plus" size={20} color={"white"}/>
@@ -286,7 +287,7 @@ export default Approve = (props) => {
                 }
                 <View>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Enter or record comment" style={{color: '#003458', width: '100%', paddingLeft:10, paddingRight:10, marginLeft: 5}} onChangeText={txt => {setComment(txt)}}>{comment}</TextInput>
+                        <TextInput placeholder="Enter or record comment" style={{color: '#003458', width: '100%', paddingLeft:10, paddingRight:10, marginLeft: 5, height:50 }} onChangeText={txt => {setComment(txt)}}>{comment}</TextInput>
                     </View>
                     <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                     <TouchableOpacity onPress={() => setCommentsModal(true)}>
@@ -294,6 +295,7 @@ export default Approve = (props) => {
                     </TouchableOpacity>
                     </View>
                 </View>
+                
             </ScrollView>
 
 
@@ -357,7 +359,7 @@ export default Approve = (props) => {
                 }}
                 handleCancel={()=>{setCommentsModal(false)}}
             />
-
+        </KeyboardAvoidingView>
         </ScrollView>
         
         <DeclineModal

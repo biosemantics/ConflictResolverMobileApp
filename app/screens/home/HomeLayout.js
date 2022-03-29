@@ -28,6 +28,7 @@ const getStructure = (data, structures, index) => {
     }
     return index;
 }
+  
 const getQuality = (data, qualities, index) => {
     qualities.push({
         id: index,

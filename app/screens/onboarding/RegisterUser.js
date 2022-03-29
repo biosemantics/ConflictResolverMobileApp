@@ -81,7 +81,7 @@ export default RegisterUser = ( props ) => {
   return (
     <ScrollView style={{backgroundColor: '#FFFFFF'}}>
       <NavHeader
-          headerText={'Resiger User'}
+          headerText={'Register User'}
           size={22}
           bold={true}
           letterSpacing={1.6}
@@ -97,7 +97,7 @@ export default RegisterUser = ( props ) => {
           <FormField placeholder={'Enter Last name'} value={lastname} onChange={handleLastname}/>
         </View>
         <PrimaryButton 
-          buttonText={'Resiger User'} 
+          buttonText={'Register User'} 
           onPressFunc={onResigerUser} 
           marginLeft={20} 
           marginRight={20} 

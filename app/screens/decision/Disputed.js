@@ -98,7 +98,10 @@ export default function Disputed(props) {
 
   const dispatch = useDispatch();
 
-  // // console.log("hsddsdsdsdsssdsey" + superClass);
+  const quailtyData = useSelector(state => state.main.metaData.quality);
+  const structureData = useSelector(state => state.main.metaData.structure);
+  
+
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -137,92 +140,72 @@ export default function Disputed(props) {
       }
       setResults([]);
     }
-    api.getQualityItem().then((result) => {
-      let qualityItem = [];
-      qualityItem.push({
-        id: result.data.data.details[0].IRI,
-        name: result.data.text,
-      });
-      qualityItem = getQualityItem(result.data.children, qualityItem);
-      // if (qualityItem.length > 0) {
-      //     setQualityItems(qualityItem)
-      // }
+    // api.getQualityItem().then((result) => {
+    //   let qualityItem = [];
+    //   qualityItem.push({
+    //     id: result.data.data.details[0].IRI,
+    //     name: result.data.text,
+    //   });
+    //   qualityItem = getQualityItem(result.data.children, qualityItem);
 
-      dispatch(set_quality_item(qualityItem));
-    });
-    api.getStructureItem().then((result) => {
-      let structureItem = [];
-      structureItem.push({
-        id: result.data.data.details[0].IRI,
-        name: result.data.text,
-      });
-      structureItem = getStructureItem(result.data.children, structureItem);
-      // if (structureItem.length > 0) {
-      //     setStructureItems(structureItem)
-      // }
-      dispatch(set_structure_item(structureItem));
-    });
+    //   dispatch(set_quality_item(qualityItem));
+    // });
+    // api.getStructureItem().then((result) => {
+    //   let structureItem = [];
+    //   structureItem.push({
+    //     id: result.data.data.details[0].IRI,
+    //     name: result.data.text,
+    //   });
+    //   structureItem = getStructureItem(result.data.children, structureItem);
+    //   // if (structureItem.length > 0) {
+    //   //     setStructureItems(structureItem)
+    //   // }
+    //   dispatch(set_structure_item(structureItem));
+    // });
   }, [activebtn, results]);
 
-  const getQualityItem = (data, qualityItem) => {
-    if (data) {
-      data.forEach((element) => {
-        if (element.children) {
-          getQualityItem(element.children, qualityItem);
-        } else {
-          qualityItem.push({
-            id: element.data.details[0].IRI,
-            name: element.text,
-          });
-        }
-      });
-    }
-    if (qualityItem.length > 0) {
-      setQualityItems(qualityItem);
-    }
-    //return qualityItem;
-    return qualityItems;
-  };
+  // const getQualityItem = (data, qualityItem) => {
+  //   if (data) {
+  //     data.forEach((element) => {
+  //       if (element.children) {
+  //         getQualityItem(element.children, qualityItem);
+  //       } else {
+  //         qualityItem.push({
+  //           id: element.data.details[0].IRI,
+  //           name: element.text,
+  //         });
+  //       }
+  //     });
+  //   }
+  //   if (qualityItem.length > 0) {
+  //     setQualityItems(qualityItem);
+  //   }
+  //   //return qualityItem;
+  //   return qualityItems;
+  // };
 
-  const getStructureItem = (data, structureItem) => {
-    if (data) {
-      data.forEach((element) => {
-        if (element.children) {
-          getStructureItem(element.children, structureItem);
-        } else {
-          structureItem.push({
-            id: element.data.details[0].IRI,
-            name: element.text,
-          });
-        }
-      });
-    }
-    if (structureItem.length > 0) {
-      setStructureItems(structureItem);
-    }
-    return structureItems;
-    // return structureItem;
-  };
+  // const getStructureItem = (data, structureItem) => {
+  //   if (data) {
+  //     data.forEach((element) => {
+  //       if (element.children) {
+  //         getStructureItem(element.children, structureItem);
+  //       } else {
+  //         structureItem.push({
+  //           id: element.data.details[0].IRI,
+  //           name: element.text,
+  //         });
+  //       }
+  //     });
+  //   }
+  //   if (structureItem.length > 0) {
+  //     setStructureItems(structureItem);
+  //   }
+  //   return structureItems;
+  //   // return structureItem;
+  // };
 
   const submitData = () => {
-    // if (dropDown1 == true) {
-    //   if (checked == 'Quality') {
-    //     var newExist1 = '1';
-    //     var myType1 = '1';
-    //   } else if (checked == 'Structure') {
-    //     var newExist1 = '1';
-    //     var myType1 = '2';
-    //   }
-    // } else if (dropDown2 == true) {
-    //   if (checked == 'Quality') {
-    //     var newExist1 = '2';
-    //     var myType1 = '1';
-    //   } else if (checked == 'Structure') {
-    //     var newExist1 = '2';
-    //     var myType1 = '2';
-    //   }
-    // }
-
+ 
     var canSubmit = 0;
     if (pickerStructure != '') {
       canSubmit = 1;
@@ -233,38 +216,6 @@ export default function Disputed(props) {
       setConfirmModal(true);
     }
 
-    // if (pickerStructure == '') {
-    //   setMessage('fields are empty');
-    //   setErrorInfoModal(true);
-    // } else {
-    //   api
-    //     .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
-    //     .then((result) => {
-    //       api.getDisputed(auth.expertId).then((result) => {
-    //         dispatch(set_disputed_options(result.data));
-    //         props.navigation.goBack();
-    //       });
-    //     })
-    //     .catch((err) => {
-    //       let msg = 'Connection error. Please check your network connection.';
-    //       switch (err.response.status) {
-    //         case 404:
-    //           msg = 'Server not found';
-    //           break;
-    //         case 403:
-    //           msg = 'You are forbidden.';
-    //           break;
-    //         case 401:
-    //           msg = 'You are unautherized';
-    //           break;
-    //         case 500:
-    //           msg = 'internal Server Error';
-    //           break;
-    //       }
-    //       setMessage(msg);
-    //       setErrorInfoModal(true);
-    //     });
-    // }
   };
 
   const submitNewTerm = async () => {
@@ -291,6 +242,7 @@ export default function Disputed(props) {
         if (result.data.error) {
 
         } else if (result.data.error == false) {
+          setWarningModal(true);
           api.getDisputed(auth.expertId).then((result) => {
             dispatch(set_disputed_options(result.data));
             props.navigation.goBack();
@@ -300,12 +252,15 @@ export default function Disputed(props) {
   };
 
   const start = (inputName) => {
+   
     setActivebtn(inputName);
+
     startRecognizing(inputName);
   };
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
+
 
   const onSpeechEnd = (e) => {
     //Invoked when SpeechRecognizer stops recognition
@@ -401,13 +356,14 @@ export default function Disputed(props) {
   const dropdownRef = useRef();
   const deviceWidth = Dimensions.get('window').width;
   const deviceHeight =
-    Platform.OS === 'ios' ? Dimensions.get('window').height : require('react-native-extra-dimensions-android').get('REAL_WINDOW_HEIGHT');
+    Platform.OS === 'ios' ? Dimensions.get('window').height + 70 : require('react-native-extra-dimensions-android').get('REAL_WINDOW_HEIGHT');
 
   const customRef = useRef({});
   return (
     // <View style={{marginHorizontal: 20, marginVertical: 20, display: 'flex'}}>
-    <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+    <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" >
+      <KeyboardAvoidingView behavior="position">
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
       </View>
 
@@ -481,13 +437,8 @@ export default function Disputed(props) {
           {
             <View style={{marginHorizontal: 30, width: '90%'}}>
               {/* Another Existing Section */}
-              <TouchableOpacity
-                onPress={() => {
-                  setChecked('Quality');
-                  setPickerStructure('');
-                  setCharacterDefaultIndex(0);
-                  // ; dropdownRef.current.reset()
-                }}
+              <View
+                
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'flex-start',
@@ -504,14 +455,9 @@ export default function Disputed(props) {
                   }}
                 />
                 <Text style={{margin: 8}}>Quality</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setChecked('Structure');
-                  setPickerStructure('');
-                  setCharacterDefaultIndex(0);
-                  console.log('quality');
-                }}
+              </View>
+              <View
+                
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'flex-start',
@@ -534,7 +480,7 @@ export default function Disputed(props) {
                   }}
                 />
                 <Text style={{margin: 8}}>Structure</Text>
-              </TouchableOpacity>
+              </View>
               {checked == 'Quality' ? (
                 <KeyboardAvoidingView behavior="position">
                   <SearchableDropdown
@@ -564,8 +510,7 @@ export default function Disputed(props) {
                     }}
                     itemTextStyle={{color: '#222'}}
                     itemsContainerStyle={{maxHeight: 140}}
-                    //items={checked === 'Quality' ? qualityItems : structureItems}
-                    items={qualityItems}
+                    items={quailtyData}
                     defaultIndex={0}
                     resetValue={false}
                     textInputProps={{
@@ -582,7 +527,7 @@ export default function Disputed(props) {
                   />
                 </KeyboardAvoidingView>
               ) : (
-                <KeyboardAvoidingView behavior="position">
+                
                   <SearchableDropdown
                     // ref={customRef}
                     onItemSelect={(item) => {
@@ -610,8 +555,7 @@ export default function Disputed(props) {
                     }}
                     itemTextStyle={{color: '#222'}}
                     itemsContainerStyle={{maxHeight: 140}}
-                    //items={checked === 'Quality' ? qualityItems : structureItems}
-                    items={structureItems}
+                    items={structureData}
                     defaultIndex={2}
                     resetValue={false}
                     textInputProps={{
@@ -626,7 +570,7 @@ export default function Disputed(props) {
                     }}
                     listProps={{nestedScrollEnabled: true}}
                   />
-                </KeyboardAvoidingView>
+                
               )}
             </View>
           }
@@ -677,13 +621,8 @@ export default function Disputed(props) {
               </View>
               {/* //Existing value Section */}
               <View style={{marginHorizontal: 30, width: '90%'}}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setChecked('Quality');
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                    //; dropdownRef.current.reset()
-                  }}
+                <View
+                  
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
@@ -700,16 +639,10 @@ export default function Disputed(props) {
                     }}
                   />
                   <Text style={{margin: 8}}>Quality</Text>
-                </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    setChecked('Structure');
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                    //resetValue
-                    //; dropdownRef.current.reset()
-                  }}
+                <View
+                  
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
@@ -733,9 +666,9 @@ export default function Disputed(props) {
                     }}
                   />
                   <Text style={{margin: 8}}>Structure</Text>
-                </TouchableOpacity>
+                </View>
                 {checked == 'Quality' ? (
-                  <KeyboardAvoidingView behavior="position">
+                 
                     <SearchableDropdown
                       multi={true}
                       onTextChange={(pickerStructure) => console.log(pickerStructure)}
@@ -759,8 +692,7 @@ export default function Disputed(props) {
                       }}
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
-                      // items={checked === 'Quality' ? qualityItems : structureItems}
-                      items={qualityItems}
+                      items={quailtyData}
                       defaultIndex={0}
                       resetValue={false}
                       textInputProps={{
@@ -775,9 +707,9 @@ export default function Disputed(props) {
                       }}
                       listProps={{nestedScrollEnabled: true}}
                     />
-                  </KeyboardAvoidingView>
+                 
                 ) : (
-                  <KeyboardAvoidingView behavior="position">
+                  
                     <SearchableDropdown
                       onItemSelect={(item) => {
                         console.log('@LOGGG', item);
@@ -799,8 +731,7 @@ export default function Disputed(props) {
                       }}
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
-                      //items={checked === 'Quality' ? qualityItems : structureItems}
-                      items={structureItems}
+                      items={structureData}
                       defaultIndex={0}
                       resetValue={false}
                       textInputProps={{
@@ -815,13 +746,12 @@ export default function Disputed(props) {
                       }}
                       listProps={{nestedScrollEnabled: true}}
                     />
-                  </KeyboardAvoidingView>
+                 
                 )}
               </View>
 
               {/* Second input and mic field */}
               <View style={Styles.inputView}>
-           
                 <TextInput
                   placeholder="Enter an example Sentence"
                   style={Styles.inputBoxView}
@@ -879,6 +809,14 @@ export default function Disputed(props) {
           setErrorInfoModal(false);
         }}
       />
+      <PopupAlert
+        popupTitle="Message"
+        message={'Submitted successfully'}
+        isVisible={warningModal}
+        handleOK={() => {
+          setNewWarning(false);
+        }}
+      />
       <WarningModal
         popupTitle="Warning"
         message={'You need to select at least one category.'}
@@ -904,6 +842,7 @@ export default function Disputed(props) {
           setConfirmModal(false);
         }}
       />
+      </KeyboardAvoidingView>
     </ScrollView>
 
     // </View>

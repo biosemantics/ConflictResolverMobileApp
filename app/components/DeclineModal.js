@@ -92,6 +92,7 @@ export default DeclineModal = (props) => {
     const myTerm = ["Structure", "Character"]
     return (
         <View>
+             
             <Modal isVisible={props.isVisible}
                 deviceWidth={deviceWidth}
                 deviceHeight={deviceHeight}>

@@ -1,7 +1,8 @@
 import React, {useState, useEffect, Component, Fragment} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
 import Modal from "react-native-modal";
 // import {Picker} from '@react-native-community/picker';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -288,9 +289,13 @@ export default Category = (props) => {
         setCommentsModal(true);
     }
 
+
+    const category = ["Structure", "Character" ]
+
     return (
         <React.Fragment>
             <ScrollView contentContainerStyle={{backgroundColor: "#fff", flexDirection: 'column', justifyContent: 'space-between'}} keyboardShouldPersistTaps="handled">
+            <KeyboardAvoidingView behavior="position">
                 <NavHeader
                     headerText={task.term}
                     size={22}
@@ -339,7 +344,7 @@ export default Category = (props) => {
                     </View>
                     <View style={{padding: 10}}>
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                            <Text style={{color: 'black', width: '65%'}}>
+                            <Text style={{color: 'black', width: '45%'}}>
                                 Is {task.term} a structure or a character? 
                                 {
                                     options && options.characterCount > 0 &&
@@ -350,16 +355,23 @@ export default Category = (props) => {
                                     <Text style={{color: 'black'}}> Structure({options.structureCount})</Text>
                                 }
                             </Text>
-                            <View style={{borderWidth: 1}}>
-                                {/* <Picker
-                                    style={{height: 30, width: 140}}
-                                    selectedValue={termType}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setTermType(itemValue);
-                                    }}>
-                                    <Picker.Item label="Structure" value="Structure" />
-                                    <Picker.Item label="Character" value="Character" />
-                                </Picker> */}
+                            <View style={{borderWidth: 1, width:'60%'}}>
+                            
+                                <SelectDropdown
+                                    data={category}
+                                    onSelect={(selectedItem, index) => {
+                                        console.log(selectedItem, index)
+                                        setTermType(selectedItem)
+                                    }}
+                                    buttonTextAfterSelection={(selectedItem, index) => {
+                                        return selectedItem
+                                    }}
+                                    rowTextForSelection={(item, index) => {
+                                        return item
+                                    }}
+                                    dropdownStyle={styles.dropdown1DropdownStyle}
+                                    buttonStyle={styles.dropdown2BtnStyle}
+                                />
                             </View>
                         </View>
                         {
@@ -843,7 +855,7 @@ export default Category = (props) => {
                     </View>
                     <View>
                         <View style={styles.inputContainer}>
-                            <TextInput placeholder="Enter or record comment" style={{color: '#003458', width: '100%', paddingLeft:10, paddingRight:10, marginLeft: 5}} onChangeText={txt => {setComment(txt)}}>{comment}</TextInput>
+                            <TextInput placeholder="Enter or record comment" style={{color: '#003458', width: '100%', paddingLeft:10, paddingRight:10, marginLeft: 5, height:50 }} onChangeText={txt => {setComment(txt)}}>{comment}</TextInput>
                         </View>
                         <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                         <TouchableOpacity onPress={handleClickOtherComment}>
@@ -894,6 +906,7 @@ export default Category = (props) => {
                     }}
                     handleCancel={()=>{setCommentsModal(false)}}
                 />
+                </KeyboardAvoidingView>
             </ScrollView>
             <DeclineModal
                 popupTitle="Are you sure to deline the term?"
@@ -971,5 +984,15 @@ const styles = {
         width: '100%',
         padding: 5,
         marginRight: 5,
-    }
+    },
+    dropdown1DropdownStyle:{
+        width:150,
+        color:'#fff'
+    },
+    dropdown2BtnStyle: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+    },
 }
