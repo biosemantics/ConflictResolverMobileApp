@@ -5,7 +5,11 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import {useDispatch, useSelector} from 'react-redux';
 
 import NavHeader from '../../components/NavHeader';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import Voice from '@react-native-community/voice';
+import {faAngleLeft, faL, faMicrophone} from '@fortawesome/free-solid-svg-icons';
+
 import DeclineModal from '../../components/DeclineModal';
 import WarningModal from '../../components/WarningModal';
 import PopupConfirm from '../../components/PopupConfirm';
@@ -35,10 +39,94 @@ export default Category = (props) => {
   const options = useSelector((state) => state.main.data.options);
   const quailtyData = useSelector((state) => state.main.metaData.quality);
 
+  const [pitch, setPitch] = useState('');
+  const [error, setError] = useState('');
+  const [end, setEnd] = useState('');
+  const [started, setStarted] = useState('');
+  const [partialResults, setPartialResults] = useState([]);
+  const [results, setResults] = useState([]);
+
   const dispatch = useDispatch();
 
   var deviceHeight =
     Platform.OS === 'ios' ? Dimensions.get('window').height : require('react-native-extra-dimensions-android').get('REAL_WINDOW_HEIGHT');
+
+  useEffect(() => {
+    //Setting callbacks for the process status
+    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechRecognized = onSpeechRecognized;
+    Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechError = onSpeechError;
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechPartialResults = onSpeechPartialResults;
+
+    return () => {
+      //destroy the process after switching the screen
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const start = (inputName) => {
+    console.log('hello start');
+
+    startRecognizing(inputName);
+  };
+  const onSpeechStart = (e) => {
+    //Invoked when .start() is called without error
+  };
+
+  const onSpeechRecognized = (e) => {};
+
+  const onSpeechEnd = (e) => {
+    //Invoked when SpeechRecognizer stops recognition
+  };
+
+  const onSpeechError = (e) => {
+    //Invoked when an error occurs.
+    setError(JSON.stringify(e.error));
+  };
+
+  const saveValue = (msg) => {
+    setComment(msg);
+  };
+
+  const onSpeechResults = (e) => {
+    //Invoked when SpeechRecognizer is finished recognizing
+
+    let msg = '';
+    setResults(e.value);
+    if (e.value.length > 0) {
+      msg = e.value[0];
+    } else {
+      msg = 'Wrong Value';
+    }
+
+    saveValue(msg);
+  };
+
+  const onSpeechPartialResults = (e) => {
+    //Invoked when any results are computed
+    setPartialResults(e.value);
+  };
+
+  const startRecognizing = async (inputName) => {
+    //Starts listening for speech for a specific locale
+    console.log('start recogniztion part');
+
+    try {
+      await Voice.start('en-US');
+      console.log('jsjsjdhjsdjs');
+      setPitch('');
+      setError('');
+      setStarted('');
+      setResults([]);
+      setPartialResults([]);
+      setEnd('');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
+  };
 
   const getTerm = () => {
     api.getOptions(task.termId, auth.expertId).then((result) => {
@@ -59,7 +147,6 @@ export default Category = (props) => {
   };
   useEffect(() => {
     getTerm();
-
   }, []);
 
   const onDecline = () => {
@@ -193,7 +280,7 @@ export default Category = (props) => {
                 <TouchableOpacity key={index} onPress={() => clickOption(index)}>
                   <View style={styles.option}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '85%'}}>
-                      <Text style={{fontSize: 20, width: '35%'}}>
+                      <Text style={{fontSize: 20, width: '45%'}}>
                         {option.option_} ({option.count}):
                       </Text>
                       <Text style={{...styles.senctence, textAlign: 'left', marginLeft: 5, width: '65%'}}>{option.definition.replace(/"/g, '')}</Text>
@@ -270,6 +357,9 @@ export default Category = (props) => {
                   }}>
                   {comment}
                 </TextInput>
+                <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
+                  <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+                </TouchableOpacity>
               </View>
               <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                 <TouchableOpacity onPress={() => setCommentsModal(true)}>
@@ -278,24 +368,6 @@ export default Category = (props) => {
               </View>
             </View>
           </ScrollView>
-
-          <PrimaryButton 
-            buttonText={'Submit'} 
-            onPressFunc={onSubmit} 
-            marginLeft={20} 
-            marginRight={20} 
-            marginBottom={5} 
-          />
-
-          <PrimaryButton
-            buttonText={'Reject the Term'}
-            onPressFunc={onDecline}
-            marginLeft={20}
-            marginRight={20}
-            marginBottom={5}
-            bgColor={'#F4463A'}
-            borderColor={'#F4463A'}
-          />
 
           <WarningModal
             popupTitle="Warning"
@@ -343,6 +415,18 @@ export default Category = (props) => {
               setCommentsModal(false);
             }}
           />
+
+          <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
+
+          <PrimaryButton
+            buttonText={'Reject the Term'}
+            onPressFunc={onDecline}
+            marginLeft={20}
+            marginRight={20}
+            marginBottom={5}
+            bgColor={'#F4463A'}
+            borderColor={'#F4463A'}
+          />
         </KeyboardAvoidingView>
       </ScrollView>
       <DeclineModal
@@ -384,7 +468,7 @@ const styles = {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    //alignItems: 'center',
     alignContent: 'center',
   },
   button: {

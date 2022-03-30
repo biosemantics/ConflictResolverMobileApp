@@ -16,11 +16,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleLeft, faL, faMicrophone} from '@fortawesome/free-solid-svg-icons';
 //import Voice from '@react-native-voice/voice';
-import Voice, {
-  SpeechRecognizedEvent,
-  SpeechResultsEvent,
-  SpeechErrorEvent,
-} from '@react-native-voice/voice';
+import Voice from '@react-native-community/voice';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from '../../components/NavHeader';
@@ -90,8 +86,6 @@ export default function Disputed(props) {
   const [characterDefaultIndex2, setCharacterDefaultIndex2] = useState(0);
 
   const [optionIndexes, setOptionIndexes] = useState([]);
-  const [optionIndexes2, setOptionIndexes2] = useState([]);
-
   let today = new Date();
   let date = today.getFullYear() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getDate();
 
@@ -104,10 +98,8 @@ export default function Disputed(props) {
 
   const dispatch = useDispatch();
 
-  const quailtyData = useSelector(state => state.main.metaData.quality);
-  const structureData = useSelector(state => state.main.metaData.structure);
-  
-
+  const quailtyData = useSelector((state) => state.main.metaData.quality);
+  const structureData = useSelector((state) => state.main.metaData.structure);
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -147,14 +139,11 @@ export default function Disputed(props) {
       }
       setResults([]);
     }
-   
   }, [activebtn, results]);
 
-
   const submitData = () => {
- 
     var canSubmit = 0;
-    if (pickerStructure != '') {
+    if (pickerStructure != '' && pickerStructure != null) {
       canSubmit = 1;
     }
     if (canSubmit === 0) {
@@ -162,7 +151,6 @@ export default function Disputed(props) {
     } else {
       setConfirmModal(true);
     }
-
   };
 
   const submitNewTerm = async () => {
@@ -187,7 +175,6 @@ export default function Disputed(props) {
       .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
       .then((result) => {
         if (result.data.error) {
-
         } else if (result.data.error == false) {
           setWarningModal(true);
           api.getDisputed(auth.expertId).then((result) => {
@@ -199,20 +186,15 @@ export default function Disputed(props) {
   };
 
   const start = (inputName) => {
-  
-   
     setActivebtn(inputName);
-    console.log("mic started");
-    console.log(activebtn);
+
     startRecognizing(inputName);
   };
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
 
-  const onSpeechRecognized = (e) => {
-
-  }
+  const onSpeechRecognized = (e) => {};
 
   const onSpeechEnd = (e) => {
     //Invoked when SpeechRecognizer stops recognition
@@ -232,7 +214,10 @@ export default function Disputed(props) {
       setinput3(msg);
     } else if (activebtn == 4) {
       setinput4(msg);
-    } else {
+    } else if (activebtn == 5) {
+      setinput5(msg);
+    } else{
+
     }
   };
 
@@ -278,7 +263,7 @@ export default function Disputed(props) {
 
   const startRecognizing = async (inputName) => {
     //Starts listening for speech for a specific locale
-    console.log("start recogniztion part");
+    console.log('start recogniztion part');
 
     try {
       await Voice.start('en-US');
@@ -315,174 +300,172 @@ export default function Disputed(props) {
 
   const customRef = useRef({});
   return (
-    // <View style={{marginHorizontal: 20, marginVertical: 20, display: 'flex'}}>
-    <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" >
+    <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
       <KeyboardAvoidingView behavior="position">
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
-      </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
+        </View>
 
-      <View style={[Styles.rowText, {marginTop: 20}]}>
-        <Text>
-          <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
-          <Text style={Styles.TextMain}>{disputed.term}</Text>
-        </Text>
-      </View>
-      <View style={([Styles.rowText], {marginBottom: 10, width: '100%', paddingLeft: 10})}>
-        <Text style={Styles.TextMain}>
-          <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
-          <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
-        </Text>
-      </View>
+        <View style={[Styles.rowText, {marginTop: 20}]}>
+          <Text>
+            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
+            <Text style={Styles.TextMain}>{disputed.term}</Text>
+          </Text>
+        </View>
+        <View style={([Styles.rowText], {marginBottom: 10, width: '100%', paddingLeft: 10})}>
+          <Text style={Styles.TextMain}>
+            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
+            <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
+          </Text>
+        </View>
 
-      <View
-        style={([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width: '100%', paddingLeft: 10})}>
-        <Text style={Styles.TextMain}>
-          <Text style={Styles.rowDefinition}>Dispute reason: </Text>
-          <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
-        </Text>
-      </View>
+        <View
+          style={([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width: '100%', paddingLeft: 10})}>
+          <Text style={Styles.TextMain}>
+            <Text style={Styles.rowDefinition}>Dispute reason: </Text>
+            <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
+          </Text>
+        </View>
 
-      <View style={Styles.rowText}>
-        <Text style={Styles.TextMain}>
-          <Text style={Styles.rowDefinition}>Proposed definition for restored </Text>
-          <Text style={Styles.TextMain}>{disputed.newDefinition}</Text>
-        </Text>
-      </View>
-      <View style={Styles.rowText}>
-        <Text style={Styles.rowDefinition}>Disputed by </Text>
-        <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
-      </View>
+        <View style={Styles.rowText}>
+          <Text style={Styles.TextMain}>
+            <Text style={Styles.rowDefinition}>Proposed definition for restored </Text>
+            <Text style={Styles.TextMain}>{disputed.newDefinition}</Text>
+          </Text>
+        </View>
+        <View style={Styles.rowText}>
+          <Text style={Styles.rowDefinition}>Disputed by </Text>
+          <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
+        </View>
 
-      <View style={{width: '100%', padding: 10, marginTop: 0}}>
-        <Text
+        <View style={{width: '100%', padding: 10, marginTop: 0}}>
+          <Text
+            style={{
+              // margin: 15,
+              fontSize: 16,
+              padding: 5,
+              color: '#fff',
+              // fontWeight: 'bold',
+              backgroundColor: 'green',
+            }}>
+            What action should be taken to address this disputes?
+          </Text>
+        </View>
+
+        <View
           style={{
-            // margin: 15,
-            fontSize: 16,
-            padding: 5,
-            color: '#fff',
-            // fontWeight: 'bold',
-            backgroundColor: 'green',
+            display: 'flex',
+            flexDirection: 'row',
+            // alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '90%',
+            paddingLeft: 10,
+            marginTop: 10,
           }}>
-          What action should be taken to address this disputes?
-        </Text>
-      </View>
+          <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
+          <TouchableOpacity
+            onPress={() => {
+              handleChange('disable2');
+            }}>
+            {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
+          </TouchableOpacity>
+        </View>
 
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          // alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '90%',
-          paddingLeft: 10,
-          marginTop: 10,
-        }}>
-        <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
-        <TouchableOpacity
-          onPress={() => {
-            handleChange('disable2');
-          }}>
-          {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
-        </TouchableOpacity>
-      </View>
-
-      {dropDown2 && (
-        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-          {
-            <View style={{marginHorizontal: 30, width: '90%'}}>
-              {/* Another Existing Section */}
-              <View
-                
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  marginLeft: 10,
-                }}>
-                <RadioButton.Android
-                  value="Quality"
-                  status={checked === 'Quality' ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setChecked('Quality');
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                    //; dropdownRef.current.reset()
-                  }}
-                />
-                <Text style={{margin: 8}}>Quality</Text>
-              </View>
-              <View
-                
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  marginLeft: 10,
-                }}>
-                <RadioButton.Android
-                  value="Structure"
+        {dropDown2 && (
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            {
+              <View style={{marginHorizontal: 30, width: '90%'}}>
+                {/* Another Existing Section */}
+                <View
                   style={{
-                    borderWidth: 2,
-                    color: 'black',
-                    backgroundColor: 'red',
-                    borderRadius: 2,
-                  }}
-                  status={checked === 'Structure' ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setChecked('Structure');
-                    setPickerStructure('');
-                    setCharacterDefaultIndex(0);
-                    console.log('@COMING HERE');
-                  }}
-                />
-                <Text style={{margin: 8}}>Structure</Text>
-              </View>
-              {checked == 'Quality' ? (
-                <KeyboardAvoidingView behavior="position">
-                  <SearchableDropdown
-                    // ref={customRef}
-                   // multi={true}
-                    onItemSelect={(item) => {
-                      let newArr = [...optionIndexes];
-                      newArr = [];
-                      setOptionIndexes(newArr);
-                      setPickerStructure(item.id);
-                      setCharacterDefaultIndex(item.id - 1);
-                    }}
-                    onRemoveItem={(item) => {
-                      setOptionIndexes([]);
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton.Android
+                    value="Quality"
+                    status={checked === 'Quality' ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setChecked('Quality');
                       setPickerStructure('');
                       setCharacterDefaultIndex(0);
+                      //; dropdownRef.current.reset()
                     }}
-                  //  defaultIndex={2}
-                    containerStyle={{padding: 5, width: '96%'}}
-                    itemStyle={{
-                      padding: 10,
-                      marginTop: 2,
-                      backgroundColor: '#ddd',
-                      borderColor: '#bbb',
-                      borderWidth: 1,
-                      borderRadius: 5,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{maxHeight: 140}}
-                    items={quailtyData}
-                    // defaultIndex={2}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'Enter a quality name ',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: 12,
-                        borderWidth: 1,
-                        borderColor: '#ccc',
-                        borderRadius: 5,
-                      },
-                    }}
-                    listProps={{nestedScrollEnabled: true}}
                   />
-                </KeyboardAvoidingView>
-              ) : (
-                
+                  <Text style={{margin: 8}}>Quality</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginLeft: 10,
+                  }}>
+                  <RadioButton.Android
+                    value="Structure"
+                    style={{
+                      borderWidth: 2,
+                      color: 'black',
+                      backgroundColor: 'red',
+                      borderRadius: 2,
+                    }}
+                    status={checked === 'Structure' ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setChecked('Structure');
+                      setPickerStructure('');
+                      setCharacterDefaultIndex(0);
+                      console.log('@COMING HERE');
+                    }}
+                  />
+                  <Text style={{margin: 8}}>Structure</Text>
+                </View>
+                {checked == 'Quality' ? (
+                  <KeyboardAvoidingView behavior="position">
+                    <SearchableDropdown
+                      // ref={customRef}
+                      // multi={true}
+                      onItemSelect={(item) => {
+                        let newArr = [...optionIndexes];
+                        newArr = [];
+                        setOptionIndexes(newArr);
+                        setPickerStructure(item.id);
+                        setCharacterDefaultIndex(item.id - 1);
+                      }}
+                      onRemoveItem={(item) => {
+                        console.log('chl gya');
+                        console.log(pickerStructure);
+                        setOptionIndexes([]);
+                        setPickerStructure('');
+                        setCharacterDefaultIndex(0);
+                      }}
+                      //  defaultIndex={2}
+                      containerStyle={{padding: 5, width: '96%'}}
+                      itemStyle={{
+                        padding: 10,
+                        marginTop: 2,
+                        backgroundColor: '#ddd',
+                        borderColor: '#bbb',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{maxHeight: 140}}
+                      items={quailtyData}
+                      // defaultIndex={2}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: 'Enter a quality name ',
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: 12,
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                        },
+                      }}
+                      listProps={{nestedScrollEnabled: true}}
+                    />
+                  </KeyboardAvoidingView>
+                ) : (
                   <SearchableDropdown
                     // ref={customRef}
                     onItemSelect={(item) => {
@@ -525,151 +508,145 @@ export default function Disputed(props) {
                     }}
                     listProps={{nestedScrollEnabled: true}}
                   />
-                
-              )}
-            </View>
-          }
-        </View>
-      )}
+                )}
+              </View>
+            }
+          </View>
+        )}
 
-      {/* //First DropDown With Speech Recognition */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          // alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '90%',
-          paddingLeft: 10,
-          marginTop: 10,
-        }}>
-        <Text style={{fontSize: 16, width: '100%'}}>Add a new term to express the needed concept</Text>
-        <TouchableOpacity
-          onPress={() => {
-            handleChange('disable');
+        {/* //First DropDown With Speech Recognition */}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            // alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '90%',
+            paddingLeft: 10,
+            marginTop: 10,
           }}>
-          {dropDown1 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
-        </TouchableOpacity>
-      </View>
-      {dropDown1 && (
-        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-          {
-            <View>
-              <View style={Styles.inputView}>
-                <TextInput placeholder="Enter the new item" style={Styles.inputBoxView} value={newTerm} onChangeText={(text) => setNewTerm(text)} />
-                <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} />
-                </TouchableOpacity>
-              </View>
-              <View style={Styles.inputView}>
-              
-                <TextInput
-                  placeholder="Enter a definition"
-                  style={Styles.inputBoxView}
-                  value={newDefinition}
-                  onChangeText={(text) => setNewDefinition(text)}
-                />
-               
-                <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} />
-                </TouchableOpacity>
-              </View>
-              {/* //Existing value Section */}
-              <View style={{marginHorizontal: 30, width: '90%'}}>
-                <View
-                  
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginLeft: 10,
-                  }}>
-                  <RadioButton.Android
-                    value="Quality"
-                    status={checked === 'Quality' ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setChecked('Quality');
-                      setPickerStructure('');
-                      setCharacterDefaultIndex(0);
-                      //; dropdownRef.current.reset()
-                    }}
-                  />
-                  <Text style={{margin: 8}}>Quality</Text>
+          <Text style={{fontSize: 16, width: '100%'}}>Add a new term to express the needed concept</Text>
+          <TouchableOpacity
+            onPress={() => {
+              handleChange('disable');
+            }}>
+            {dropDown1 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
+          </TouchableOpacity>
+        </View>
+        {dropDown1 && (
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            {
+              <View>
+                <View style={Styles.inputView}>
+                  <TextInput placeholder="Enter the new item" style={Styles.inputBoxView} value={newTerm} onChangeText={(text) => setNewTerm(text)} />
+                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
+                    <FontAwesomeIcon icon={faMicrophone} size={25} />
+                  </TouchableOpacity>
                 </View>
+                <View style={Styles.inputView}>
+                  <TextInput
+                    placeholder="Enter a definition"
+                    style={Styles.inputBoxView}
+                    value={newDefinition}
+                    onChangeText={(text) => setNewDefinition(text)}
+                  />
 
-                <View
-                  
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginLeft: 10,
-                  }}>
-                  <RadioButton.Android
-                    value="Structure"
-                    style={{
-                      borderWidth: 2,
-                      color: 'black',
-                      backgroundColor: 'red',
-                      borderRadius: 2,
-                    }}
-                    status={checked === 'Structure' ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setChecked('Structure');
-                      setPickerStructure('');
-                      setCharacterDefaultIndex(0);
-                      //                      customRef = resetValue={true}
-                      //; dropdownRef.current.reset()
-                    }}
-                  />
-                  <Text style={{margin: 8}}>Structure</Text>
+                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
+                    <FontAwesomeIcon icon={faMicrophone} size={25} />
+                  </TouchableOpacity>
                 </View>
-                {checked == 'Quality' ? (
-                  <KeyboardAvoidingView behavior="position">
-                    <SearchableDropdown
-                      // multi={true}
-                      // onTextChange={(pickerStructure) => console.log(pickerStructure)}
-                      onItemSelect={(item) => {
-                     
-                        let newArr = [...optionIndexes];
-                        newArr = [];
-                        setOptionIndexes(newArr);
-                        setPickerStructure(item.id);
-                        setCharacterDefaultIndex(item.id - 1);
-                      }}
-                      onRemoveItem={(item) => {
-                        setOptionIndexes([]);
+                {/* //Existing value Section */}
+                <View style={{marginHorizontal: 30, width: '90%'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      marginLeft: 10,
+                    }}>
+                    <RadioButton.Android
+                      value="Quality"
+                      status={checked === 'Quality' ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setChecked('Quality');
                         setPickerStructure('');
                         setCharacterDefaultIndex(0);
+                        //; dropdownRef.current.reset()
                       }}
-                      // defaultIndex={2}
-                      containerStyle={{padding: 5, width: '96%'}}
-                      itemStyle={{
-                        padding: 10,
-                        marginTop: 2,
-                        backgroundColor: '#ddd',
-                        borderColor: '#bbb',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{maxHeight: 140}}
-                      items={quailtyData}
-                      // defaultIndex={0}
-                      resetValue={false}
-                      textInputProps={{
-                        placeholder: 'Enter a quality name ',
-                        underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: 12,
-                          borderWidth: 1,
-                          borderColor: '#ccc',
-                          borderRadius: 5,
-                        },
-                      }}
-                      listProps={{nestedScrollEnabled: true}}
                     />
-                 </KeyboardAvoidingView>
-                ) : (
-                  
+                    <Text style={{margin: 8}}>Quality</Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      marginLeft: 10,
+                    }}>
+                    <RadioButton.Android
+                      value="Structure"
+                      style={{
+                        borderWidth: 2,
+                        color: 'black',
+                        backgroundColor: 'red',
+                        borderRadius: 2,
+                      }}
+                      status={checked === 'Structure' ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setChecked('Structure');
+                        setPickerStructure('');
+                        setCharacterDefaultIndex(0);
+                        //                      customRef = resetValue={true}
+                        //; dropdownRef.current.reset()
+                      }}
+                    />
+                    <Text style={{margin: 8}}>Structure</Text>
+                  </View>
+                  {checked == 'Quality' ? (
+                    <KeyboardAvoidingView behavior="position">
+                      <SearchableDropdown
+                        // multi={true}
+                        // onTextChange={(pickerStructure) => console.log(pickerStructure)}
+                        onItemSelect={(item) => {
+                          let newArr = [...optionIndexes];
+                          newArr = [];
+                          setOptionIndexes(newArr);
+                          setPickerStructure(item.id);
+                          setCharacterDefaultIndex(item.id - 1);
+                        }}
+                        onRemoveItem={(item) => {
+                          setOptionIndexes([]);
+                          setPickerStructure('');
+                          setCharacterDefaultIndex(0);
+                        }}
+                        // defaultIndex={2}
+                        containerStyle={{padding: 5, width: '96%'}}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
+                          borderWidth: 1,
+                          borderRadius: 5,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={quailtyData}
+                        // defaultIndex={0}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter a quality name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{nestedScrollEnabled: true}}
+                      />
+                    </KeyboardAvoidingView>
+                  ) : (
                     <SearchableDropdown
                       onItemSelect={(item) => {
                         // console.log('@LOGGG', item);
@@ -711,106 +688,111 @@ export default function Disputed(props) {
                       }}
                       listProps={{nestedScrollEnabled: true}}
                     />
-                 
-                )}
-              </View>
+                  )}
+                </View>
 
-              {/* Second input and mic field */}
-              <View style={Styles.inputView}>
-                <TextInput
-                  placeholder="Enter an example Sentence"
-                  style={Styles.inputBoxView}
-                  value={input3}
-                  // onChangeText={input3}
-                  onChangeText={(text) => setinput3(text)}
-                />
-             
-                <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} />
-                </TouchableOpacity>
+                {/* Second input and mic field */}
+                <View style={Styles.inputView}>
+                  <TextInput
+                    placeholder="Enter an example Sentence"
+                    style={Styles.inputBoxView}
+                    value={input3}
+                    // onChangeText={input3}
+                    onChangeText={(text) => setinput3(text)}
+                  />
+
+                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
+                    <FontAwesomeIcon icon={faMicrophone} size={25} />
+                  </TouchableOpacity>
+                </View>
+                <View style={Styles.inputView}>
+                  <TextInput
+                    placeholder="Enter applicable taxa"
+                    style={Styles.inputBoxView}
+                    value={input4}
+                    onChangeText={(text) => setinput4(text)}
+                  />
+                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
+                    <FontAwesomeIcon icon={faMicrophone} size={25} />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={Styles.inputView}>
-                <TextInput placeholder="Enter applicable taxa" style={Styles.inputBoxView} value={input4} onChangeText={(text) => setinput4(text)} />
-                <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          }
+            }
+          </View>
+        )}
+
+        {/* //Second DropDown with Speech Recognition */}
+
+        {/* Comment and Submit Section */}
+        <View style={{marginHorizontal: 30, marginTop: 10, width: '90%'}}>
+          <TextInput
+            placeholder="Enter or record comment"
+            style={{
+              backgroundColor: '#e8e8e8',
+              width: '95%',
+              height: 40,
+              borderRadius: 50,
+              paddingLeft: 20,
+            }}
+            value={input5}
+            onChangeText={(text) => setinput5(text)}
+          />
+          <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
+            <FontAwesomeIcon icon={faMicrophone} size={25} />
+          </TouchableOpacity>
+
+          <PrimaryButton
+            enable={(checked == 'Quality' && pickerStructure != '') || (checked == 'Structure' && pickerStructure != '')}
+            buttonText={'Submit'}
+            onPressFunc={submitData}
+            marginLeft={20}
+            marginRight={20}
+            marginBottom={5}
+          />
         </View>
-      )}
-
-      {/* //Second DropDown with Speech Recognition */}
-
-      {/* Comment and Submit Section */}
-      <View style={{marginHorizontal: 30, marginTop: 10, width: '90%'}}>
-        <TextInput
-          placeholder="Enter or record comment"
-          style={{
-            backgroundColor: '#e8e8e8',
-            width: '95%',
-            height: 40,
-            borderRadius: 50,
-            paddingLeft: 20,
+        <PopupAlert
+          popupTitle="Message"
+          message={message}
+          isVisible={errorInfoModal}
+          handleOK={() => {
+            setErrorInfoModal(false);
           }}
-          value={input5}
-          onChangeText={(text) => setinput5(text)}
+        />
+        <PopupAlert
+          popupTitle="Message"
+          message={'Submitted successfully'}
+          isVisible={warningModal}
+          handleOK={() => {
+            setNewWarning(false);
+          }}
+        />
+        <WarningModal
+          popupTitle="Warning"
+          message={'You need to select at least one category.'}
+          isVisible={warningModal}
+          handleYes={() => {
+            setWarningModal(false);
+          }}
+          handleCancel={() => {
+            setWarningModal(false);
+          }}
         />
 
-        <PrimaryButton
-          enable={(checked == 'Quality' && pickerStructure != '') || (checked == 'Structure' && pickerStructure != '')}
-          buttonText={'Submit'}
-          onPressFunc={submitData}
-          marginLeft={20}
-          marginRight={20}
-          marginBottom={5}
+        <PopupConfirm
+          popupTitle="Are you sure to submit?"
+          // stateMessage={stateMessage}
+          message={'You will not be able to change this decision after submit.'}
+          isVisible={confirmModal}
+          handleYes={() => {
+            setConfirmModal(false);
+            submitNewTerm();
+          }}
+          handleCancel={() => {
+            setConfirmModal(false);
+          }}
         />
-      </View>
-      <PopupAlert
-        popupTitle="Message"
-        message={message}
-        isVisible={errorInfoModal}
-        handleOK={() => {
-          setErrorInfoModal(false);
-        }}
-      />
-      <PopupAlert
-        popupTitle="Message"
-        message={'Submitted successfully'}
-        isVisible={warningModal}
-        handleOK={() => {
-          setNewWarning(false);
-        }}
-      />
-      <WarningModal
-        popupTitle="Warning"
-        message={'You need to select at least one category.'}
-        isVisible={warningModal}
-        handleYes={() => {
-          setWarningModal(false);
-        }}
-        handleCancel={() => {
-          setWarningModal(false);
-        }}
-      />
-
-      <PopupConfirm
-        popupTitle="Are you sure to submit?"
-        // stateMessage={stateMessage}
-        message={'You will not be able to change this decision after submit.'}
-        isVisible={confirmModal}
-        handleYes={() => {
-          setConfirmModal(false);
-          submitNewTerm();
-        }}
-        handleCancel={() => {
-          setConfirmModal(false);
-        }}
-      />
       </KeyboardAvoidingView>
     </ScrollView>
-
-  
   );
 }
 

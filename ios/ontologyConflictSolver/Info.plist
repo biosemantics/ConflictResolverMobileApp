@@ -45,6 +45,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For add a definition in textInput</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>recognize speech </string>
 	<key>UIAppFonts</key>
