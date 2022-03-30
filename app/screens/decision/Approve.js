@@ -37,6 +37,8 @@ export default Approve = (props) => {
 
     const auth = useSelector(state => state.main.auth);
     const options = useSelector(state => state.main.data.approveOptions);
+
+    const [selectedSentences, _selectedSentences] = useState([])
     
     const dispatch = useDispatch();
     
@@ -156,119 +158,153 @@ export default Approve = (props) => {
         })
     }
 
+    const markSelected = (item) => {
+        let tempArray = [...selectedSentences];
+        if(tempArray.includes(item.id)) {
+            const index = tempArray.indexOf(item.id);
+            if (index > -1) {
+              tempArray.splice(index, 1);
+            }
+        } else {
+            tempArray.push(item.id)
+        }
+        _selectedSentences(tempArray)
+    }
+
     return (
-        <>
-        <ScrollView contentContainerStyle={{backgroundColor: "#fff", flexDirection: 'column', justifyContent: 'space-between'}}>
-        <KeyboardAvoidingView behavior="position">
+      <>
+        <ScrollView contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}>
+          <KeyboardAvoidingView behavior="position">
             <NavHeader
-                headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
-                size={22}
-                bold={true}
-                letterSpacing={1.6}
-                navigation={props.navigation}
-                onBackFunc={()=>{
-                    api.getTasks(auth.expertId).then(result=>{
-                        dispatch(set_tasks(result.data.task_data));
-                        props.navigation.goBack();
-                    });
-                }}
+              headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
+              size={22}
+              bold={true}
+              letterSpacing={1.6}
+              navigation={props.navigation}
+              onBackFunc={() => {
+                api.getTasks(auth.expertId).then((result) => {
+                  dispatch(set_tasks(result.data.task_data));
+                  props.navigation.goBack();
+                });
+              }}
             />
             <View style={{alignContent: 'center', alignItems: 'center', width: '100%', padding: 10}}>
-            {
-                options && options.termDeclined &&
+              {options && options.termDeclined && (
                 <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
-            }
+              )}
             </View>
-            <View style={{ }}>
-                <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
-                    <Text style={{...styles.sentence, color: '#fff', marginLeft: 10}}>
-                        Select/provide a good definition and example sentences for {task.term}.
-                    </Text>
-                </View>
+            <View style={{}}>
+              <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
+                <Text style={{...styles.sentence, color: '#fff', marginLeft: 10}}>
+                  Select/provide a good definition and example sentences for {task.term}.
+                </Text>
+              </View>
             </View>
             <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}>
-                <Text style={{...styles.sentence, color: '#003458'}}>
-                    Proposed definitions:
-                </Text>
-                {
-                    options && options.definition &&
-                    options.definition.map((item, index) => {
-                        return (
-                            <View key={'sentence'+index}>
-                                <View style={{flexDirection: 'column', marginBottom: 10/*, backgroundColor: color*/}}>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
-                                        <Text>{index+1}. {item.definition.replace(/"/g, "")}</Text>
-                                        {
-                                            item.expertId == auth.expertId && 
-                                            <TouchableOpacity style={{...styles.button, width: 22, height: 22, padding: 4, backgroundColor: 'red'}} onPress={() => {removeDefinition(item.id)}}>
-                                                <FontAwesomeIcon name="minus" size={12} color={"white"}/>
-                                            </TouchableOpacity>
-                                        }
-                                    </View>
-                                    <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                                        <View style={{width: '15%'}}>
-                                            <Text style={styles.sentence}>
-                                                {
-                                                    options.approveData.filter(it => it.definitionId == item.id).map(item => '#' + (options.sentence.findIndex(sen => sen.id == item.sentenceId) + 1) + ' ')
-                                                }
-                                            </Text>
-                                        </View>
-                                        <View style={{flexDirection:'row', width: '85%', marginRight: 3}}>
-                                            <TouchableOpacity style={{borderWidth: 1, borderRadius: 5, padding: 3, width: '85%', alignItems:'center', alignContent:'center', justifyContent: 'center'}} onPress={() => {setDefinition(item.id)}}>
-                                                <Text style={{...styles.sentence}}>
-                                                    Select sentences fitting this definition, then click here
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={{borderWidth: 1, borderRadius: 5, padding: 3, marginLeft: 5, width: '15%', alignItems:'center', alignContent:'center', justifyContent: 'center'}} onPress={() => {clearDefinition(item.id)}}>
-                                                <Text style={{...styles.sentence}}>
-                                                    Clear
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        )
-                    })
-                }
-                <View style={styles.noneOfAbove}>
-                    {
-                        options && options.definition && options.definition.length === 0 &&
-                        <View>
-                            <Text>
-                                No definitions exist
-                            </Text>
-                            <Text>
-                                Please add a new definition:
-                            </Text>
+              <Text style={{...styles.sentence, color: '#003458'}}>Proposed definitions:</Text>
+              {options &&
+                options.definition &&
+                options.definition.map((item, index) => {
+                  return (
+                    <View key={'sentence' + index}>
+                      <View style={{flexDirection: 'column', marginBottom: 10 /*, backgroundColor: color*/}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, marginRight:20}}>
+                          <Text>
+                            {index + 1}. {item.definition.replace(/"/g, '')}
+                          </Text>
+                          {item.expertId == auth.expertId && (
+                            <TouchableOpacity
+                              style={{...styles.button, width: 22, height: 22, padding: 4, backgroundColor: 'red'}}
+                              onPress={() => {
+                                removeDefinition(item.id);
+                              }}>
+                              <FontAwesomeIcon name="minus" size={12} color={'white'} />
+                            </TouchableOpacity>
+                          )}
                         </View>
-                    }
-                    {
-                        options && options.definition && options.definition.length !== 0 &&
-                        <Text>
-                            Or add a new definition:
-                        </Text>
-                    }
-                    <View style={styles.inputContainer}>
-                        <TextInput placeholder="Enter or record new definition" style={{color: '#003458', width: '75%', marginLeft: 5, height:50}} onChangeText={txt => {setNewDefinition(txt)}}>{newDefinition}</TextInput>
-        
-                        <TouchableOpacity style={{...styles.button, backgroundColor: '#013458'}} onPress={() => {addDefinition()}}>
-                            <FontAwesomeIcon name="plus" size={20} color={"white"}/>
-                        </TouchableOpacity>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                          <View style={{width: '15%'}}>
+                            <Text style={styles.sentence}>
+                              {options.approveData
+                                .filter((it) => it.definitionId == item.id)
+                                .map((item) => '#' + (options.sentence.findIndex((sen) => sen.id == item.sentenceId) + 1) + ' ')}
+                            </Text>
+                          </View>
+                          <View style={{flexDirection: 'row', width: '85%', marginRight: 3}}>
+                            <TouchableOpacity
+                              style={{
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                padding: 3,
+                                width: '85%',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                              }}
+                              onPress={() => {
+                                setDefinition(item.id);
+                              }}>
+                              <Text style={{...styles.sentence}}>Select sentences fitting this definition, then click here</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                padding: 3,
+                                marginLeft: 5,
+                                width: '15%',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                              }}
+                              onPress={() => {
+                                clearDefinition(item.id);
+                              }}>
+                              <Text style={{...styles.sentence}}>Clear</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
                     </View>
+                  );
+                })}
+              <View style={styles.noneOfAbove}>
+                {options && options.definition && options.definition.length === 0 && (
+                  <View>
+                    <Text>No definitions exist</Text>
+                    <Text>Please add a new definition:</Text>
+                  </View>
+                )}
+                {options && options.definition && options.definition.length !== 0 && <Text>Or add a new definition:</Text>}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    placeholder="Enter or record new definition"
+                    style={{color: '#003458', width: '75%', marginLeft: 5, height: 50}}
+                    onChangeText={(txt) => {
+                      setNewDefinition(txt);
+                    }}>
+                    {newDefinition}
+                  </TextInput>
+
+                  <TouchableOpacity
+                    style={{...styles.button, backgroundColor: '#013458'}}
+                    onPress={() => {
+                      addDefinition();
+                    }}>
+                    <FontAwesomeIcon name="plus" size={20} color={'white'} />
+                  </TouchableOpacity>
                 </View>
-                <Text style={{...styles.sentence, color: '#003458'}}>
-                    Select example sentences:
-                </Text>
-                {
-                    options && options.sentence &&
-                    options.sentence.map((item, index) => (
-                        <View key={'sentence'+index} style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {selection[index] ?
+              </View>
+              <Text style={{...styles.sentence, color: '#003458'}}>Select example sentences:</Text>
+              {options &&
+                options.sentence &&
+                options.sentence.map((item, index) => (
+                  <View key={'sentence' + index} style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {selection[index] ?
                                 <Checkbox.Android
-                                    status={checked ? 'checked' : 'unchecked'}
+                                    status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
                                     onPress={() => {
-                                        setChecked(!checked),
+                                        markSelected(item),
                                         setSelection[index](false);
                                     }}
                                     />
@@ -276,110 +312,127 @@ export default Approve = (props) => {
                                 <Checkbox.Android
                                 status={checked ? 'checked' : 'unchecked'}
                                 onPress={() => {
-                                    setChecked(!checked),
+                                    markSelected(item),
                                     setSelection[index](true);
                                 }}
                                 />
                             }
-                            <Text style={{marginRight: 10, paddingRight: 10}}>{index+1}. "{item.sentence}"</Text>
-                        </View>
-                    ))
-                }
-                <View>
-                    <View style={styles.inputContainer}>
-                        <TextInput placeholder="Enter or record comment" style={{color: '#003458', width: '100%', paddingLeft:10, paddingRight:10, marginLeft: 5, height:50 }} onChangeText={txt => {setComment(txt)}}>{comment}</TextInput>
-                    </View>
-                    <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-                    <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                        <Text style={{padding: 3}}>Other's comments</Text>
-                    </TouchableOpacity>
-                    </View>
+                    {/* <Checkbox.Android
+                      status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        // setChecked(!checked), setSelection[index](true);
+                        markSelected(item)
+                      }}
+                    /> */}
+                    <Text style={{marginRight: 10, paddingRight: 10}}>
+                      {index + 1}. "{item.sentence}"
+                    </Text>
+                  </View>
+                ))}
+              <View>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    placeholder="Enter or record comment"
+                    style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                    onChangeText={(txt) => {
+                      setComment(txt);
+                    }}>
+                    {comment}
+                  </TextInput>
                 </View>
-                
+                <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                  <TouchableOpacity onPress={() => setCommentsModal(true)}>
+                    <Text style={{padding: 3}}>Other's comments</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </ScrollView>
 
-
-            <PrimaryButton 
-              buttonText={'Submit'} 
-              onPressFunc={onSubmit} 
-              marginLeft={20} 
-              marginRight={20} 
-              marginBottom={5}
-            />
+            <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
 
             <PrimaryButton
-                buttonText={'Reject the Term'} 
-                onPressFunc={onDecline} 
-                marginLeft={20} 
-                marginRight={20} 
-                marginBottom={5}
-                bgColor={"#F4463A"}
-                borderColor={"#F4463A"}
+              buttonText={'Reject the Term'}
+              onPressFunc={onDecline}
+              marginLeft={20}
+              marginRight={20}
+              marginBottom={5}
+              bgColor={'#F4463A'}
+              borderColor={'#F4463A'}
             />
-            
+
             <PopupConfirm
-                popupTitle="Are you sure to submit?"
-                stateMessage={stateMessage}
-                message={"You will not be able to change this decision after submit."}
-                isVisible={confirmModal}
-                handleYes={()=> {
-                    setConfirmModal(false);
-                    onConfirmSubmit();
-                }}
-                handleCancel={()=>{setConfirmModal(false)}}
+              popupTitle="Are you sure to submit?"
+              stateMessage={stateMessage}
+              message={'You will not be able to change this decision after submit.'}
+              isVisible={confirmModal}
+              handleYes={() => {
+                setConfirmModal(false);
+                onConfirmSubmit();
+              }}
+              handleCancel={() => {
+                setConfirmModal(false);
+              }}
             />
 
             <WarningModal
-                popupTitle="Warning"
-                message={"You need to select/provide at least one definition AND example sentence."}
-                isVisible={warningModal}
-                handleYes={()=> {
-                    setWarningModal(false);
-                }}
-                handleCancel={()=>{setWarningModal(false)}}
+              popupTitle="Warning"
+              message={'You need to select/provide at least one definition AND example sentence.'}
+              isVisible={warningModal}
+              handleYes={() => {
+                setWarningModal(false);
+              }}
+              handleCancel={() => {
+                setWarningModal(false);
+              }}
             />
 
             <WarningModal
-                popupTitle="Warning"
-                message={"Select at least one example sentence."}
-                isVisible={noSentencewarningModal}
-                handleYes={()=> {
-                    setNoSentencewarningModal(false);
-                }}
-                handleCancel={()=>{setNoSentencewarningModal(false)}}
+              popupTitle="Warning"
+              message={'Select at least one example sentence.'}
+              isVisible={noSentencewarningModal}
+              handleYes={() => {
+                setNoSentencewarningModal(false);
+              }}
+              handleCancel={() => {
+                setNoSentencewarningModal(false);
+              }}
             />
 
             <CommentsModal
-                popupTitle="Other's comments"
-                comments={options.comments}
-                term={task.term}
-                isVisible={commentsModal}
-                handleYes={()=> {
-                    setCommentsModal(false);
-                }}
-                handleCancel={()=>{setCommentsModal(false)}}
+              popupTitle="Other's comments"
+              comments={options.comments}
+              term={task.term}
+              isVisible={commentsModal}
+              handleYes={() => {
+                setCommentsModal(false);
+              }}
+              handleCancel={() => {
+                setCommentsModal(false);
+              }}
             />
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
         </ScrollView>
-        
+
         <DeclineModal
-            popupTitle="Are you sure to deline the term?"
-            message={"You will not be able to change this decision after decline."}
-            isVisible={declineModal}
-            task={task}
-            handleYes={()=> {
-                setDeclineModal(false);
-                api.getTasks(auth.expertId).then(result=>{
-                    dispatch(set_tasks(result.data.task_data));
-                    setTimeout(() => {
-                        props.navigation.goBack();
-                    }, 100);
-                });
-            }}
-            handleCancel={()=>{setDeclineModal(false)}}
+          popupTitle="Are you sure to deline the term?"
+          message={'You will not be able to change this decision after decline.'}
+          isVisible={declineModal}
+          task={task}
+          handleYes={() => {
+            setDeclineModal(false);
+            api.getTasks(auth.expertId).then((result) => {
+              dispatch(set_tasks(result.data.task_data));
+              setTimeout(() => {
+                props.navigation.goBack();
+              }, 100);
+            });
+          }}
+          handleCancel={() => {
+            setDeclineModal(false);
+          }}
         />
-    </>
-    )
+      </>
+    );
 }
 const styles = {
     sentence: {

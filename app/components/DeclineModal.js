@@ -105,15 +105,7 @@ export default DeclineModal = (props) => {
                         </View>
                         <Text style={{ ...styles.text, fontSize: 17, lineHeight: 22, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 10, color: 'black' }}>Choose a term to replace {task.term}</Text>
                         <View style={{ ...styles.inputContainer, justifyContent: 'center', width: '50%', borderWidth: 0 }}>
-                            {/* <Picker
-                                style={{height: 30, width: 140}}
-                                selectedValue={termType}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    setTermType(itemValue);
-                                }}>
-                                <Picker.Item label="Structure" value="Structure" />
-                                <Picker.Item label="Character" value="Character" />
-                            </Picker> */}
+                         
                             <SelectDropdown
                                 //ref={dropdownRef}
                                 style={{ height: 50 }}
@@ -239,18 +231,19 @@ export default DeclineModal = (props) => {
                         </View>
                     </View>
                 </View>
+                <PopupConfirm
+                    popupTitle="Are you sure to reject the term?"
+                    message={"You will not be able to change this decision after reject."}
+                    isVisible={confirmModal}
+                    handleYes={() => {
+                        setConfirmModal(false);
+                        declineTerm();
+                    }}
+                    handleCancel={() => { setConfirmModal(false) }}
+                />
             </Modal>
 
-            <PopupConfirm
-                popupTitle="Are you sure to reject the term?"
-                message={"You will not be able to change this decision after reject."}
-                isVisible={confirmModal}
-                handleYes={() => {
-                    setConfirmModal(false);
-                    declineTerm();
-                }}
-                handleCancel={() => { setConfirmModal(false) }}
-            />
+            
         </View>
     );
 }

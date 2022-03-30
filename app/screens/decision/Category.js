@@ -59,13 +59,10 @@ export default Category = (props) => {
   };
   useEffect(() => {
     getTerm();
-    
-    console.log("aaaaa"+ declineModal);
 
-  }, [declineModal]);
+  }, []);
 
   const onDecline = () => {
-      console.log("decline button");
     setDeclineModal(true);
   };
 
@@ -160,189 +157,194 @@ export default Category = (props) => {
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
         keyboardShouldPersistTaps="handled">
-            <KeyboardAvoidingView behavior="position">
-        <NavHeader
-          headerText={task.term}
-          size={22}
-          bold={true}
-          letterSpacing={1.6}
-          navigation={props.navigation}
-          onBackFunc={() => {
-            props.navigation.goBack();
-          }}
-        />
-        <View style={{alignContent: 'center', alignItems: 'center', width: '100%', padding: 10}}>
-          {options && options.termDeclined && (
-            <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
-          )}
-          {task.data !== '' && (
-            <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>
-              Example sentence: "{task.data.replace(/(\r\n|\n|\r)/gm, '').replace(/"/g, '')}"
-            </Text>
-          )}
-          {task.data === '' && <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>Example sentences not available</Text>}
-        </View>
-        <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
-          <Text style={{...styles.senctence, color: '#fff'}}>Which of the following category does {task.term} belong?</Text>
-        </View>
-        <ScrollView
-          contentContainerStyle={{padding: 10}}
-          style={{height: deviceHeight - 370}}
-          nestedScrollEnabled={true}
-          keyboardShouldPersistTaps="handled">
-          {options &&
-            options.data &&
-            options.data.map((option, index) => (
-              <TouchableOpacity key={index} onPress={() => clickOption(index)}>
-                <View style={styles.option}>
-                  <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '85%'}}>
-                    <Text style={{fontSize: 20, width: '35%'}}>
-                      {option.option_} ({option.count}):
-                    </Text>
-                    <Text style={{...styles.senctence, textAlign: 'left', marginLeft: 5, width: '65%'}}>{option.definition.replace(/"/g, '')}</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '85%'}}>
-                    <Image source={require('../../assets/images/noimage.png')} />
-                    <View
-                      style={{flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignSelf: 'center', alignItems: 'center'}}>
-                      {optionIndexes.map((indOpt, it) => {
-                        if (indOpt == index) {
-                          return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
-                        }
-                      })}
+        <KeyboardAvoidingView behavior="position">
+          <NavHeader
+            headerText={task.term}
+            size={22}
+            bold={true}
+            letterSpacing={1.6}
+            navigation={props.navigation}
+            onBackFunc={() => {
+              props.navigation.goBack();
+            }}
+          />
+          <View style={{alignContent: 'center', alignItems: 'center', width: '100%', padding: 10}}>
+            {options && options.termDeclined && (
+              <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
+            )}
+            {task.data !== '' && (
+              <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>
+                Example sentence: "{task.data.replace(/(\r\n|\n|\r)/gm, '').replace(/"/g, '')}"
+              </Text>
+            )}
+            {task.data === '' && <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>Example sentences not available</Text>}
+          </View>
+          <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
+            <Text style={{...styles.senctence, color: '#fff'}}>Which of the following category does {task.term} belong?</Text>
+          </View>
+          <ScrollView
+            contentContainerStyle={{padding: 10}}
+            style={{height: deviceHeight - 370}}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled">
+            {options &&
+              options.data &&
+              options.data.map((option, index) => (
+                <TouchableOpacity key={index} onPress={() => clickOption(index)}>
+                  <View style={styles.option}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '85%'}}>
+                      <Text style={{fontSize: 20, width: '35%'}}>
+                        {option.option_} ({option.count}):
+                      </Text>
+                      <Text style={{...styles.senctence, textAlign: 'left', marginLeft: 5, width: '65%'}}>{option.definition.replace(/"/g, '')}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '85%'}}>
+                      <Image source={require('../../assets/images/noimage.png')} />
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignContent: 'center',
+                          alignSelf: 'center',
+                          alignItems: 'center',
+                        }}>
+                        {optionIndexes.map((indOpt, it) => {
+                          if (indOpt == index) {
+                            return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
+                          }
+                        })}
+                      </View>
                     </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          <TouchableOpacity>
-            <View>
-              <Text style={{fontSize: 20}}>None of above, select a new category:</Text>
-              <View style={{borderWidth: 1, borderRadius: 5, borderColor: 'grey', marginTop: 3}}>
-                <SearchableDropdown
-                  onItemSelect={(item) => {
-                    let newArr = [...optionIndexes];
-                    newArr = [];
-                    setOptionIndexes(newArr);
-                    setGroup(item.name);
-                    setCharacterDefaultIndex(item.id - 1);
-                  }}
-                  itemValue={group}
-                  containerStyle={{padding: 5, width: '100%'}}
-                  itemStyle={{
-                    padding: 10,
-                    marginTop: 2,
-                    backgroundColor: '#ddd',
-                    borderColor: '#bbb',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{maxHeight: 140}}
-                  items={quailtyData}
-                  defaultIndex={characterDefaultIndex}
-                  resetValue={false}
-                  textInputProps={{
-                    placeholder: 'Enter a quality name ',
-                    underlineColorAndroid: 'transparent',
-                    style: {
-                      padding: 12,
+                </TouchableOpacity>
+              ))}
+            <TouchableOpacity>
+              <View>
+                <Text style={{fontSize: 20}}>None of above, select a new category:</Text>
+                <View style={{borderWidth: 1, borderRadius: 5, borderColor: 'grey', marginTop: 3}}>
+                  <SearchableDropdown
+                    onItemSelect={(item) => {
+                      let newArr = [...optionIndexes];
+                      newArr = [];
+                      setOptionIndexes(newArr);
+                      setGroup(item.name);
+                      setCharacterDefaultIndex(item.id - 1);
+                    }}
+                    itemValue={group}
+                    containerStyle={{padding: 5, width: '100%'}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
                       borderWidth: 1,
-                      borderColor: '#ccc',
                       borderRadius: 5,
-                    },
-                  }}
-                  listProps={{nestedScrollEnabled: true}}
-                />
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 140}}
+                    items={quailtyData}
+                    defaultIndex={characterDefaultIndex}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Enter a quality name ',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                      },
+                    }}
+                    listProps={{nestedScrollEnabled: true}}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="record or enter a comment"
+                  style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                  onChangeText={(txt) => {
+                    setComment(txt);
+                  }}>
+                  {comment}
+                </TextInput>
+              </View>
+              <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                <TouchableOpacity onPress={() => setCommentsModal(true)}>
+                  <Text style={{padding: 3}}>Other's comments</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </TouchableOpacity>
-          <View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="record or enter a comment"
-                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
-                onChangeText={(txt) => {
-                  setComment(txt);
-                }}>
-                {comment}
-              </TextInput>
-            </View>
-            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-              <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                <Text style={{padding: 3}}>Other's comments</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          
-        </ScrollView>
+          </ScrollView>
 
-        <PrimaryButton 
+          <PrimaryButton 
             buttonText={'Submit'} 
             onPressFunc={onSubmit} 
             marginLeft={20} 
             marginRight={20} 
             marginBottom={5} 
-        />
+          />
 
-        <PrimaryButton
-          buttonText={'Reject the Term'}
-          onPressFunc={onDecline}
-          marginLeft={20}
-          marginRight={20}
-          marginBottom={5}
-          bgColor={'#F4463A'}
-          borderColor={'#F4463A'}
-        />
+          <PrimaryButton
+            buttonText={'Reject the Term'}
+            onPressFunc={onDecline}
+            marginLeft={20}
+            marginRight={20}
+            marginBottom={5}
+            bgColor={'#F4463A'}
+            borderColor={'#F4463A'}
+          />
 
-        <WarningModal
-          popupTitle="Warning"
-          message={'You need to select at least one category.'}
-          isVisible={warningModal}
-          handleYes={() => {
-            setWarningModal(false);
-          }}
-          handleCancel={() => {
-            setWarningModal(false);
-          }}
-        />
+          <WarningModal
+            popupTitle="Warning"
+            message={'You need to select at least one category.'}
+            isVisible={warningModal}
+            handleYes={() => {
+              setWarningModal(false);
+            }}
+            handleCancel={() => {
+              setWarningModal(false);
+            }}
+          />
 
-        <PopupConfirm
-          popupTitle="Are you sure to submit?"
-          stateMessage={stateMessage}
-          message={'You will not be able to change this decision after submit.'}
-          isVisible={confirmModal}
-          handleYes={() => {
-            setConfirmModal(false);
-            submitDecesion();
-          }}
-          handleCancel={() => {
-            setConfirmModal(false);
-          }}
-        />
-        <PopupAlert
-          popupTitle="Message"
-          message={message}
-          isVisible={newWarning}
-          handleOK={() => {
-            setNewWarning(false);
-          }}
-        />
+          <PopupConfirm
+            popupTitle="Are you sure to submit?"
+            stateMessage={stateMessage}
+            message={'You will not be able to change this decision after submit.'}
+            isVisible={confirmModal}
+            handleYes={() => {
+              setConfirmModal(false);
+              submitDecesion();
+            }}
+            handleCancel={() => {
+              setConfirmModal(false);
+            }}
+          />
+          <PopupAlert
+            popupTitle="Message"
+            message={message}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+            }}
+          />
 
-        <CommentsModal
-          popupTitle="Other's comments"
-          comments={options.comments}
-          term={task.term}
-          isVisible={commentsModal}
-          handleYes={() => {
-            setCommentsModal(false);
-          }}
-          handleCancel={() => {
-            setCommentsModal(false);
-          }}
-        />
+          <CommentsModal
+            popupTitle="Other's comments"
+            comments={options.comments}
+            term={task.term}
+            isVisible={commentsModal}
+            handleYes={() => {
+              setCommentsModal(false);
+            }}
+            handleCancel={() => {
+              setCommentsModal(false);
+            }}
+          />
         </KeyboardAvoidingView>
-    </ScrollView>
+      </ScrollView>
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -350,19 +352,15 @@ export default Category = (props) => {
         task={task}
         handleYes={() => {
           setDeclineModal(false);
-                api.getTasks(auth.expertId).then((result) => {
-                    dispatch(set_tasks(result.data.task_data));
-                    setTimeout(() => {
-                      props.navigation.goBack();
-                    }, 100);
-                  });
-                        
-            
+          api.getTasks(auth.expertId).then((result) => {
+            dispatch(set_tasks(result.data.task_data));
+            setTimeout(() => {
+              props.navigation.goBack();
+            }, 100);
+          });
         }}
         handleCancel={() => {
           setDeclineModal(false);
-          console.log("jkdfhdtftdtjftd")
-          console.log(task)
         }}
       />
     </>

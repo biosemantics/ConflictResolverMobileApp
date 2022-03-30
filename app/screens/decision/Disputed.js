@@ -15,7 +15,13 @@ import {
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleLeft, faL, faMicrophone} from '@fortawesome/free-solid-svg-icons';
-import Voice from '@react-native-voice/voice';
+//import Voice from '@react-native-voice/voice';
+import Voice, {
+  SpeechRecognizedEvent,
+  SpeechResultsEvent,
+  SpeechErrorEvent,
+} from '@react-native-voice/voice';
+
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from '../../components/NavHeader';
 import {useDispatch, useSelector} from 'react-redux';
@@ -106,6 +112,7 @@ export default function Disputed(props) {
   useEffect(() => {
     //Setting callbacks for the process status
     Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechEnd = onSpeechEnd;
     Voice.onSpeechError = onSpeechError;
     Voice.onSpeechResults = onSpeechResults;
@@ -140,69 +147,9 @@ export default function Disputed(props) {
       }
       setResults([]);
     }
-    // api.getQualityItem().then((result) => {
-    //   let qualityItem = [];
-    //   qualityItem.push({
-    //     id: result.data.data.details[0].IRI,
-    //     name: result.data.text,
-    //   });
-    //   qualityItem = getQualityItem(result.data.children, qualityItem);
-
-    //   dispatch(set_quality_item(qualityItem));
-    // });
-    // api.getStructureItem().then((result) => {
-    //   let structureItem = [];
-    //   structureItem.push({
-    //     id: result.data.data.details[0].IRI,
-    //     name: result.data.text,
-    //   });
-    //   structureItem = getStructureItem(result.data.children, structureItem);
-    //   // if (structureItem.length > 0) {
-    //   //     setStructureItems(structureItem)
-    //   // }
-    //   dispatch(set_structure_item(structureItem));
-    // });
+   
   }, [activebtn, results]);
 
-  // const getQualityItem = (data, qualityItem) => {
-  //   if (data) {
-  //     data.forEach((element) => {
-  //       if (element.children) {
-  //         getQualityItem(element.children, qualityItem);
-  //       } else {
-  //         qualityItem.push({
-  //           id: element.data.details[0].IRI,
-  //           name: element.text,
-  //         });
-  //       }
-  //     });
-  //   }
-  //   if (qualityItem.length > 0) {
-  //     setQualityItems(qualityItem);
-  //   }
-  //   //return qualityItem;
-  //   return qualityItems;
-  // };
-
-  // const getStructureItem = (data, structureItem) => {
-  //   if (data) {
-  //     data.forEach((element) => {
-  //       if (element.children) {
-  //         getStructureItem(element.children, structureItem);
-  //       } else {
-  //         structureItem.push({
-  //           id: element.data.details[0].IRI,
-  //           name: element.text,
-  //         });
-  //       }
-  //     });
-  //   }
-  //   if (structureItem.length > 0) {
-  //     setStructureItems(structureItem);
-  //   }
-  //   return structureItems;
-  //   // return structureItem;
-  // };
 
   const submitData = () => {
  
@@ -252,15 +199,20 @@ export default function Disputed(props) {
   };
 
   const start = (inputName) => {
+  
    
     setActivebtn(inputName);
-
+    console.log("mic started");
+    console.log(activebtn);
     startRecognizing(inputName);
   };
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
 
+  const onSpeechRecognized = (e) => {
+
+  }
 
   const onSpeechEnd = (e) => {
     //Invoked when SpeechRecognizer stops recognition
@@ -326,8 +278,11 @@ export default function Disputed(props) {
 
   const startRecognizing = async (inputName) => {
     //Starts listening for speech for a specific locale
+    console.log("start recogniztion part");
+
     try {
       await Voice.start('en-US');
+      console.log('jsjsjdhjsdjs');
       setPitch('');
       setError('');
       setStarted('');
@@ -485,7 +440,7 @@ export default function Disputed(props) {
                 <KeyboardAvoidingView behavior="position">
                   <SearchableDropdown
                     // ref={customRef}
-                    multi={true}
+                   // multi={true}
                     onItemSelect={(item) => {
                       let newArr = [...optionIndexes];
                       newArr = [];
@@ -494,11 +449,11 @@ export default function Disputed(props) {
                       setCharacterDefaultIndex(item.id - 1);
                     }}
                     onRemoveItem={(item) => {
-                      setOptionIndexes(['']);
+                      setOptionIndexes([]);
                       setPickerStructure('');
                       setCharacterDefaultIndex(0);
                     }}
-                    defaultIndex={2}
+                  //  defaultIndex={2}
                     containerStyle={{padding: 5, width: '96%'}}
                     itemStyle={{
                       padding: 10,
@@ -511,7 +466,7 @@ export default function Disputed(props) {
                     itemTextStyle={{color: '#222'}}
                     itemsContainerStyle={{maxHeight: 140}}
                     items={quailtyData}
-                    defaultIndex={0}
+                    // defaultIndex={2}
                     resetValue={false}
                     textInputProps={{
                       placeholder: 'Enter a quality name ',
@@ -543,7 +498,7 @@ export default function Disputed(props) {
                       setPickerStructure('');
                       setCharacterDefaultIndex(0);
                     }}
-                    defaultIndex={2}
+                    // defaultIndex={2}
                     containerStyle={{padding: 5, width: '96%'}}
                     itemStyle={{
                       padding: 10,
@@ -556,7 +511,7 @@ export default function Disputed(props) {
                     itemTextStyle={{color: '#222'}}
                     itemsContainerStyle={{maxHeight: 140}}
                     items={structureData}
-                    defaultIndex={2}
+                    // defaultIndex={2}
                     resetValue={false}
                     textInputProps={{
                       placeholder: 'Enter a Structure name ',
@@ -668,19 +623,24 @@ export default function Disputed(props) {
                   <Text style={{margin: 8}}>Structure</Text>
                 </View>
                 {checked == 'Quality' ? (
-                 
+                  <KeyboardAvoidingView behavior="position">
                     <SearchableDropdown
-                      multi={true}
-                      onTextChange={(pickerStructure) => console.log(pickerStructure)}
+                      // multi={true}
+                      // onTextChange={(pickerStructure) => console.log(pickerStructure)}
                       onItemSelect={(item) => {
-                        console.log('@LOGGG111', item);
+                     
                         let newArr = [...optionIndexes];
                         newArr = [];
                         setOptionIndexes(newArr);
                         setPickerStructure(item.id);
                         setCharacterDefaultIndex(item.id - 1);
                       }}
-                      defaultIndex={2}
+                      onRemoveItem={(item) => {
+                        setOptionIndexes([]);
+                        setPickerStructure('');
+                        setCharacterDefaultIndex(0);
+                      }}
+                      // defaultIndex={2}
                       containerStyle={{padding: 5, width: '96%'}}
                       itemStyle={{
                         padding: 10,
@@ -693,7 +653,7 @@ export default function Disputed(props) {
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
                       items={quailtyData}
-                      defaultIndex={0}
+                      // defaultIndex={0}
                       resetValue={false}
                       textInputProps={{
                         placeholder: 'Enter a quality name ',
@@ -707,19 +667,24 @@ export default function Disputed(props) {
                       }}
                       listProps={{nestedScrollEnabled: true}}
                     />
-                 
+                 </KeyboardAvoidingView>
                 ) : (
                   
                     <SearchableDropdown
                       onItemSelect={(item) => {
-                        console.log('@LOGGG', item);
+                        // console.log('@LOGGG', item);
                         let newArr = [...optionIndexes];
                         newArr = [];
                         setOptionIndexes(newArr);
                         setPickerStructure(item.id);
                         setCharacterDefaultIndex(item.id - 1);
                       }}
-                      defaultIndex={2}
+                      onRemoveItem={(item) => {
+                        setOptionIndexes([]);
+                        setPickerStructure('');
+                        setCharacterDefaultIndex(0);
+                      }}
+                      // defaultIndex={2}
                       containerStyle={{padding: 5, width: '96%'}}
                       itemStyle={{
                         padding: 10,
@@ -732,7 +697,7 @@ export default function Disputed(props) {
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
                       items={structureData}
-                      defaultIndex={0}
+                      // defaultIndex={0}
                       resetValue={false}
                       textInputProps={{
                         placeholder: 'Enter a Structure name ',
@@ -845,7 +810,7 @@ export default function Disputed(props) {
       </KeyboardAvoidingView>
     </ScrollView>
 
-    // </View>
+  
   );
 }
 
