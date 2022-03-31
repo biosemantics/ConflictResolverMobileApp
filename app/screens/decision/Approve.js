@@ -269,7 +269,7 @@ export default Approve = (props) => {
   return (
     <>
       <ScrollView contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}>
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior="padding">
           <NavHeader
             headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
             size={22}

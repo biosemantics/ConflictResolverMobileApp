@@ -34,6 +34,8 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import {set_disputed_options, set_tasks} from '../../store/actions';
 
 export default function Disputed(props) {
+    const [task, setTask] = useState(props.navigation.getParam('task', {}));
+
   const auth = useSelector((state) => state.main.auth);
 
   const [disputed, setDisputed] = useState(props.navigation.getParam('disputed', {}));
@@ -50,7 +52,7 @@ export default function Disputed(props) {
 
   const [pickerStructure, setPickerStructure] = useState('');
   const [pickerStructure2, setPickerStructure2] = useState('');
-
+  const [stateMessage, setStateMessage] = useState('');
   const [results, setResults] = useState([]);
   const [activebtn, setActivebtn] = useState(0);
   const [dropDown1, setDropDown1] = useState(false);
@@ -73,6 +75,7 @@ export default function Disputed(props) {
   const [definitionSrc, setDefinitionSrc] = useState('');
   const [logicDefinition, setlogicDefinition] = useState('');
   const [decisionExperts, setDecisionExperts] = useState('');
+  const [group, setGroup] = useState('');
 
   const [warningModal, setWarningModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -143,12 +146,50 @@ export default function Disputed(props) {
 
   const submitData = () => {
     var canSubmit = 0;
-    if (pickerStructure != '' && pickerStructure != null) {
+    if (optionIndexes.length !== 0 || group != '') {
       canSubmit = 1;
     }
     if (canSubmit === 0) {
+      setMessage('Not Submitted');
       setWarningModal(true);
     } else {
+      var messageVal = '';
+      if(dropDown2){
+       messageVal = "You've selected using existing term " + disputed.term + " to represent the concept"
+      }
+      else if(dropDown1){
+         messageVal = "You've selected a new term " + disputed.term + ' to represent the concept: ';
+      }
+    //  var messageVal = "You've selected a new term " + disputed.term + ' to represent the concept: ';
+      var ind = 0;
+      if (optionIndexes.length === 0) {
+        messageVal += group;
+
+      } else {
+        optionIndexes.map((indOpt) => {
+          if (ind !== 0) {
+            messageVal += ', ';
+          }
+          messageVal += options.data[indOpt].option_;
+          ind++;
+        });
+      }
+      messageVal += '.';
+      if (optionIndexes.length !== 0) {
+        if (group != '') {
+          var ind = 0;
+          messageVal += '\n\nThe selection of ' + group + ' is ignored because you also selected ';
+          optionIndexes.map((indOpt) => {
+            if (ind !== 0) {
+              messageVal += ', ';
+            }
+            messageVal += options.data[indOpt].option_;
+            ind++;
+          });
+          messageVal += '.';
+        }
+      }
+      setStateMessage(messageVal);
       setConfirmModal(true);
     }
   };
@@ -216,8 +257,7 @@ export default function Disputed(props) {
       setinput4(msg);
     } else if (activebtn == 5) {
       setinput5(msg);
-    } else{
-
+    } else {
     }
   };
 
@@ -301,7 +341,7 @@ export default function Disputed(props) {
   const customRef = useRef({});
   return (
     <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
-      <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView behavior="padding">
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
         </View>
@@ -365,6 +405,7 @@ export default function Disputed(props) {
           <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
           <TouchableOpacity
             onPress={() => {
+
               handleChange('disable2');
             }}>
             {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
@@ -419,7 +460,7 @@ export default function Disputed(props) {
                   <Text style={{margin: 8}}>Structure</Text>
                 </View>
                 {checked == 'Quality' ? (
-                  <KeyboardAvoidingView behavior="position">
+                  <KeyboardAvoidingView behavior="padding">
                     <SearchableDropdown
                       // ref={customRef}
                       // multi={true}
@@ -428,6 +469,7 @@ export default function Disputed(props) {
                         newArr = [];
                         setOptionIndexes(newArr);
                         setPickerStructure(item.id);
+                        setGroup(item.name);
                         setCharacterDefaultIndex(item.id - 1);
                       }}
                       onRemoveItem={(item) => {
@@ -474,6 +516,7 @@ export default function Disputed(props) {
                       newArr = [];
                       setOptionIndexes(newArr);
                       setPickerStructure(item.id);
+                      setGroup(item.name);
                       setCharacterDefaultIndex(item.id - 1);
                     }}
                     onRemoveItem={(item) => {
@@ -602,7 +645,7 @@ export default function Disputed(props) {
                     <Text style={{margin: 8}}>Structure</Text>
                   </View>
                   {checked == 'Quality' ? (
-                    <KeyboardAvoidingView behavior="position">
+                    <KeyboardAvoidingView behavior="padding">
                       <SearchableDropdown
                         // multi={true}
                         // onTextChange={(pickerStructure) => console.log(pickerStructure)}
@@ -611,6 +654,7 @@ export default function Disputed(props) {
                           newArr = [];
                           setOptionIndexes(newArr);
                           setPickerStructure(item.id);
+                          setGroup(item.name);
                           setCharacterDefaultIndex(item.id - 1);
                         }}
                         onRemoveItem={(item) => {
@@ -654,6 +698,7 @@ export default function Disputed(props) {
                         newArr = [];
                         setOptionIndexes(newArr);
                         setPickerStructure(item.id);
+                        setGroup(item.name);
                         setCharacterDefaultIndex(item.id - 1);
                       }}
                       onRemoveItem={(item) => {
@@ -677,7 +722,7 @@ export default function Disputed(props) {
                       // defaultIndex={0}
                       resetValue={false}
                       textInputProps={{
-                        placeholder: 'Enter a Structure name ',
+                        placeholder: 'Enter a structure name ',
                         underlineColorAndroid: 'transparent',
                         style: {
                           padding: 12,
@@ -694,7 +739,7 @@ export default function Disputed(props) {
                 {/* Second input and mic field */}
                 <View style={Styles.inputView}>
                   <TextInput
-                    placeholder="Enter an example Sentence"
+                    placeholder="Enter an example sentence"
                     style={Styles.inputBoxView}
                     value={input3}
                     // onChangeText={input3}
@@ -766,21 +811,10 @@ export default function Disputed(props) {
             setNewWarning(false);
           }}
         />
-        <WarningModal
-          popupTitle="Warning"
-          message={'You need to select at least one category.'}
-          isVisible={warningModal}
-          handleYes={() => {
-            setWarningModal(false);
-          }}
-          handleCancel={() => {
-            setWarningModal(false);
-          }}
-        />
 
         <PopupConfirm
           popupTitle="Are you sure to submit?"
-          // stateMessage={stateMessage}
+          stateMessage={stateMessage}
           message={'You will not be able to change this decision after submit.'}
           isVisible={confirmModal}
           handleYes={() => {

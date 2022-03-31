@@ -366,6 +366,7 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
+        // console.log(result);
         api.getTasks(auth.expertId).then((result) => {
           dispatch(set_tasks(result.data.task_data));
           props.navigation.goBack();
@@ -384,7 +385,7 @@ export default Category = (props) => {
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior="padding">
           <NavHeader
             headerText={task.term}
             size={22}

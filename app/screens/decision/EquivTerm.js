@@ -218,7 +218,7 @@ export default EquivTerm = (props) => {
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior="padding">
           <NavHeader
             headerText={task.term}
             size={22}
