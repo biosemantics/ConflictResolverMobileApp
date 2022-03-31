@@ -366,18 +366,12 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
-        if(result.data.success){
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
             props.navigation.goBack();
           });
-          console.log('success'); 
-        }
-        else{
-          console.log(error);
-        }
       });
-      
+
   };
 
   const handleClickOtherComment = () => {

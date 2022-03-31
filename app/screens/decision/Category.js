@@ -243,8 +243,9 @@ export default Category = (props) => {
     <>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="padding">
+        //keyboardShouldPersistTaps="handled"
+        >
+        <KeyboardAvoidingView behavior="position">
           <NavHeader
             headerText={task.term}
             size={22}

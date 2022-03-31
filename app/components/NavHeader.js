@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 // import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {faSignOut} from '@fortawesome/free-solid-svg-icons';
 export default class NavHeader extends React.Component {
   _menu = null;
-  
+
   constructor(props) {
     super(props);
     this.handleBack = this.handleBack.bind(this);
@@ -15,10 +18,10 @@ export default class NavHeader extends React.Component {
     this.props.navigation.goBack();
   }
 
-  setMenuRef = ref => {
+  setMenuRef = (ref) => {
     this._menu = ref;
   };
-  
+
   hideMenu = () => {
     this._menu.hide();
   };
@@ -26,28 +29,41 @@ export default class NavHeader extends React.Component {
   showMenu = () => {
     this._menu.show();
   };
+  // valueGettingClear = () => {
+    
+  // };
 
   render() {
     var onBackFunc = this.props.onBackFunc ? this.props.onBackFunc : this.handleBack;
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.backBtn} onPress={()=> onBackFunc()}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => onBackFunc()}>
           {/* <Image source={require('../assets/images/back_arrow_2.png')} /> */}
           <AntDesignIcon name="left" size={25} />
         </TouchableOpacity>
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
+        <TouchableOpacity style={{position: 'absolute', top: 7, right: 5, padding: 10}} onPress={() => {
+          AsyncStorage.clear();
+          this.props.navigation.navigate('Splash'); 
+          // this.props.navigation.reset({
+          //   index: 0,
+          //   routes: [{name: 'Splash'}],
+          // });      
+          }}>
+          <FontAwesomeIcon icon={faSignOut} color={'#143a6c'} size={25} />
+        </TouchableOpacity>
       </View>
     );
   }
-};
+}
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     padding: 15,
   },
   icon: {
@@ -70,11 +86,11 @@ const styles = StyleSheet.create({
   gearBtn: {
     position: 'absolute',
     right: 5,
-    top: 7
+    top: 7,
   },
   menu: {
     position: 'absolute',
     right: 5,
     top: 7,
-  }
-})
+  },
+});
