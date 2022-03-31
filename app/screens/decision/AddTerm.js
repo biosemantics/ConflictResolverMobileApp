@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 import SelectDropdown from 'react-native-select-dropdown';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import Voice from '@react-native-community/voice';
-import {faAngleLeft, faL, faMicrophone, faMinus, faPlus, faRemove} from '@fortawesome/free-solid-svg-icons';
+import {faAngleLeft, faL, faMicrophone, faMinus, faPlus, faPlusCircle, faRemove} from '@fortawesome/free-solid-svg-icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -366,10 +366,16 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
-        api.getTasks(auth.expertId).then((result) => {
-          dispatch(set_tasks(result.data.task_data));
-          props.navigation.goBack();
-        });
+        if(result.success){
+          api.getTasks(auth.expertId).then((result) => {
+            dispatch(set_tasks(result.data.task_data));
+            props.navigation.goBack();
+          });
+          console.log('success'); 
+        }
+        else{
+          console.log(error);
+        }
       });
   };
 
@@ -890,7 +896,7 @@ export default Category = (props) => {
                         setSynonyms([...synonyms, {synonym: synonym, expertId: auth.expertId}]);
                         setSynonym('');
                       }}>
-                      <FontAwesomeIcon icon={faMinus} size={25} color={'white'} />
+                      <FontAwesomeIcon icon={faPlus} size={25} color={'white'} />
                     </TouchableOpacity>
                   </View>
                   <Text style={{color: 'black', marginTop: 5}}>List terms that are exchangable with {task.term}.</Text>

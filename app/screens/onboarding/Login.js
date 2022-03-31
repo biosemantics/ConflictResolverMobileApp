@@ -9,12 +9,13 @@ import NavHeader from '../../components/NavHeader';
 import { login } from '../../api/auth';
 
 import {useDispatch} from 'react-redux';
-
 import {setUser} from '../../store/actions/main';
 
+//import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default Login = ( props ) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('abc');
+  const [password, setPassword] = useState('aaa123');
 
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
@@ -38,6 +39,8 @@ export default Login = ( props ) => {
         setErrorInfoModal(true);
       }
       else {
+        console.log("welcome login");
+//        AsyncStorage.setItem('email',result.data.email);
         dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
         props.navigation.navigate('HomeLayout');
       }

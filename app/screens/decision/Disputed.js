@@ -37,6 +37,9 @@ export default function Disputed(props) {
   const auth = useSelector((state) => state.main.auth);
 
   const [disputed, setDisputed] = useState(props.navigation.getParam('disputed', {}));
+  console.log('solution given ');
+  console.log(disputed.solutionGiven);
+
 
   const [pitch, setPitch] = useState('');
   const [error, setError] = useState('');
@@ -83,8 +86,6 @@ export default function Disputed(props) {
   const [startRec, setStartRec] = useState(0);
 
   const [characterDefaultIndex, setCharacterDefaultIndex] = useState(0);
-  const [characterDefaultIndex2, setCharacterDefaultIndex2] = useState(0);
-
   const [optionIndexes, setOptionIndexes] = useState([]);
   let today = new Date();
   let date = today.getFullYear() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getDate();
@@ -100,6 +101,9 @@ export default function Disputed(props) {
 
   const quailtyData = useSelector((state) => state.main.metaData.quality);
   const structureData = useSelector((state) => state.main.metaData.structure);
+
+
+  console.log(quailtyData);
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -140,6 +144,16 @@ export default function Disputed(props) {
       setResults([]);
     }
   }, [activebtn, results]);
+
+  // useEffect(() => {
+  //   if(disputed.solutionGiven = 1){
+  //       console.log('my solution is shown here');
+  //       console.log(disputed.userSolution.superclass);
+  //   }
+
+
+  // }, [ ]);
+
 
   const submitData = () => {
     var canSubmit = 0;
@@ -279,19 +293,6 @@ export default function Disputed(props) {
       console.error(e);
     }
   };
-
-  // const stopRecognizing = async () => {
-
-  //     try {
-  //         await Voice.stop();
-
-  //     } catch (e) {
-  //         //eslint-disable-next-line
-  //         console.error(e);
-  //     }
-  // };
-  // // console.log("passing data");
-  // // console.log(selectedItem.name);
 
   const dropdownRef = useRef();
   const deviceWidth = Dimensions.get('window').width;
@@ -538,7 +539,7 @@ export default function Disputed(props) {
             {
               <View>
                 <View style={Styles.inputView}>
-                  <TextInput placeholder="Enter the new item" style={Styles.inputBoxView} value={newTerm} onChangeText={(text) => setNewTerm(text)} />
+                  <TextInput placeholder="Enter the new item" style={Styles.inputBoxView} value={disputed.solutionGiven ? disputed.userSolution.newTerm : newTerm} onChangeText={(text) => setNewTerm(text)} />
                   <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
                     <FontAwesomeIcon icon={faMicrophone} size={25} />
                   </TouchableOpacity>
@@ -547,7 +548,7 @@ export default function Disputed(props) {
                   <TextInput
                     placeholder="Enter a definition"
                     style={Styles.inputBoxView}
-                    value={newDefinition}
+                    value={disputed.solutionGiven ? disputed.userSolution.newDefinition :newDefinition}
                     onChangeText={(text) => setNewDefinition(text)}
                   />
 
@@ -604,13 +605,15 @@ export default function Disputed(props) {
                   {checked == 'Quality' ? (
                     <KeyboardAvoidingView behavior="position">
                       <SearchableDropdown
-                        // multi={true}
+                       // multi={true}
                         // onTextChange={(pickerStructure) => console.log(pickerStructure)}
                         onItemSelect={(item) => {
                           let newArr = [...optionIndexes];
                           newArr = [];
                           setOptionIndexes(newArr);
                           setPickerStructure(item.id);
+                          console.log("fsdsbdsh " + pickerStructure);
+                         alert(pickerStructure);
                           setCharacterDefaultIndex(item.id - 1);
                         }}
                         onRemoveItem={(item) => {
@@ -618,7 +621,7 @@ export default function Disputed(props) {
                           setPickerStructure('');
                           setCharacterDefaultIndex(0);
                         }}
-                        // defaultIndex={2}
+                        defaultIndex={2}
                         containerStyle={{padding: 5, width: '96%'}}
                         itemStyle={{
                           padding: 10,
@@ -631,7 +634,7 @@ export default function Disputed(props) {
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
                         items={quailtyData}
-                        // defaultIndex={0}
+                        defaultIndex={0}
                         resetValue={false}
                         textInputProps={{
                           placeholder: 'Enter a quality name ',
@@ -696,7 +699,7 @@ export default function Disputed(props) {
                   <TextInput
                     placeholder="Enter an example Sentence"
                     style={Styles.inputBoxView}
-                    value={input3}
+                    value={disputed.solutionGiven ? disputed.userSolution.exampleSentence : input3}
                     // onChangeText={input3}
                     onChangeText={(text) => setinput3(text)}
                   />
@@ -709,7 +712,7 @@ export default function Disputed(props) {
                   <TextInput
                     placeholder="Enter applicable taxa"
                     style={Styles.inputBoxView}
-                    value={input4}
+                    value={disputed.solutionGiven ? disputed.userSolution.taxa : input4}
                     onChangeText={(text) => setinput4(text)}
                   />
                   <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
@@ -734,7 +737,7 @@ export default function Disputed(props) {
               borderRadius: 50,
               paddingLeft: 20,
             }}
-            value={input5}
+            value={disputed.solutionGiven ? disputed.userSolution.comment :input5}
             onChangeText={(text) => setinput5(text)}
           />
           <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
