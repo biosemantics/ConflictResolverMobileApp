@@ -34,7 +34,7 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import {set_disputed_options, set_tasks} from '../../store/actions';
 
 export default function Disputed(props) {
-    const [task, setTask] = useState(props.navigation.getParam('task', {}));
+  const [task, setTask] = useState(props.navigation.getParam('task', {}));
 
   const auth = useSelector((state) => state.main.auth);
 
@@ -101,8 +101,6 @@ export default function Disputed(props) {
 
   const quailtyData = useSelector((state) => state.main.metaData.quality);
   const structureData = useSelector((state) => state.main.metaData.structure);
-
-    console.log("hellodf" + disputed.userSolution && disputed.userSolution.length > 0);
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -215,10 +213,7 @@ export default function Disputed(props) {
   };
 
 
-  disputed.userSolution && disputed.userSolution.length > 0 &&
-  disputed.userSolution.map((ind, index) => (
-    console.log("sdhgshdg" + ind)
-    ))
+  
   const submitData = () => {
     var canSubmit = 0;
     if (optionIndexes.length !== 0 || group != '') {
