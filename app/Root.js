@@ -21,6 +21,30 @@ import ExactTerm from './screens/decision/ExactTerm';
 import EquivTerm from './screens/decision/EquivTerm';
 import Disputed from './screens/decision/Disputed';
 
+// const Stack = createStackNavigator({
+//   HomeLayout: {
+//     screen: HomeLayout
+//   },
+//   Category: {
+//     screen: Category
+//   },
+//   Approve: {
+//     screen: Approve
+//   },
+//   AddTerm: {
+//     screen: AddTerm
+//   },
+//   ExactTerm: {
+//     screen: ExactTerm
+//   },
+//   EquivTerm: {
+//     screen: EquivTerm
+//   },
+//   Disputed: {
+//     screen: Disputed
+//   }
+// });
+
 const Root = createStackNavigator({
   Splash: {
     screen: Splash

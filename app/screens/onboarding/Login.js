@@ -14,8 +14,8 @@ import {setUser} from '../../store/actions/main';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default Login = ( props ) => {
-  const [username, setUsername] = useState('abc');
-  const [password, setPassword] = useState('aaa123');
+  const [username, setUsername] = useState('user');
+  const [password, setPassword] = useState('user');
 
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
@@ -40,9 +40,12 @@ export default Login = ( props ) => {
       }
       else {
         console.log("welcome login");
-//        AsyncStorage.setItem('email',result.data.email);
         dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
-        props.navigation.navigate('HomeLayout');
+      props.navigation.navigate('HomeLayout');
+      // props.navigation.reset({
+      //   root:
+      // })
+       
       }
     }).catch( err => {
       let msg = 'Connection error. Please check your network connection.';

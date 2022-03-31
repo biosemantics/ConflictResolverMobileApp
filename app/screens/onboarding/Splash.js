@@ -7,7 +7,7 @@ export default Splash = ( props ) => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
         <Text style={styles.text}>
           Conflict Resolver
         </Text>

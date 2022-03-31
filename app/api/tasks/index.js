@@ -154,6 +154,9 @@ export default api = {
   solveAddTermConflict : async (termId, expertId, termType, subPartString, superPartString, alwaysHasPartString, alwaysPartOfString, maybePartOfString, subclassOf, experts, synonyms, comment) => {
     const data = { termId, expertId, termType, subPartString, superPartString, alwaysHasPartString, alwaysPartOfString, maybePartOfString, subclassOf, experts, synonyms, comment };
     
+    console.log('gfgffggf');
+    console.log(data);
+
     let apiUrl = baseUrl + 'DailyOperations/SolveAddTermConflict.php';
 
     return await axios.get(apiUrl, {params: data});

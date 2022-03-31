@@ -29,38 +29,18 @@ const getStructure = (data, structures, index) => {
     return index;
 }
   
-// const getQuality = (data, qualities, index) => {
-//     qualities.push({
-//         id: index,
-//         name: data.text
-//     });
-//     if (data.children){
-//         data.children.map(child => {
-//             index = getQuality(child, qualities, ++index);
-//         })
-//     }
-//     return index;
-// }
-
-const getQuality = (data, qualityItem) => {
-    if (data) {
-      data.forEach((element) => {
-        if (element.children) {
-          getQuality(element.children, qualityItem);
-        } else {
-          qualityItem.push({
-            id: element.data.details[0].IRI,
-            name: element.text,
-          });
-        }
-      });
+const getQuality = (data, qualities, index) => {
+    qualities.push({
+        id: index,
+        name: data.text
+    });
+    if (data.children){
+        data.children.map(child => {
+            index = getQuality(child, qualities, ++index);
+        })
     }
-    if (qualityItem.length > 0) {
-      setQualityItems(qualityItem);
-    }
-    //return qualityItem;
-    return qualityItems;
-  };
+    return index;
+}
 
 export default HomeLayout = (props) => {
     const [tabID, setTabID] = useState(0);
@@ -120,30 +100,17 @@ export default HomeLayout = (props) => {
             getStructure(result.data, structures, 2);
             dispatch(set_structure(structures));
         });
-        // api.getQuality().then(result => {
-        //     let qualities = [];
-        //     qualities.push({
-        //         id: 1,
-        //         name: ""
-        //     });
-        //     getQuality(result.data, qualities, 2);
-        //     dispatch(set_quality(qualities));
-        // });
-
-        api.getQuality().then((result) => {
-            let qualityItem = [];
-            qualityItem.push({
-              id: result.data.data.details[0].IRI,
-              name: result.data.text,
+        api.getQuality().then(result => {
+            let qualities = [];
+            qualities.push({
+                id: 1,
+                name: ""
             });
-            qualityItem = getQuality(result.data.children, qualityItem);
-            // if (qualityItem.length > 0) {
-            //     setQualityItems(qualityItem)
-            // }
-      
-            dispatch(set_quality(qualityItem));
-          });
+            getQuality(result.data, qualities, 2);
+            dispatch(set_quality(qualities));
+        });
 
+  
     }, [])
 
     const renderContent =  () => {
@@ -164,9 +131,11 @@ export default HomeLayout = (props) => {
             <View style={{height: 112, display: 'flex', justifyContent: 'center', zIndex: 99999}}>
                 <NavTabs active={tabID} changeFunc={onChangTab} navigation={props.navigation}/>
             </View>
+            <ScrollView nestedScrollEnabled={true}>
             <View style={{marginTop: 18, width: '100%', height: deviceHeight - 220}}>
                 { renderContent() }
             </View>
+            </ScrollView>
             <PopupAlert
                 popupTitle="Error"
                 message={message}
