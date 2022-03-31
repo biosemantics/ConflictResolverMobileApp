@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Dimensions, View, Text, ScrollView } from 'react-native';
+import { Dimensions, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 import NavTabs from '../../components/NavTabs';
 
@@ -122,21 +122,24 @@ export default HomeLayout = (props) => {
       }
     }
     return (
-        <View style={styles.container}>
-            <View style={{height: 112, display: 'flex', justifyContent: 'center', zIndex: 99999}}>
-                <NavTabs active={tabID} changeFunc={onChangTab} navigation={props.navigation}/>
-            </View>
-            <View style={{marginTop: 18, width: '100%', height: deviceHeight - 220}}>
-                { renderContent() }
-            </View>
-            <PopupAlert
-                popupTitle="Error"
-                message={message}
-                isVisible={errorInfoModal}
-                handleOK={()=>{setErrorInfoModal(false)}}
-            />
+      <View style={styles.container}>
+        
+        <View style={{height: 112, display: 'flex', justifyContent: 'center', zIndex: 99999}}>
+          <NavTabs active={tabID} changeFunc={onChangTab} navigation={props.navigation} />
         </View>
-    )
+        <ScrollView nestedScrollEnabled={true}>
+          <View style={{marginTop: 18, width: '100%', height: deviceHeight - 220}}>{renderContent()}</View>
+        </ScrollView>
+        <PopupAlert
+          popupTitle="Error"
+          message={message}
+          isVisible={errorInfoModal}
+          handleOK={() => {
+            setErrorInfoModal(false);
+          }}
+        />
+      </View>
+    );
 }
 
 const styles = {
