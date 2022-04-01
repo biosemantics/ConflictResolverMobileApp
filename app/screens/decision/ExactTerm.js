@@ -211,11 +211,13 @@ export default ExactTerm = (props) => {
   };
 
   return (
-    <>
-      <ScrollView
-        contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="padding">
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        enabled>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
             size={22}
@@ -246,8 +248,8 @@ export default ExactTerm = (props) => {
             contentContainerStyle={{padding: 10}}
             style={{height: deviceHeight - 265}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
-            {options &&
+            keyboardShouldPersistTaps="always">
+            {options &&    
               options.data &&
               options.data.map((option, index) => (
                 <TouchableOpacity key={index} onPress={() => clickOption(option.id)}>
@@ -354,9 +356,10 @@ export default ExactTerm = (props) => {
               setCommentsModal(false);
             }}
           />
-        </KeyboardAvoidingView>
+        
       </ScrollView>
-    </>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 const styles = {

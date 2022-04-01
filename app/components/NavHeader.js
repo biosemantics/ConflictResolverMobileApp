@@ -38,22 +38,11 @@ export default class NavHeader extends React.Component {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.backBtn} onPress={() => onBackFunc()}>
-          {/* <Image source={require('../assets/images/back_arrow_2.png')} /> */}
           <AntDesignIcon name="left" size={25} />
         </TouchableOpacity>
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
-        <TouchableOpacity style={{position: 'absolute', top: 7, right: 5, padding: 10}} onPress={() => {
-          AsyncStorage.clear();
-          this.props.navigation.navigate('Splash'); 
-          // this.props.navigation.reset({
-          //   index: 0,
-          //   routes: [{name: 'Splash'}],
-          // });      
-          }}>
-          <FontAwesomeIcon icon={faSignOut} color={'#143a6c'} size={25} />
-        </TouchableOpacity>
       </View>
     );
   }

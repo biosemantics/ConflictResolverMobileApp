@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, SafeAreaView, Platform} from 'react-native';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -20,6 +20,8 @@ import api from '../../api/tasks';
 import {set_options} from '../../store/actions';
 import {set_tasks} from '../../store/actions';
 import PopupAlert from '../../components/PopupAlert';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default Category = (props) => {
   const [task, setTask] = useState(props.navigation.getParam('task', {}));
@@ -240,41 +242,44 @@ export default Category = (props) => {
   };
 
   return (
-    <>
-      <ScrollView
-        contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        //keyboardShouldPersistTaps="handled"
-        >
-        <KeyboardAvoidingView behavior="position">
-          <NavHeader
-            headerText={task.term}
-            size={22}
-            bold={true}
-            letterSpacing={1.6}
-            navigation={props.navigation}
-            onBackFunc={() => {
-              props.navigation.goBack();
-            }}
-          />
-          <View style={{alignContent: 'center', alignItems: 'center', width: '100%', padding: 10}}>
-            {options && options.termDeclined && (
-              <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
-            )}
-            {task.data !== '' && (
-              <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>
-                Example sentence: "{task.data.replace(/(\r\n|\n|\r)/gm, '').replace(/"/g, '')}"
-              </Text>
-            )}
-            {task.data === '' && <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>Example sentences not available</Text>}
-          </View>
-          <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
-            <Text style={{...styles.senctence, color: '#fff'}}>Which of the following category does {task.term} belong?</Text>
-          </View>
-          <ScrollView
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ?  20: StatusBar.currentHeight + 50} // 50 is Button height
+        enabled>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
+         
+            {/* <KeyboardAwareScrollView contentContainerStyle={{flex:1}}> */}
+            <NavHeader
+              headerText={task.term}
+              size={22}
+              bold={true}
+              letterSpacing={1.6}
+              navigation={props.navigation}
+              onBackFunc={() => {
+                props.navigation.goBack();
+              }}
+            />
+            <View style={{alignContent: 'center', alignItems: 'center', width: '100%', padding: 10}}>
+              {options && options.termDeclined && (
+                <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
+              )}
+              {task.data !== '' && (
+                <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>
+                  Example sentence: "{task.data.replace(/(\r\n|\n|\r)/gm, '').replace(/"/g, '')}"
+                </Text>
+              )}
+              {task.data === '' && <Text style={{...styles.senctence, color: '#555', fontWeight: '800'}}>Example sentences not available</Text>}
+            </View>
+            <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
+              <Text style={{...styles.senctence, color: '#fff'}}>Which of the following category does {task.term} belong?</Text>
+            </View>
+            {/* <ScrollView
             contentContainerStyle={{padding: 10}}
             style={{height: deviceHeight - 370}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="always"> */}
             {options &&
               options.data &&
               options.data.map((option, index) => (
@@ -368,68 +373,68 @@ export default Category = (props) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
+            {/* </ScrollView> */}
 
-          <WarningModal
-            popupTitle="Warning"
-            message={'You need to select at least one category.'}
-            isVisible={warningModal}
-            handleYes={() => {
-              setWarningModal(false);
-            }}
-            handleCancel={() => {
-              setWarningModal(false);
-            }}
-          />
+            <WarningModal
+              popupTitle="Warning"
+              message={'You need to select at least one category.'}
+              isVisible={warningModal}
+              handleYes={() => {
+                setWarningModal(false);
+              }}
+              handleCancel={() => {
+                setWarningModal(false);
+              }}
+            />
 
-          <PopupConfirm
-            popupTitle="Are you sure to submit?"
-            stateMessage={stateMessage}
-            message={'You will not be able to change this decision after submit.'}
-            isVisible={confirmModal}
-            handleYes={() => {
-              setConfirmModal(false);
-              submitDecesion();
-            }}
-            handleCancel={() => {
-              setConfirmModal(false);
-            }}
-          />
-          <PopupAlert
-            popupTitle="Message"
-            message={message}
-            isVisible={newWarning}
-            handleOK={() => {
-              setNewWarning(false);
-            }}
-          />
+            <PopupConfirm
+              popupTitle="Are you sure to submit?"
+              stateMessage={stateMessage}
+              message={'You will not be able to change this decision after submit.'}
+              isVisible={confirmModal}
+              handleYes={() => {
+                setConfirmModal(false);
+                submitDecesion();
+              }}
+              handleCancel={() => {
+                setConfirmModal(false);
+              }}
+            />
+            <PopupAlert
+              popupTitle="Message"
+              message={message}
+              isVisible={newWarning}
+              handleOK={() => {
+                setNewWarning(false);
+              }}
+            />
 
-          <CommentsModal
-            popupTitle="Other's comments"
-            comments={options.comments}
-            term={task.term}
-            isVisible={commentsModal}
-            handleYes={() => {
-              setCommentsModal(false);
-            }}
-            handleCancel={() => {
-              setCommentsModal(false);
-            }}
-          />
+            <CommentsModal
+              popupTitle="Other's comments"
+              comments={options.comments}
+              term={task.term}
+              isVisible={commentsModal}
+              handleYes={() => {
+                setCommentsModal(false);
+              }}
+              handleCancel={() => {
+                setCommentsModal(false);
+              }}
+            />
 
-          <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
+            <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
 
-          <PrimaryButton
-            buttonText={'Reject the Term'}
-            onPressFunc={onDecline}
-            marginLeft={20}
-            marginRight={20}
-            marginBottom={5}
-            bgColor={'#F4463A'}
-            borderColor={'#F4463A'}
-          />
+            <PrimaryButton
+              buttonText={'Reject the Term'}
+              onPressFunc={onDecline}
+              marginLeft={20}
+              marginRight={20}
+              marginBottom={5}
+              bgColor={'#F4463A'}
+              borderColor={'#F4463A'}
+            />
+        </ScrollView>
         </KeyboardAvoidingView>
-      </ScrollView>
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -448,8 +453,8 @@ export default Category = (props) => {
           setDeclineModal(false);
         }}
       />
-    </>
-  );
+    </View>
+  ); 
 };
 const styles = {
   senctence: {

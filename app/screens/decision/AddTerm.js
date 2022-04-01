@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component, Fragment} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import Modal from 'react-native-modal';
 // import {Picker} from '@react-native-community/picker';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -20,6 +20,7 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import api from '../../api/tasks';
 import {set_addTerm_options} from '../../store/actions';
 import {set_tasks} from '../../store/actions';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default Category = (props) => {
   const [task, setTask] = useState(props.navigation.getParam('task', {}));
@@ -366,12 +367,11 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
-          api.getTasks(auth.expertId).then((result) => {
-            dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
-          });
+        api.getTasks(auth.expertId).then((result) => {
+          dispatch(set_tasks(result.data.task_data));
+          props.navigation.goBack();
+        });
       });
-
   };
 
   const handleClickOtherComment = () => {
@@ -381,11 +381,13 @@ export default Category = (props) => {
   const category = ['Structure', 'Character'];
 
   return (
-    <React.Fragment>
-      <ScrollView
-        contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="padding">
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : StatusBar.currentHeight + 50} // 50 is Button height
+        enabled>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
             size={22}
@@ -408,7 +410,7 @@ export default Category = (props) => {
             contentContainerStyle={{padding: 10, paddingTop: 3}}
             style={{height: deviceHeight - 270}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="always">
             <Text style={{...styles.sentence, color: '#003458'}}>Term definition:</Text>
             <Text style={{marginLeft: 15}}>{task.data.replace(/"/g, '')}</Text>
             <Text style={{...styles.sentence, color: '#003458'}}>Example sentences:</Text>
@@ -993,8 +995,8 @@ export default Category = (props) => {
               setCommentsModal(false);
             }}
           />
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -1013,7 +1015,7 @@ export default Category = (props) => {
           setDeclineModal(false);
         }}
       />
-    </React.Fragment>
+    </View>
   );
 };
 

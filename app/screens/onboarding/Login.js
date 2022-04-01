@@ -15,8 +15,8 @@ import {setUser} from '../../store/actions/main';
 
 
 export default Login = (props) => {
-  const [username, setUsername] = useState('abc');
-  const [password, setPassword] = useState('aaa123');
+  const [username, setUsername] = useState('piyush22');
+  const [password, setPassword] = useState('123456');
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
 
@@ -24,9 +24,7 @@ export default Login = (props) => {
     try {
       await AsyncStorage.setItem('userName', username);
       await AsyncStorage.setItem('passWord', password);
-      // console.log(value);
     } catch (e) {
-      // saving error
       console.log('error : ', e);
     }
 

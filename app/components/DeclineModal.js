@@ -90,7 +90,7 @@ export default DeclineModal = (props) => {
   };
   const myTerm = ['Structure', 'Character'];
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    
       <View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Modal isVisible={props.isVisible} deviceWidth={deviceWidth} deviceHeight={deviceHeight}>
@@ -113,7 +113,7 @@ export default DeclineModal = (props) => {
                 <View style={styles.inputContainer}>
                   <TextInput
                     placeholder="Enter the reason why you decline the term."
-                    style={{color: '#003458', marginLeft: 5}}
+                    style={{color: '#003458', marginLeft: 5, height:50, width:'80%'}}
                     multiline={true}
                     numberOfLines={3}
                     onChangeText={(txt) => {
@@ -273,7 +273,7 @@ export default DeclineModal = (props) => {
           </Modal>
         </TouchableWithoutFeedback>
       </View>
-    </KeyboardAvoidingView>
+  
   );
 };
 

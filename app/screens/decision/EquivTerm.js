@@ -214,11 +214,13 @@ export default EquivTerm = (props) => {
   };
 
   return (
-    <>
-      <ScrollView
-        contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="padding">
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        enabled>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
             size={22}
@@ -367,9 +369,10 @@ export default EquivTerm = (props) => {
               setCommentsModal(false);
             }}
           />
-        </KeyboardAvoidingView>
+        
       </ScrollView>
-    </>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 const styles = {

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import {Checkbox} from 'react-native-paper';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,6 +19,7 @@ import CommentsModal from '../../components/CommentsModal';
 import api from '../../api/tasks';
 import {set_approve_options} from '../../store/actions';
 import {set_tasks} from '../../store/actions';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default Approve = (props) => {
   const [task, setTask] = useState(props.navigation.getParam('task', {}));
@@ -267,9 +268,13 @@ export default Approve = (props) => {
   };
 
   return (
-    <>
-      <ScrollView contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}>
-        <KeyboardAvoidingView behavior="padding">
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        enabled>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
             size={22}
@@ -295,7 +300,7 @@ export default Approve = (props) => {
               </Text>
             </View>
           </View>
-          <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}>
+          {/* <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}> */}
             <Text style={{...styles.sentence, color: '#003458'}}>Proposed definitions:</Text>
             {options &&
               options.definition &&
@@ -443,7 +448,7 @@ export default Approve = (props) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
+          {/* </ScrollView> */}
 
           <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
 
@@ -507,9 +512,9 @@ export default Approve = (props) => {
               setCommentsModal(false);
             }}
           />
-        </KeyboardAvoidingView>
       </ScrollView>
-
+        </KeyboardAvoidingView>
+        
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -528,7 +533,7 @@ export default Approve = (props) => {
           setDeclineModal(false);
         }}
       />
-    </>
+    </View>
   );
 };
 const styles = {
