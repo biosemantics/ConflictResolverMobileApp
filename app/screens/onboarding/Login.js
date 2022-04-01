@@ -15,23 +15,23 @@ import {setUser} from '../../store/actions/main';
 
 
 export default Login = (props) => {
-  const [username, setUsername] = useState('piyush22');
-  const [password, setPassword] = useState('123456');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
 
-  const saveData = async (value) => {
+  const saveData = async (email,expertId ) => {
     try {
-      await AsyncStorage.setItem('userName', username);
-      await AsyncStorage.setItem('passWord', password);
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('expertId', expertId.toString());
+      // console.log(value);
     } catch (e) {
+      // saving error
       console.log('error : ', e);
     }
 
-    return username,password;
+    return email,expertId;
   };
-  saveData();
-
 
   const dispatch = useDispatch();
 
@@ -58,6 +58,7 @@ export default Login = (props) => {
           setErrorInfoModal(true);
         } else {
           dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
+          saveData(result.data.email,result.data.expertId);
           props.navigation.navigate('HomeLayout');
         }
       })

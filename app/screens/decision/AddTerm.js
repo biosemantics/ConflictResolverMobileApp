@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component, Fragment} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, SafeAreaView} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, StatusBar} from 'react-native';
 import Modal from 'react-native-modal';
 // import {Picker} from '@react-native-community/picker';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -27,6 +27,8 @@ export default Category = (props) => {
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [declineModal, setDeclineModal] = useState(false);
+  const [newWarning, setNewWarning] = useState(false);
+  const [message, setMessage] = useState(false);
   const [termType, setTermType] = useState('');
   const [group, setGroup] = useState('');
   const [subclassOf, setSubClassOf] = useState('');
@@ -367,9 +369,9 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         api.getTasks(auth.expertId).then((result) => {
           dispatch(set_tasks(result.data.task_data));
-          props.navigation.goBack();
         });
       });
   };
@@ -980,6 +982,15 @@ export default Category = (props) => {
             }}
             handleCancel={() => {
               setConfirmModal(false);
+            }}
+          />
+          <PopupAlert
+            popupTitle="Message"
+            message={'Submit Successfully'}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+              props.navigation.goBack();
             }}
           />
 

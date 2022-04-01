@@ -7,29 +7,24 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
-  SafeAreaView,
   StyleSheet,
-  TouchableHighlight,
   Platform,
   KeyboardAvoidingView,
+  StatusBar,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleLeft, faL, faMicrophone} from '@fortawesome/free-solid-svg-icons';
-//import Voice from '@react-native-voice/voice';
+import { faMicrophone} from '@fortawesome/free-solid-svg-icons';
 import Voice from '@react-native-community/voice';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import NavHeader from '../../components/NavHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import api from '../../api/tasks';
-import {set_quality_item, set_structure_item} from '../../store/actions';
 import PopupAlert from '../../components/PopupAlert';
-import WarningModal from '../../components/WarningModal';
 import PopupConfirm from '../../components/PopupConfirm';
 import PrimaryButton from '../../components/PrimaryButton';
 
-import {Checkbox, RadioButton} from 'react-native-paper';
-//import SelectDropdown from 'react-native-select-dropdown';
+import { RadioButton} from 'react-native-paper';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {set_disputed_options, set_tasks} from '../../store/actions';
 
@@ -45,13 +40,10 @@ export default function Disputed(props) {
   const [end, setEnd] = useState('');
   const [started, setStarted] = useState('');
   const [qualityType, setQualityType] = useState('');
-  const [structureType, setStructureType] = useState('');
-
-  const [qualityType2, setQualityType2] = useState('');
-  const [structureType2, setStructureType2] = useState('');
 
   const [pickerStructure, setPickerStructure] = useState('');
-  const [pickerStructure2, setPickerStructure2] = useState('');
+  const [qualityDefault, _qualityDefault] = useState(null)
+  const [structureDefault, _structureDefault] = useState(null)
   const [stateMessage, setStateMessage] = useState('');
   const [results, setResults] = useState([]);
   const [activebtn, setActivebtn] = useState(0);
@@ -60,47 +52,32 @@ export default function Disputed(props) {
   const [qualityItems, setQualityItems] = useState([]);
   const [structureItems, setStructureItems] = useState([]);
 
-  const [newTerm, setNewTerm] = useState('');
-  const [newDefinition, setNewDefinition] = useState('');
-  const [input3, setinput3] = useState('');
-  const [input4, setinput4] = useState('');
-  const [input5, setinput5] = useState('');
-  const [newExist, setNewExist] = useState('');
-  const [myType, setMyType] = useState('');
-
-  const [example, setExample] = useState('');
-  const [superClass, setSuperClass] = useState(qualityType);
-  const [elucidation, setElucidation] = useState('');
-  const [newDate, setNewDate] = useState(date);
-  const [definitionSrc, setDefinitionSrc] = useState('');
-  const [logicDefinition, setlogicDefinition] = useState('');
-  const [decisionExperts, setDecisionExperts] = useState('');
+  // {disputed.solutionGiven ? disputed.userSolution.newTerm 
+  const [newTerm, setNewTerm] = useState(disputed.solutionGiven ? disputed.userSolution.newTerm : '');
+  const [newDefinition, setNewDefinition] = useState(disputed.solutionGiven ? disputed.userSolution.newDefinition : '');
+  const [input3, setinput3] = useState(disputed.solutionGiven ? disputed.userSolution.exampleSentence : '');
+  const [input4, setinput4] = useState(disputed.solutionGiven ? disputed.userSolution.taxa : '');
+  const [input5, setinput5] = useState(disputed.solutionGiven ? disputed.userSolution.comment : '');
+ 
   const [group, setGroup] = useState('');
 
   const [warningModal, setWarningModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
 
-  const [ontology, setOntology] = useState('carex');
-
   const [partialResults, setPartialResults] = useState([]);
-  const [startRec, setStartRec] = useState(0);
 
   const [characterDefaultIndex, setCharacterDefaultIndex] = useState(0);
   const [optionIndexes, setOptionIndexes] = useState([]);
-  let today = new Date();
-  let date = today.getFullYear() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getDate();
-
+  
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
-  const [isSelected, setSelection] = useState(false);
-
+ 
   const [checked, setChecked] = React.useState('Quality');
-  const [superPart, setSuperPart] = useState([]);
 
   const dispatch = useDispatch();
 
-  const quailtyData = useSelector((state) => state.main.metaData.quality);
-  const structureData = useSelector((state) => state.main.metaData.structure);
+  // const quailtyData = useSelector((state) => state.main.metaData.quality);
+  // const structureData = useSelector((state) => state.main.metaData.structure);
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -135,6 +112,9 @@ export default function Disputed(props) {
       if (activebtn == 4) {
         setinput4(msg);
         msg = '';
+      }
+      if (activebtn == 5) {
+        setinput5(msg);
       } else {
         // console.log('error');
       }
@@ -164,7 +144,62 @@ export default function Disputed(props) {
       structureItem = getStructure(result.data.children, structureItem);
       // dispatch(set_structure_item(structureItem));
     });
+ 
   }, [activebtn, results]);
+
+  useEffect(() => {
+    if ('userSolution' in disputed) {
+      let searchItem = disputed.userSolution.superclass;
+      if (searchItem) {
+        if (qualityItems.length > 0) {
+          let responseQualityIndex = qualityItems.findIndex((item) => item.id == searchItem);
+          let responseQuality = qualityItems.find((item) => item.id == searchItem);
+          if (responseQuality != undefined) {
+            handleChange('disable');
+            setChecked('Quality');
+
+            let newArr = [...optionIndexes];
+            newArr = [];
+            
+            setOptionIndexes(newArr);
+            setPickerStructure(responseQuality.id);
+            setGroup(responseQuality.name);
+            setCharacterDefaultIndex(responseQuality.id - 1);
+            _qualityDefault(responseQualityIndex)
+          }
+        }
+      }
+    }
+  },[qualityItems])
+  
+  const setDefaultStructure = (structureItems) => {
+    if ('userSolution' in disputed) {
+      let searchItem = disputed.userSolution.superclass;
+      if (structureDefault === null ) {
+        if (structureItems.length > 0) {
+          
+          _structureDefault(5)
+          let responseStructureIndex = structureItems.findIndex((item) => item.id == searchItem);
+          let responseStructure = structureItems.find((item) => item.id == searchItem);
+         
+          if (responseStructure != undefined) {
+            _structureDefault(responseStructureIndex)
+            setChecked('Structure');
+            handleChange('disable');
+
+            let newArr = [...optionIndexes];
+            newArr = [];
+           
+            setOptionIndexes(newArr);
+            setPickerStructure(responseStructure.id);
+            setGroup(responseStructure.name);
+            setCharacterDefaultIndex(responseStructure.id - 1);
+            
+          }
+        }
+      }
+    }
+  }
 
   const getQuality = (data, qualityItem) => {
     if (data) {
@@ -187,6 +222,7 @@ export default function Disputed(props) {
   };
 
   const getStructure = (data, structureItem) => {
+    let strcutureInfo = [...structureItems];
     if (data) {
       data.forEach((element) => {
         if (element.children) {
@@ -202,7 +238,8 @@ export default function Disputed(props) {
     if (structureItem.length > 0) {
       setStructureItems(structureItem);
     }
-    return structureItems;
+    setDefaultStructure(structureItem);
+    return strcutureInfo;
     // return structureItem;
   };
 
@@ -217,38 +254,38 @@ export default function Disputed(props) {
     } else {
       var messageVal = '';
       if (dropDown2) {
-        messageVal = "You've selected using existing term " + disputed.term + ' to represent the concept';
+        messageVal = "You've selected using existing term " + group + ' to represent the concept';
       } else if (dropDown1) {
-        messageVal = "You've selected a new term " + disputed.term + ' to represent the concept: ';
+        messageVal = "You've selected a new term " + disputed.term + ' to represent the concept ';
       }
       //  var messageVal = "You've selected a new term " + disputed.term + ' to represent the concept: ';
-      var ind = 0;
-      if (optionIndexes.length === 0) {
-        messageVal += group;
-      } else {
-        optionIndexes.map((indOpt) => {
-          if (ind !== 0) {
-            messageVal += ', ';
-          }
-          messageVal += options.data[indOpt].option_;
-          ind++;
-        });
-      }
-      messageVal += '.';
-      if (optionIndexes.length !== 0) {
-        if (group != '') {
-          var ind = 0;
-          messageVal += '\n\nThe selection of ' + group + ' is ignored because you also selected ';
-          optionIndexes.map((indOpt) => {
-            if (ind !== 0) {
-              messageVal += ', ';
-            }
-            messageVal += options.data[indOpt].option_;
-            ind++;
-          });
-          messageVal += '.';
-        }
-      }
+      // var ind = 0;
+      // if (optionIndexes.length === 0) {
+      //   messageVal += group;
+      // } else {
+      //   optionIndexes.map((indOpt) => {
+      //     if (ind !== 0) {
+      //       messageVal += ', ';
+      //     }
+      //     messageVal += options.data[indOpt].option_;
+      //     ind++;
+      //   });
+      // }
+      // messageVal += '.';
+      // if (optionIndexes.length !== 0) {
+      //   if (group != '') {
+      //     var ind = 0;
+      //     messageVal += '\n\nThe selection of ' + group + ' is ignored because you also selected ';
+      //     optionIndexes.map((indOpt) => {
+      //       if (ind !== 0) {
+      //         messageVal += ', ';
+      //       }
+      //       messageVal += options.data[indOpt].option_;
+      //       ind++;
+      //     });
+      //     messageVal += '.';
+      //   }
+      // }
       setStateMessage(messageVal);
       setConfirmModal(true);
     }
@@ -272,15 +309,16 @@ export default function Disputed(props) {
         var myType1 = '2';
       }
     }
+    console.log("test ----------",auth.expertId);
     api
       .submitNewTerm(auth.expertId, disputed.termId, newTerm, newDefinition, pickerStructure, input3, input4, newExist1, input5, myType1)
       .then((result) => {
         if (result.data.error) {
         } else if (result.data.error == false) {
-          setWarningModal(true);
+          setTimeout(() => setWarningModal(true), 1000);
+
           api.getDisputed(auth.expertId).then((result) => {
             dispatch(set_disputed_options(result.data));
-            props.navigation.goBack();
           });
         }
       });
@@ -322,6 +360,7 @@ export default function Disputed(props) {
   };
 
   const handleChange = (clickedValue) => {
+    setPickerStructure('');
     if (clickedValue == 'disable') {
       setDropDown1(true);
       setDropDown2(false);
@@ -367,7 +406,7 @@ export default function Disputed(props) {
 
     try {
       await Voice.start('en-US');
-      console.log('jsjsjdhjsdjs');
+     
       setPitch('');
       setError('');
       setStarted('');
@@ -512,6 +551,8 @@ export default function Disputed(props) {
                     />
                     <Text style={{margin: 8}}>Structure</Text>
                   </View>
+
+                  
                   {checked == 'Quality' ? (
                     <KeyboardAvoidingView behavior="padding">
                       <SearchableDropdown
@@ -591,7 +632,7 @@ export default function Disputed(props) {
                       // defaultIndex={2}
                       resetValue={false}
                       textInputProps={{
-                        placeholder: 'Enter a Structure name ',
+                        placeholder: 'Enter a structure term ',
                         underlineColorAndroid: 'transparent',
                         style: {
                           padding: 12,
@@ -632,11 +673,12 @@ export default function Disputed(props) {
               {
                 <View>
                   <View style={Styles.inputView}>
-                    {disputed.userSolution &&
-                      disputed.userSolution.length > 0 &&
-                      disputed.userSolution.map((ind, index) => (
-                        <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
-                          {ind.newTerm}
+                    <Text> Other's decision :</Text>
+                    {disputed.otherSolution &&
+                      disputed.otherSolution.length > 0 &&
+                      disputed.otherSolution.map((ind, index) => (
+                        <Text style={{color: 'black', marginLeft: 5,}} key={'maybePartOf' + index}>
+                         {ind.newTerm };
                         </Text>
                       ))}
                   </View>
@@ -645,7 +687,7 @@ export default function Disputed(props) {
                     <TextInput
                       placeholder="Enter the new item"
                       style={Styles.inputBoxView}
-                      value={disputed.solutionGiven ? disputed.userSolution.newTerm : newTerm}
+                      value={newTerm}
                       onChangeText={(text) => setNewTerm(text)}
                     />
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
@@ -656,7 +698,7 @@ export default function Disputed(props) {
                     <TextInput
                       placeholder="Enter a definition"
                       style={Styles.inputBoxView}
-                      value={disputed.solutionGiven ? disputed.userSolution.newDefinition : newDefinition}
+                      value={newDefinition}
                       onChangeText={(text) => setNewDefinition(text)}
                     />
 
@@ -708,12 +750,33 @@ export default function Disputed(props) {
                       />
                       <Text style={{margin: 8}}>Structure</Text>
                     </View>
+                    <View style={Styles.inputView}>
+                      <Text> Other's decision :</Text>
+                      {disputed.otherSolution &&
+                        disputed.otherSolution.length > 0 &&
+                        disputed.otherSolution.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
+                            {ind.superclass };
+                          </Text>
+                        ))}
+                    </View>
+
+                  {/* <View style={Styles.inputView}>
+                    {disputed.otherSolution &&
+                      disputed.otherSolution.length > 0 &&
+                      disputed.otherSolution.map((ind, index) => (
+                        <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
+                          Other's decisions: {ind.superclass };
+                        </Text>
+                      ))}
+                  </View> */}
                     {checked == 'Quality' ? (
                       <KeyboardAvoidingView behavior="padding">
                         <SearchableDropdown
                           onItemSelect={(item) => {
                             let newArr = [...optionIndexes];
                             newArr = [];
+                           
                             setOptionIndexes(newArr);
                             setPickerStructure(item.id);
                             setGroup(item.name);
@@ -737,10 +800,10 @@ export default function Disputed(props) {
                           itemTextStyle={{color: '#222'}}
                           itemsContainerStyle={{maxHeight: 140}}
                           items={qualityItems}
-                          // defaultIndex={0}
+                          defaultIndex={qualityDefault}
                           resetValue={false}
                           textInputProps={{
-                            placeholder: 'Enter a quality name ',
+                            placeholder: 'Enter a quality term ',
                             underlineColorAndroid: 'transparent',
                             style: {
                               padding: 12,
@@ -780,10 +843,10 @@ export default function Disputed(props) {
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
                         items={structureItems}
-                        // defaultIndex={0}
+                        defaultIndex={structureDefault}
                         resetValue={false}
                         textInputProps={{
-                          placeholder: 'Enter a structure name ',
+                          placeholder: 'Enter a structure term ',
                           underlineColorAndroid: 'transparent',
                           style: {
                             padding: 12,
@@ -802,7 +865,7 @@ export default function Disputed(props) {
                     <TextInput
                       placeholder="Enter an example sentence"
                       style={Styles.inputBoxView}
-                      value={disputed.solutionGiven ? disputed.userSolution.exampleSentence : input3}
+                      value={input3}
                       // onChangeText={input3}
                       onChangeText={(text) => setinput3(text)}
                     />
@@ -815,7 +878,7 @@ export default function Disputed(props) {
                     <TextInput
                       placeholder="Enter applicable taxa"
                       style={Styles.inputBoxView}
-                      value={disputed.solutionGiven ? disputed.userSolution.taxa : input4}
+                      value={input4}
                       onChangeText={(text) => setinput4(text)}
                     />
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
@@ -840,7 +903,7 @@ export default function Disputed(props) {
                 borderRadius: 50,
                 paddingLeft: 20,
               }}
-              value={disputed.solutionGiven ? disputed.userSolution.comment : input5}
+              value={input5}
               onChangeText={(text) => setinput5(text)}
             />
             <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
@@ -848,7 +911,7 @@ export default function Disputed(props) {
             </TouchableOpacity>
 
             <PrimaryButton
-              enable={(checked == 'Quality' && pickerStructure != '') || (checked == 'Structure' && pickerStructure != '')}
+              enable={ (dropDown1 ? newTerm != '' && newDefinition !='' && pickerStructure != ''  :  pickerStructure !=''  )}
               buttonText={'Submit'}
               onPressFunc={submitData}
               marginLeft={20}
@@ -869,7 +932,8 @@ export default function Disputed(props) {
             message={'Submitted successfully'}
             isVisible={warningModal}
             handleOK={() => {
-              setNewWarning(false);
+              setWarningModal(false);
+              props.navigation.goBack();
             }}
           />
 
@@ -935,7 +999,7 @@ const Styles = StyleSheet.create({
     //marginLeft: 30,
     marginHorizontal: 30,
     marginTop: 10,
-    width: '90%',
+    width: '90%',flex:1, flexWrap: 'wrap'
   },
   inputBoxView: {
     width: '95%',

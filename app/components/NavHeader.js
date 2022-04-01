@@ -30,7 +30,7 @@ export default class NavHeader extends React.Component {
     this._menu.show();
   };
   // valueGettingClear = () => {
-    
+
   // };
 
   render() {

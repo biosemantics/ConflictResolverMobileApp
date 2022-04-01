@@ -3,18 +3,28 @@ import {View, Text, Image} from 'react-native';
 
 import PrimaryButton from '../../components/PrimaryButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import {setUser} from '../../store/actions/main';
+
 
 export default Splash = (props) => {
   useEffect(() => {
     displayData();
   });
 
+  const dispatch = useDispatch();
+
   const displayData = async () => {
     try {
-      let userName = await AsyncStorage.getItem('userName');
-      console.log(userName);
-      let userPass = await AsyncStorage.getItem('passWord');
-      console.log(userPass);
+      
+      let userEmail = await AsyncStorage.getItem('email');
+      let userExpertId = await AsyncStorage.getItem('expertId');
+
+      if(userEmail != null && userExpertId != null){
+        dispatch(setUser({email: userEmail,  expertId: userExpertId}));
+        props.navigation.navigate('HomeLayout');
+      }
+     
     } catch (err) {
       console.log('err : ', err);
     }
