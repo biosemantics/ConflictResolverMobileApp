@@ -287,10 +287,11 @@ export default function Disputed(props) {
       .then((result) => {
         if (result.data.error) {
         } else if (result.data.error == false) {
-          setWarningModal(true);
+          setTimeout(() => setWarningModal(true), 1000);
+
           api.getDisputed(auth.expertId).then((result) => {
             dispatch(set_disputed_options(result.data));
-            props.navigation.goBack();
+            
           });
         }
       });
@@ -398,277 +399,85 @@ export default function Disputed(props) {
 
   const customRef = useRef({});
   return (
-    <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
-      <KeyboardAvoidingView behavior="padding">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
-        </View>
-
-        <View style={[Styles.rowText, {marginTop: 20}]}>
-          <Text>
-            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
-            <Text style={Styles.TextMain}>{disputed.term}</Text>
-          </Text>
-        </View>
-        <View style={([Styles.rowText], {marginBottom: 10, width: '100%', paddingLeft: 10})}>
-          <Text style={Styles.TextMain}>
-            <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
-            <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
-          </Text>
-        </View>
-
-        <View
-          style={([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width: '100%', paddingLeft: 10})}>
-          <Text style={Styles.TextMain}>
-            <Text style={Styles.rowDefinition}>Dispute reason: </Text>
-            <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
-          </Text>
-        </View>
-
-        <View style={Styles.rowText}>
-          <Text style={Styles.TextMain}>
-            <Text style={Styles.rowDefinition}>Proposed definition for restored </Text>
-            <Text style={Styles.TextMain}>{disputed.newDefinition}</Text>
-          </Text>
-        </View>
-        <View style={Styles.rowText}>
-          <Text style={Styles.rowDefinition}>Disputed by </Text>
-          <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
-        </View>
-
-        <View style={{width: '100%', padding: 10, marginTop: 0}}>
-          <Text
-            style={{
-              // margin: 15,
-              fontSize: 16,
-              padding: 5,
-              color: '#fff',
-              // fontWeight: 'bold',
-              backgroundColor: 'green',
-            }}>
-            What action should be taken to address this disputes?
-          </Text>
-        </View>
-
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            // alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '90%',
-            paddingLeft: 10,
-            marginTop: 10,
-          }}>
-          <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
-          <TouchableOpacity
-            onPress={() => {
-
-              handleChange('disable2');
-            }}>
-            {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
-          </TouchableOpacity>
-        </View>
-
-        {dropDown2 && (
-          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {
-              <View style={{marginHorizontal: 30, width: '90%'}}>
-                {/* Another Existing Section */}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginLeft: 10,
-                  }}>
-                  <RadioButton.Android
-                    value="Quality"
-                    status={checked === 'Quality' ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setChecked('Quality');
-                      setPickerStructure('');
-                      setCharacterDefaultIndex(0);
-                      //; dropdownRef.current.reset()
-                    }}
-                  />
-                  <Text style={{margin: 8}}>Quality</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginLeft: 10,
-                  }}>
-                  <RadioButton.Android
-                    value="Structure"
-                    style={{
-                      borderWidth: 2,
-                      color: 'black',
-                      backgroundColor: 'red',
-                      borderRadius: 2,
-                    }}
-                    status={checked === 'Structure' ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setChecked('Structure');
-                      setPickerStructure('');
-                      setCharacterDefaultIndex(0);
-                      console.log('@COMING HERE');
-                    }}
-                  />
-                  <Text style={{margin: 8}}>Structure</Text>
-                </View>
-                {checked == 'Quality' ? (
-                  <KeyboardAvoidingView behavior="padding">
-                    <SearchableDropdown
-                      // ref={customRef}
-                      // multi={true}
-                      onItemSelect={(item) => {
-                        let newArr = [...optionIndexes];
-                        newArr = [];
-                        setOptionIndexes(newArr);
-                        setPickerStructure(item.id);
-                        setGroup(item.name);
-                        setCharacterDefaultIndex(item.id - 1);
-                      }}
-                      onRemoveItem={(item) => {
-                        setOptionIndexes([]);
-                        setPickerStructure('');
-                        setCharacterDefaultIndex(0);
-                      }}
-                      //  defaultIndex={2}
-                      defaultIndex={0}
-                      containerStyle={{padding: 5, width: '96%'}}
-                      itemStyle={{
-                        padding: 10,
-                        marginTop: 2,
-                        backgroundColor: '#ddd',
-                        borderColor: '#bbb',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{maxHeight: 140}}
-                      items={qualityItems}
-                      // defaultIndex={2}
-                      resetValue={false}
-                      textInputProps={{
-                        placeholder: 'Enter a quality name ',
-                        underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: 12,
-                          borderWidth: 1,
-                          borderColor: '#ccc',
-                          borderRadius: 5,
-                        },
-                      }}
-                      listProps={{nestedScrollEnabled: true}}
-                    />
-                  </KeyboardAvoidingView>
-                ) : (
-                  <SearchableDropdown
-                    // ref={customRef}
-                    onItemSelect={(item) => {
-                      let newArr = [...optionIndexes];
-                      newArr = [];
-                      setOptionIndexes(newArr);
-                      setPickerStructure(item.id);
-                      setGroup(item.name);
-                      setCharacterDefaultIndex(item.id - 1);
-                    }}
-                    onRemoveItem={(item) => {
-                      setOptionIndexes([]);
-                      setPickerStructure('');
-                      setCharacterDefaultIndex(0);
-                    }}
-                    // defaultIndex={2}
-                    containerStyle={{padding: 5, width: '96%'}}
-                    itemStyle={{
-                      padding: 10,
-                      marginTop: 2,
-                      backgroundColor: '#ddd',
-                      borderColor: '#bbb',
-                      borderWidth: 1,
-                      borderRadius: 5,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{maxHeight: 140}}
-                    items={structureItems}
-                    // defaultIndex={2}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'Enter a Structure name ',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: 12,
-                        borderWidth: 1,
-                        borderColor: '#ccc',
-                        borderRadius: 5,
-                      },
-                    }}
-                    listProps={{nestedScrollEnabled: true}}
-                  />
-                )}
-              </View>
-            }
+    <SafeAreaView>
+      <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps="always">
+        <KeyboardAvoidingView behavior="padding">
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <NavHeader size={22} bold={true} navigation={props.navigation} onBackFunc={() => props.navigation.goBack()} headerText={disputed.term} />
           </View>
-        )}
 
-        {/* //First DropDown With Speech Recognition */}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            // alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '90%',
-            paddingLeft: 10,
-            marginTop: 10,
-          }}>
-          <Text style={{fontSize: 16, width: '100%'}}>Add a new term to express the needed concept</Text>
-          <TouchableOpacity
-            onPress={() => {
-              handleChange('disable');
+          <View style={[Styles.rowText, {marginTop: 20}]}>
+            <Text>
+              <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
+              <Text style={Styles.TextMain}>{disputed.term}</Text>
+            </Text>
+          </View>
+          <View style={([Styles.rowText], {marginBottom: 10, width: '100%', paddingLeft: 10})}>
+            <Text style={Styles.TextMain}>
+              <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
+              <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
+            </Text>
+          </View>
+
+          <View
+            style={
+              ([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width: '100%', paddingLeft: 10})
+            }>
+            <Text style={Styles.TextMain}>
+              <Text style={Styles.rowDefinition}>Dispute reason: </Text>
+              <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
+            </Text>
+          </View>
+
+          <View style={Styles.rowText}>
+            <Text style={Styles.TextMain}>
+              <Text style={Styles.rowDefinition}>Proposed definition for restored </Text>
+              <Text style={Styles.TextMain}>{disputed.newDefinition}</Text>
+            </Text>
+          </View>
+          <View style={Styles.rowText}>
+            <Text style={Styles.rowDefinition}>Disputed by </Text>
+            <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
+          </View>
+
+          <View style={{width: '100%', padding: 10, marginTop: 0}}>
+            <Text
+              style={{
+                // margin: 15,
+                fontSize: 16,
+                padding: 5,
+                color: '#fff',
+                // fontWeight: 'bold',
+                backgroundColor: 'green',
+              }}>
+              What action should be taken to address this disputes?
+            </Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              // alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '90%',
+              paddingLeft: 10,
+              marginTop: 10,
             }}>
-            {dropDown1 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
-          </TouchableOpacity>
-        </View>
-        {dropDown1 && (
-          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {
-              <View>
-                <View style={Styles.inputView}>
+            <Text style={{fontSize: 16, width: '100%'}}>Suggest an existing term for the needed concept</Text>
+            <TouchableOpacity
+              onPress={() => {
+                handleChange('disable2');
+              }}>
+              {dropDown2 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
+            </TouchableOpacity>
+          </View>
 
-                  {disputed.userSolution && disputed.userSolution.length > 0 &&
-                    disputed.userSolution.map((ind, index) => (
-                      
-                      <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
-                        {ind.newTerm}
-                      </Text>
-                    ))
-                  }
-                  
-                </View>
-                
-                <View style={Styles.inputView}>
-                  <TextInput placeholder="Enter the new item" style={Styles.inputBoxView} value={disputed.solutionGiven ? disputed.userSolution.newTerm : newTerm} onChangeText={(text) => setNewTerm(text)} />
-                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
-                    <FontAwesomeIcon icon={faMicrophone} size={25} />
-                  </TouchableOpacity>
-                </View>
-                <View style={Styles.inputView}>
-                  <TextInput
-                    placeholder="Enter a definition"
-                    style={Styles.inputBoxView}
-                    value={disputed.solutionGiven ? disputed.userSolution.newDefinition :newDefinition}
-                    onChangeText={(text) => setNewDefinition(text)}
-                  />
-
-                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
-                    <FontAwesomeIcon icon={faMicrophone} size={25} />
-                  </TouchableOpacity>
-                </View>
-                {/* //Existing value Section */}
+          {dropDown2 && (
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              {
                 <View style={{marginHorizontal: 30, width: '90%'}}>
+                  {/* Another Existing Section */}
                   <View
                     style={{
                       flexDirection: 'row',
@@ -687,7 +496,6 @@ export default function Disputed(props) {
                     />
                     <Text style={{margin: 8}}>Quality</Text>
                   </View>
-
                   <View
                     style={{
                       flexDirection: 'row',
@@ -707,15 +515,16 @@ export default function Disputed(props) {
                         setChecked('Structure');
                         setPickerStructure('');
                         setCharacterDefaultIndex(0);
-                    
+                        console.log('@COMING HERE');
                       }}
                     />
                     <Text style={{margin: 8}}>Structure</Text>
                   </View>
                   {checked == 'Quality' ? (
-                  
                     <KeyboardAvoidingView behavior="padding">
                       <SearchableDropdown
+                        // ref={customRef}
+                        // multi={true}
                         onItemSelect={(item) => {
                           let newArr = [...optionIndexes];
                           newArr = [];
@@ -729,7 +538,8 @@ export default function Disputed(props) {
                           setPickerStructure('');
                           setCharacterDefaultIndex(0);
                         }}
-                        // defaultIndex={2}
+                        //  defaultIndex={2}
+                        defaultIndex={0}
                         containerStyle={{padding: 5, width: '96%'}}
                         itemStyle={{
                           padding: 10,
@@ -742,7 +552,7 @@ export default function Disputed(props) {
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
                         items={qualityItems}
-                        // defaultIndex={0}
+                        // defaultIndex={2}
                         resetValue={false}
                         textInputProps={{
                           placeholder: 'Enter a quality name ',
@@ -759,6 +569,7 @@ export default function Disputed(props) {
                     </KeyboardAvoidingView>
                   ) : (
                     <SearchableDropdown
+                      // ref={customRef}
                       onItemSelect={(item) => {
                         let newArr = [...optionIndexes];
                         newArr = [];
@@ -785,7 +596,7 @@ export default function Disputed(props) {
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
                       items={structureItems}
-                      // defaultIndex={0}
+                      // defaultIndex={2}
                       resetValue={false}
                       textInputProps={{
                         placeholder: 'Enter a structure name ',
@@ -801,98 +612,293 @@ export default function Disputed(props) {
                     />
                   )}
                 </View>
+              }
+            </View>
+          )}
 
-                {/* Second input and mic field */}
-                <View style={Styles.inputView}>
-                  <TextInput
-                    placeholder="Enter an example sentence"
-                    style={Styles.inputBoxView}
-                    value={disputed.solutionGiven ? disputed.userSolution.exampleSentence : input3}
-                    // onChangeText={input3}
-                    onChangeText={(text) => setinput3(text)}
-                  />
-
-                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
-                    <FontAwesomeIcon icon={faMicrophone} size={25} />
-                  </TouchableOpacity>
-                </View>
-                <View style={Styles.inputView}>
-                  <TextInput
-                    placeholder="Enter applicable taxa"
-                    style={Styles.inputBoxView}
-                    value={disputed.solutionGiven ? disputed.userSolution.taxa : input4}
-                    onChangeText={(text) => setinput4(text)}
-                  />
-                  <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
-                    <FontAwesomeIcon icon={faMicrophone} size={25} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            }
-          </View>
-        )}
-
-        {/* //Second DropDown with Speech Recognition */}
-
-        {/* Comment and Submit Section */}
-        <View style={{marginHorizontal: 30, marginTop: 10, width: '90%'}}>
-          <TextInput
-            placeholder="Enter or record comment"
+          {/* //First DropDown With Speech Recognition */}
+          <View
             style={{
-              backgroundColor: '#e8e8e8',
-              width: '95%',
-              height: 40,
-              borderRadius: 50,
-              paddingLeft: 20,
+              display: 'flex',
+              flexDirection: 'row',
+              // alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '90%',
+              paddingLeft: 10,
+              marginTop: 10,
+            }}>
+            <Text style={{fontSize: 16, width: '100%'}}>Add a new term to express the needed concept</Text>
+            <TouchableOpacity
+              onPress={() => {
+                handleChange('disable');
+              }}>
+              {dropDown1 ? <AntDesignIcon name="caretup" size={25} /> : <AntDesignIcon name="caretdown" size={25} />}
+            </TouchableOpacity>
+          </View>
+          {dropDown1 && (
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              {
+                <View>
+                  <View style={Styles.inputView}>
+                    {disputed.userSolution &&
+                      disputed.userSolution.length > 0 &&
+                      disputed.userSolution.map((ind, index) => (
+                        <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
+                          {ind.newTerm}
+                        </Text>
+                      ))}
+                  </View>
+
+                  <View style={Styles.inputView}>
+                    <TextInput
+                      placeholder="Enter the new item"
+                      style={Styles.inputBoxView}
+                      value={disputed.solutionGiven ? disputed.userSolution.newTerm : newTerm}
+                      onChangeText={(text) => setNewTerm(text)}
+                    />
+                    <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
+                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={Styles.inputView}>
+                    <TextInput
+                      placeholder="Enter a definition"
+                      style={Styles.inputBoxView}
+                      value={disputed.solutionGiven ? disputed.userSolution.newDefinition : newDefinition}
+                      onChangeText={(text) => setNewDefinition(text)}
+                    />
+
+                    <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
+                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                  {/* //Existing value Section */}
+                  <View style={{marginHorizontal: 30, width: '90%'}}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        marginLeft: 10,
+                      }}>
+                      <RadioButton.Android
+                        value="Quality"
+                        status={checked === 'Quality' ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                          setChecked('Quality');
+                          setPickerStructure('');
+                          setCharacterDefaultIndex(0);
+                          //; dropdownRef.current.reset()
+                        }}
+                      />
+                      <Text style={{margin: 8}}>Quality</Text>
+                    </View>
+
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        marginLeft: 10,
+                      }}>
+                      <RadioButton.Android
+                        value="Structure"
+                        style={{
+                          borderWidth: 2,
+                          color: 'black',
+                          backgroundColor: 'red',
+                          borderRadius: 2,
+                        }}
+                        status={checked === 'Structure' ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                          setChecked('Structure');
+                          setPickerStructure('');
+                          setCharacterDefaultIndex(0);
+                        }}
+                      />
+                      <Text style={{margin: 8}}>Structure</Text>
+                    </View>
+                    {checked == 'Quality' ? (
+                      <KeyboardAvoidingView behavior="padding">
+                        <SearchableDropdown
+                          onItemSelect={(item) => {
+                            let newArr = [...optionIndexes];
+                            newArr = [];
+                            setOptionIndexes(newArr);
+                            setPickerStructure(item.id);
+                            setGroup(item.name);
+                            setCharacterDefaultIndex(item.id - 1);
+                          }}
+                          onRemoveItem={(item) => {
+                            setOptionIndexes([]);
+                            setPickerStructure('');
+                            setCharacterDefaultIndex(0);
+                          }}
+                          // defaultIndex={2}
+                          containerStyle={{padding: 5, width: '96%'}}
+                          itemStyle={{
+                            padding: 10,
+                            marginTop: 2,
+                            backgroundColor: '#ddd',
+                            borderColor: '#bbb',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                          }}
+                          itemTextStyle={{color: '#222'}}
+                          itemsContainerStyle={{maxHeight: 140}}
+                          items={qualityItems}
+                          // defaultIndex={0}
+                          resetValue={false}
+                          textInputProps={{
+                            placeholder: 'Enter a quality name ',
+                            underlineColorAndroid: 'transparent',
+                            style: {
+                              padding: 12,
+                              borderWidth: 1,
+                              borderColor: '#ccc',
+                              borderRadius: 5,
+                            },
+                          }}
+                          listProps={{nestedScrollEnabled: true}}
+                        />
+                      </KeyboardAvoidingView>
+                    ) : (
+                      <SearchableDropdown
+                        onItemSelect={(item) => {
+                          let newArr = [...optionIndexes];
+                          newArr = [];
+                          setOptionIndexes(newArr);
+                          setPickerStructure(item.id);
+                          setGroup(item.name);
+                          setCharacterDefaultIndex(item.id - 1);
+                        }}
+                        onRemoveItem={(item) => {
+                          setOptionIndexes([]);
+                          setPickerStructure('');
+                          setCharacterDefaultIndex(0);
+                        }}
+                        // defaultIndex={2}
+                        containerStyle={{padding: 5, width: '96%'}}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
+                          borderWidth: 1,
+                          borderRadius: 5,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureItems}
+                        // defaultIndex={0}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter a structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{nestedScrollEnabled: true}}
+                      />
+                    )}
+                  </View>
+
+                  {/* Second input and mic field */}
+                  <View style={Styles.inputView}>
+                    <TextInput
+                      placeholder="Enter an example sentence"
+                      style={Styles.inputBoxView}
+                      value={disputed.solutionGiven ? disputed.userSolution.exampleSentence : input3}
+                      // onChangeText={input3}
+                      onChangeText={(text) => setinput3(text)}
+                    />
+
+                    <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
+                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={Styles.inputView}>
+                    <TextInput
+                      placeholder="Enter applicable taxa"
+                      style={Styles.inputBoxView}
+                      value={disputed.solutionGiven ? disputed.userSolution.taxa : input4}
+                      onChangeText={(text) => setinput4(text)}
+                    />
+                    <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
+                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              }
+            </View>
+          )}
+
+          {/* //Second DropDown with Speech Recognition */}
+
+          {/* Comment and Submit Section */}
+          <View style={{marginHorizontal: 30, marginTop: 10, width: '90%'}}>
+            <TextInput
+              placeholder="Enter or record comment"
+              style={{
+                backgroundColor: '#e8e8e8',
+                width: '95%',
+                height: 40,
+                borderRadius: 50,
+                paddingLeft: 20,
+              }}
+              value={disputed.solutionGiven ? disputed.userSolution.comment : input5}
+              onChangeText={(text) => setinput5(text)}
+            />
+            <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
+              <FontAwesomeIcon icon={faMicrophone} size={25} />
+            </TouchableOpacity>
+
+            <PrimaryButton
+              enable={(checked == 'Quality' && pickerStructure != '') || (checked == 'Structure' && pickerStructure != '')}
+              buttonText={'Submit'}
+              onPressFunc={submitData}
+              marginLeft={20}
+              marginRight={20}
+              marginBottom={5}
+            />
+          </View>
+          <PopupAlert
+            popupTitle="Message"
+            message={message}
+            isVisible={errorInfoModal}
+            handleOK={() => {
+              
+              setErrorInfoModal(false);
             }}
-            value={disputed.solutionGiven ? disputed.userSolution.comment :input5}
-            onChangeText={(text) => setinput5(text)}
           />
-          <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
-            <FontAwesomeIcon icon={faMicrophone} size={25} />
-          </TouchableOpacity>
-
-          <PrimaryButton
-            enable={(checked == 'Quality' && pickerStructure != '') || (checked == 'Structure' && pickerStructure != '')}
-            buttonText={'Submit'}
-            onPressFunc={submitData}
-            marginLeft={20}
-            marginRight={20}
-            marginBottom={5}
+          <PopupAlert
+            popupTitle="Message"
+            message={'Submitted successfully'}
+            isVisible={warningModal}
+            handleOK={() => {
+              props.navigation.goBack();
+              setWarningModal(false);
+            }}
           />
-        </View>
-        <PopupAlert
-          popupTitle="Message"
-          message={message}
-          isVisible={errorInfoModal}
-          handleOK={() => {
-            setErrorInfoModal(false);
-          }}
-        />
-        <PopupAlert
-          popupTitle="Message"
-          message={'Submitted successfully'}
-          isVisible={warningModal}
-          handleOK={() => {
-            setNewWarning(false);
-          }}
-        />
 
-        <PopupConfirm
-          popupTitle="Are you sure to submit?"
-          stateMessage={stateMessage}
-          message={'You will not be able to change this decision after submit.'}
-          isVisible={confirmModal}
-          handleYes={() => {
-            setConfirmModal(false);
-            submitNewTerm();
-          }}
-          handleCancel={() => {
-            setConfirmModal(false);
-          }}
-        />
-      </KeyboardAvoidingView>
-    </ScrollView>
+          <PopupConfirm
+            popupTitle="Are you sure to submit?"
+            stateMessage={stateMessage}
+            message={'You will not be able to change this decision after submit.'}
+            isVisible={confirmModal}
+            handleYes={() => {
+              setConfirmModal(false);
+              submitNewTerm();
+            }}
+            handleCancel={() => {
+              setConfirmModal(false);
+            }}
+          />
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

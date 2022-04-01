@@ -44,7 +44,7 @@ export default class NavHeader extends React.Component {
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
-        <TouchableOpacity style={{position: 'absolute', top: 7, right: 5, padding: 10}} onPress={() => {
+        {/* <TouchableOpacity style={{position: 'absolute', top: 7, right: 5, padding: 10}} onPress={() => {
           AsyncStorage.clear();
           this.props.navigation.navigate('Splash'); 
           // this.props.navigation.reset({
@@ -53,7 +53,7 @@ export default class NavHeader extends React.Component {
           // });      
           }}>
           <FontAwesomeIcon icon={faSignOut} color={'#143a6c'} size={25} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }

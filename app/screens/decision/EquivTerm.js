@@ -25,7 +25,9 @@ export default EquivTerm = (props) => {
   const [isNone, setIsNone] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
   const [stateMessage, setStateMessage] = useState('');
+  const [message,setMessage] = useState('');
   const [confirmModal, setConfirmModal] = useState(false);
+  const [newWarning,setNewWarning] = useState(false);
   const [reason, setReason] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
@@ -173,11 +175,13 @@ export default EquivTerm = (props) => {
   const submitDecesion = async () => {
     if (none == false) {
       api.submitExactDecesions(auth.expertId, task.termId, optionIndexes, reason).then((result) => {
+          setTimeout(()=>setNewWarning(true),1000)
         if (result.data.error) {
+          setMessage('Not Submitted')
         } else if (result.data.error == false) {
+          setMessage('Submitted successfully')
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
           });
         }
       });
@@ -217,7 +221,7 @@ export default EquivTerm = (props) => {
     <>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="always">
         <KeyboardAvoidingView behavior="padding">
           <NavHeader
             headerText={task.term}
@@ -353,7 +357,15 @@ export default EquivTerm = (props) => {
               setConfirmModal(false);
             }}
           />
-
+          <PopupAlert
+            popupTitle="Message"
+            message={message}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+              props.navigation.goBack();
+            }}
+          />
           <CommentsModal
             popupTitle="Other's comments"
             comments={options.reasons}

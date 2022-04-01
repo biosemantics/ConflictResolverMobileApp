@@ -27,6 +27,8 @@ export default ExactTerm = (props) => {
   const [placeholder, setPlaceholder] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
   const [comment, setComment] = useState('');
+  const[newWarning,setNewWarning] = useState(false);
+  const[message,setMessage] = useState('');
 
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.exactTermOptions);
@@ -170,11 +172,13 @@ export default ExactTerm = (props) => {
   const submitDecesion = async () => {
     if (none == false) {
       api.submitExactDecesions(auth.expertId, task.termId, optionIndexes, reason).then((result) => {
+        setTimeout(()=>setNewWarning(true),1000)
         if (result.data.error) {
+          setMessage('Not submitted')
         } else if (result.data.error == false) {
+          setMessage('Submit successfully');
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
           });
         }
       });
@@ -184,7 +188,6 @@ export default ExactTerm = (props) => {
         } else if (result.data.error == false) {
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
           });
         }
       });
@@ -246,7 +249,7 @@ export default ExactTerm = (props) => {
             contentContainerStyle={{padding: 10}}
             style={{height: deviceHeight - 265}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="always">
             {options &&
               options.data &&
               options.data.map((option, index) => (
@@ -338,6 +341,15 @@ export default ExactTerm = (props) => {
             placeholder={placeholder}
             handleCancel={() => {
               setConfirmModal(false);
+            }}
+          />
+          <PopupAlert
+            popupTitle="Message"
+            message={message}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+              props.navigation.goBack();
             }}
           />
 

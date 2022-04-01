@@ -202,16 +202,13 @@ export default Category = (props) => {
         choices.push(options.data[indOpt].option_);
       });
       api.submitDecesions(auth.expertId, task.termId, choices, comment).then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
           setMessage('Not Submitted');
-          setNewWarning(true);
         } else if (result.data.error == false) {
           setMessage('Submitted Successfully');
-          setNewWarning(true);
-
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
           });
         }
       });
@@ -221,7 +218,6 @@ export default Category = (props) => {
         } else if (result.data.error == false) {
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
           });
         }
       });
@@ -245,7 +241,7 @@ export default Category = (props) => {
         contentContainerStyle={{backgroundColor: '#fff', flexDirection: 'column', justifyContent: 'space-between'}}
         //keyboardShouldPersistTaps="handled"
         >
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior="padding">
           <NavHeader
             headerText={task.term}
             size={22}
@@ -274,7 +270,7 @@ export default Category = (props) => {
             contentContainerStyle={{padding: 10}}
             style={{height: deviceHeight - 370}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="always">
             {options &&
               options.data &&
               options.data.map((option, index) => (
@@ -394,13 +390,14 @@ export default Category = (props) => {
             handleCancel={() => {
               setConfirmModal(false);
             }}
-          />
+          ></PopupConfirm>
           <PopupAlert
             popupTitle="Message"
             message={message}
             isVisible={newWarning}
             handleOK={() => {
               setNewWarning(false);
+              props.navigation.goBack();
             }}
           />
 

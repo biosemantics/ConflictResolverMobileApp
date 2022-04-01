@@ -26,6 +26,8 @@ export default Category = (props) => {
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [declineModal, setDeclineModal] = useState(false);
+  const [newWarning,setNewWarning] = useState(false);
+  const [message,setMessage] = useState(false);
   const [termType, setTermType] = useState('');
   const [group, setGroup] = useState('');
   const [subclassOf, setSubClassOf] = useState('');
@@ -366,9 +368,10 @@ export default Category = (props) => {
         comment,
       )
       .then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
-            props.navigation.goBack();
+            
           });
       });
 
@@ -408,7 +411,7 @@ export default Category = (props) => {
             contentContainerStyle={{padding: 10, paddingTop: 3}}
             style={{height: deviceHeight - 270}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="always">
             <Text style={{...styles.sentence, color: '#003458'}}>Term definition:</Text>
             <Text style={{marginLeft: 15}}>{task.data.replace(/"/g, '')}</Text>
             <Text style={{...styles.sentence, color: '#003458'}}>Example sentences:</Text>
@@ -978,6 +981,15 @@ export default Category = (props) => {
             }}
             handleCancel={() => {
               setConfirmModal(false);
+            }}
+          />
+          <PopupAlert
+            popupTitle="Message"
+            message={'Submit Successfully'}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+              props.navigation.goBack();
             }}
           />
 

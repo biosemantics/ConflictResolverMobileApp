@@ -33,6 +33,7 @@ export default Approve = (props) => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [declineModal, setDeclineModal] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
+  const [newWarning, setNewWarning] = useState(false);
   const [noSentencewarningModal, setNoSentencewarningModal] = useState(false);
   const [comment, setComment] = useState('');
   const [stateMessage, setStateMessage] = useState('');
@@ -246,9 +247,9 @@ export default Approve = (props) => {
         comment,
       )
       .then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         api.getTasks(auth.expertId).then((result) => {
           dispatch(set_tasks(result.data.task_data));
-          props.navigation.goBack();
         });
       });
   };
@@ -295,155 +296,155 @@ export default Approve = (props) => {
               </Text>
             </View>
           </View>
-          <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}>
-            <Text style={{...styles.sentence, color: '#003458'}}>Proposed definitions:</Text>
-            {options &&
-              options.definition &&
-              options.definition.map((item, index) => {
-                return (
-                  <View key={'sentence' + index}>
-                    <View style={{flexDirection: 'column', marginBottom: 10 /*, backgroundColor: color*/}}>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, marginRight: 20}}>
-                        <Text>
-                          {index + 1}. {item.definition.replace(/"/g, '')}
+          {/* <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}> */}
+          <Text style={{...styles.sentence, color: '#003458'}}>Proposed definitions:</Text>
+          {options &&
+            options.definition &&
+            options.definition.map((item, index) => {
+              return (
+                <View key={'sentence' + index}>
+                  <View style={{flexDirection: 'column', marginBottom: 10 /*, backgroundColor: color*/}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, marginRight: 20}}>
+                      <Text>
+                        {index + 1}. {item.definition.replace(/"/g, '')}
+                      </Text>
+                      {item.expertId == auth.expertId && (
+                        <TouchableOpacity
+                          style={{...styles.button, width: 22, height: 22, padding: 4, backgroundColor: 'red'}}
+                          onPress={() => {
+                            removeDefinition(item.id);
+                          }}>
+                          <FontAwesomeIcon icon={faMinus} size={12} color={'white'} />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <View style={{width: '15%'}}>
+                        <Text style={styles.sentence}>
+                          {options.approveData
+                            .filter((it) => it.definitionId == item.id)
+                            .map((item) => '#' + (options.sentence.findIndex((sen) => sen.id == item.sentenceId) + 1) + ' ')}
                         </Text>
-                        {item.expertId == auth.expertId && (
-                          <TouchableOpacity
-                            style={{...styles.button, width: 22, height: 22, padding: 4, backgroundColor: 'red'}}
-                            onPress={() => {
-                              removeDefinition(item.id);
-                            }}>
-                            <FontAwesomeIcon icon={faMinus} size={12} color={'white'} />
-                          </TouchableOpacity>
-                        )}
                       </View>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <View style={{width: '15%'}}>
-                          <Text style={styles.sentence}>
-                            {options.approveData
-                              .filter((it) => it.definitionId == item.id)
-                              .map((item) => '#' + (options.sentence.findIndex((sen) => sen.id == item.sentenceId) + 1) + ' ')}
-                          </Text>
-                        </View>
-                        <View style={{flexDirection: 'row', width: '85%', marginRight: 3}}>
-                          <TouchableOpacity
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              padding: 3,
-                              width: '85%',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              justifyContent: 'center',
-                            }}
-                            onPress={() => {
-                              setDefinition(item.id);
-                            }}>
-                            <Text style={{...styles.sentence}}>Select sentences fitting this definition, then click here</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              padding: 3,
-                              marginLeft: 5,
-                              width: '15%',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              justifyContent: 'center',
-                            }}
-                            onPress={() => {
-                              clearDefinition(item.id);
-                            }}>
-                            <Text style={{...styles.sentence}}>Clear</Text>
-                          </TouchableOpacity>
-                        </View>
+                      <View style={{flexDirection: 'row', width: '85%', marginRight: 3}}>
+                        <TouchableOpacity
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            padding: 3,
+                            width: '85%',
+                            alignItems: 'center',
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                          }}
+                          onPress={() => {
+                            setDefinition(item.id);
+                          }}>
+                          <Text style={{...styles.sentence}}>Select sentences fitting this definition, then click here</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            padding: 3,
+                            marginLeft: 5,
+                            width: '15%',
+                            alignItems: 'center',
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                          }}
+                          onPress={() => {
+                            clearDefinition(item.id);
+                          }}>
+                          <Text style={{...styles.sentence}}>Clear</Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
-                );
-              })}
-            <View style={styles.noneOfAbove}>
-              {options && options.definition && options.definition.length === 0 && (
-                <View>
-                  <Text>No definitions exist</Text>
-                  <Text>Please add a new definition:</Text>
                 </View>
-              )}
-              {options && options.definition && options.definition.length !== 0 && <Text>Or add a new definition:</Text>}
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Enter or record new definition"
-                  style={{color: '#003458', width: '75%', marginLeft: 5, height: 50}}
-                  onChangeText={(txt) => {
-                    setNewDefinition(txt);
-                  }}>
-                  {newDefinition}
-                </TextInput>
-
-                <TouchableOpacity
-                  style={{...styles.button, backgroundColor: '#013458'}}
-                  onPress={() => {
-                    addDefinition();
-                  }}>
-                  <FontAwesomeIcon icon={faPlus} size={20} color={'white'} />
-                </TouchableOpacity>
+              );
+            })}
+          <View style={styles.noneOfAbove}>
+            {options && options.definition && options.definition.length === 0 && (
+              <View>
+                <Text>No definitions exist</Text>
+                <Text>Please add a new definition:</Text>
               </View>
+            )}
+            {options && options.definition && options.definition.length !== 0 && <Text>Or add a new definition:</Text>}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Enter or record new definition"
+                style={{color: '#003458', width: '75%', marginLeft: 5, height: 50}}
+                onChangeText={(txt) => {
+                  setNewDefinition(txt);
+                }}>
+                {newDefinition}
+              </TextInput>
+
+              <TouchableOpacity
+                style={{...styles.button, backgroundColor: '#013458'}}
+                onPress={() => {
+                  addDefinition();
+                }}>
+                <FontAwesomeIcon icon={faPlus} size={20} color={'white'} />
+              </TouchableOpacity>
             </View>
-            <Text style={{...styles.sentence, color: '#003458'}}>Select example sentences:</Text>
-            {options &&
-              options.sentence &&
-              options.sentence.map((item, index) => (
-                <View key={'sentence' + index} style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {selection[index] ? (
-                    <Checkbox.Android
-                      status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        markSelected(item), setSelection[index](false);
-                      }}
-                    />
-                  ) : (
-                    <Checkbox.Android
-                      status={checked ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        markSelected(item), setSelection[index](true);
-                      }}
-                    />
-                  )}
-                  {/* <Checkbox.Android
+          </View>
+          <Text style={{...styles.sentence, color: '#003458'}}>Select example sentences:</Text>
+          {options &&
+            options.sentence &&
+            options.sentence.map((item, index) => (
+              <View key={'sentence' + index} style={{flexDirection: 'row', alignItems: 'center'}}>
+                {selection[index] ? (
+                  <Checkbox.Android
+                    status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      markSelected(item), setSelection[index](false);
+                    }}
+                  />
+                ) : (
+                  <Checkbox.Android
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      markSelected(item), setSelection[index](true);
+                    }}
+                  />
+                )}
+                {/* <Checkbox.Android
                       status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
                       onPress={() => {
                         // setChecked(!checked), setSelection[index](true);
                         markSelected(item)
                       }}
                     /> */}
-                  <Text style={{marginRight: 10, paddingRight: 10}}>
-                    {index + 1}. "{item.sentence}"
-                  </Text>
-                </View>
-              ))}
-            <View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Enter or record comment"
-                  style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
-                  onChangeText={(txt) => {
-                    setComment(txt);
-                  }}>
-                  {comment}
-                </TextInput>
+                <Text style={{marginRight: 10, paddingRight: 10}}>
+                  {index + 1}. "{item.sentence}"
+                </Text>
+              </View>
+            ))}
+          <View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Enter or record comment"
+                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                onChangeText={(txt) => {
+                  setComment(txt);
+                }}>
+                {comment}
+              </TextInput>
 
-                <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
-                </TouchableOpacity>
-              </View>
-              <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-                <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                  <Text style={{padding: 3}}>Other's comments</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
+                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+              </TouchableOpacity>
             </View>
-          </ScrollView>
+            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+              <TouchableOpacity onPress={() => setCommentsModal(true)}>
+                <Text style={{padding: 3}}>Other's comments</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* </ScrollView> */}
 
           <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
 
@@ -468,6 +469,15 @@ export default Approve = (props) => {
             }}
             handleCancel={() => {
               setConfirmModal(false);
+            }}
+          />
+          <PopupAlert
+            popupTitle="Message"
+            message={'Submit Successfully'}
+            isVisible={newWarning}
+            handleOK={() => {
+              setNewWarning(false);
+              props.navigation.goBack();
             }}
           />
 
