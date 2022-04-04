@@ -289,7 +289,7 @@ export default ExactTerm = (props) => {
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="enter or record comment"
-                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                style={{color: '#003458', width: '100%', borderWidth:1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
                 onChangeText={(txt) => {
                   setComment(txt);
                 }}>

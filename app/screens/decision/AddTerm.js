@@ -934,7 +934,7 @@ export default Category = (props) => {
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Enter or record comment"
-                  style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                  style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth:1}}
                   onChangeText={(txt) => {
                     setComment(txt);
                   }}>

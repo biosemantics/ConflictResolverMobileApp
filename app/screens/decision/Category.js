@@ -40,8 +40,10 @@ export default Category = (props) => {
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.options);
   const quailtyData = useSelector((state) => state.main.metaData.quality);
+  
 
   const [pitch, setPitch] = useState('');
+
   const [error, setError] = useState('');
   const [end, setEnd] = useState('');
   const [started, setStarted] = useState('');
@@ -204,7 +206,7 @@ export default Category = (props) => {
         choices.push(options.data[indOpt].option_);
       });
       api.submitDecesions(auth.expertId, task.termId, choices, comment).then((result) => {
-        setTimeout(() => setWarningModal(true), 1000);
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
           setMessage('Not Submitted');
         } else if (result.data.error == false) {
@@ -352,8 +354,8 @@ export default Category = (props) => {
           <View>
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder="record or enter a comment"
-                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+                placeholder="Enter or record comment"
+                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth:1}}
                 onChangeText={(txt) => {
                   setComment(txt);
                 }}>
@@ -419,7 +421,13 @@ export default Category = (props) => {
           }}
         />
 
-        <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
+        <PrimaryButton
+          buttonText={'Submit'} 
+          onPressFunc={onSubmit} 
+          marginLeft={20} 
+          marginRight={20} 
+          marginBottom={5} 
+          />
 
         <PrimaryButton
           buttonText={'Reject the Term'}
@@ -467,7 +475,7 @@ const styles = {
     borderRadius: 9999,
     marginTop: 8,
     backgroundColor: '#f1f1f1',
-    width: '100%',
+    width: '98%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     //alignItems: 'center',

@@ -27,9 +27,13 @@ import PrimaryButton from '../../components/PrimaryButton';
 import { RadioButton} from 'react-native-paper';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {set_disputed_options, set_tasks} from '../../store/actions';
+import CommentsModal from '../../components/CommentsModal';
+import { set_options } from '../../store/actions';
 
 export default function Disputed(props) {
   const [task, setTask] = useState(props.navigation.getParam('task', {}));
+ 
+  const options = useSelector((state) => state.main.data.options);
 
   const auth = useSelector((state) => state.main.auth);
 
@@ -51,7 +55,8 @@ export default function Disputed(props) {
   const [dropDown2, setDropDown2] = useState(false);
   const [qualityItems, setQualityItems] = useState([]);
   const [structureItems, setStructureItems] = useState([]);
-
+  const [commentsModal, setCommentsModal] = useState(false);
+ 
   // {disputed.solutionGiven ? disputed.userSolution.newTerm 
   const [newTerm, setNewTerm] = useState(disputed.solutionGiven ? disputed.userSolution.newTerm : '');
   const [newDefinition, setNewDefinition] = useState(disputed.solutionGiven ? disputed.userSolution.newDefinition : '');
@@ -70,6 +75,7 @@ export default function Disputed(props) {
   const [optionIndexes, setOptionIndexes] = useState([]);
   
   const [message, setMessage] = useState('');
+  const [commentMessage, setCommentMessage] = useState([]);
   const [errorInfoModal, setErrorInfoModal] = useState(false);
  
   const [checked, setChecked] = React.useState('Quality');
@@ -93,6 +99,10 @@ export default function Disputed(props) {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
+  console.log("jfhgdhffg");
+  console.log(disputed.otherSolution);
+  
 
   useEffect(() => {
     if (results.length > 0) {
@@ -144,7 +154,8 @@ export default function Disputed(props) {
       structureItem = getStructure(result.data.children, structureItem);
       // dispatch(set_structure_item(structureItem));
     });
- 
+
+    
   }, [activebtn, results]);
 
   useEffect(() => {
@@ -256,36 +267,8 @@ export default function Disputed(props) {
       if (dropDown2) {
         messageVal = "You've selected using existing term " + group + ' to represent the concept';
       } else if (dropDown1) {
-        messageVal = "You've selected a new term " + disputed.term + ' to represent the concept ';
+        messageVal = "You've selected a new term " + newTerm + ' to represent the concept ';
       }
-      //  var messageVal = "You've selected a new term " + disputed.term + ' to represent the concept: ';
-      // var ind = 0;
-      // if (optionIndexes.length === 0) {
-      //   messageVal += group;
-      // } else {
-      //   optionIndexes.map((indOpt) => {
-      //     if (ind !== 0) {
-      //       messageVal += ', ';
-      //     }
-      //     messageVal += options.data[indOpt].option_;
-      //     ind++;
-      //   });
-      // }
-      // messageVal += '.';
-      // if (optionIndexes.length !== 0) {
-      //   if (group != '') {
-      //     var ind = 0;
-      //     messageVal += '\n\nThe selection of ' + group + ' is ignored because you also selected ';
-      //     optionIndexes.map((indOpt) => {
-      //       if (ind !== 0) {
-      //         messageVal += ', ';
-      //       }
-      //       messageVal += options.data[indOpt].option_;
-      //       ind++;
-      //     });
-      //     messageVal += '.';
-      //   }
-      // }
       setStateMessage(messageVal);
       setConfirmModal(true);
     }
@@ -323,6 +306,9 @@ export default function Disputed(props) {
         }
       });
   };
+
+
+    
 
   const start = (inputName) => {
     setActivebtn(inputName);
@@ -672,15 +658,17 @@ export default function Disputed(props) {
             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
               {
                 <View>
-                  <View style={Styles.inputView}>
-                    <Text> Other's decision :</Text>
+                  <View style={Styles.otherDecision}>
+                    <View style={{flexDirection:'row'}}>
+                    <Text> Other's term :</Text>
                     {disputed.otherSolution &&
                       disputed.otherSolution.length > 0 &&
                       disputed.otherSolution.map((ind, index) => (
-                        <Text style={{color: 'black', marginLeft: 5,}} key={'maybePartOf' + index}>
-                         {ind.newTerm };
+                        <Text style={{color: 'black', marginLeft: 5 }} key={'maybePartOf' + index}>
+                         {ind.newTerm}{";"}
                         </Text>
                       ))}
+                  </View>
                   </View>
 
                   <View style={Styles.inputView}>
@@ -750,15 +738,16 @@ export default function Disputed(props) {
                       />
                       <Text style={{margin: 8}}>Structure</Text>
                     </View>
-                    <View style={Styles.inputView}>
-                      <Text> Other's decision :</Text>
-                      {disputed.otherSolution &&
+                    <View style={Styles.otherDecision}>
+                      <Text> Other's quality decision : {disputed.qualitySuperclass}</Text>
+                      <Text> Other's structure decision : {disputed.structureSuperclass}</Text>                      
+                      {/* {disputed.otherSolution &&
                         disputed.otherSolution.length > 0 &&
                         disputed.otherSolution.map((ind, index) => (
                           <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
                             {ind.superclass };
                           </Text>
-                        ))}
+                        ))} */}
                     </View>
 
                   {/* <View style={Styles.inputView}>
@@ -881,7 +870,9 @@ export default function Disputed(props) {
                       value={input4}
                       onChangeText={(text) => setinput4(text)}
                     />
-                    <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
+                    <TouchableOpacity 
+                      style={{position: 'absolute', left: '85%', top: '20%'}} 
+                      onPress={() => start(4)}>
                       <FontAwesomeIcon icon={faMicrophone} size={25} />
                     </TouchableOpacity>
                   </View>
@@ -902,6 +893,7 @@ export default function Disputed(props) {
                 height: 40,
                 borderRadius: 50,
                 paddingLeft: 20,
+                borderWidth:1
               }}
               value={input5}
               onChangeText={(text) => setinput5(text)}
@@ -909,6 +901,12 @@ export default function Disputed(props) {
             <TouchableOpacity style={{position: 'absolute', left: '85%', top: '6%'}} onPress={() => start(5)}>
               <FontAwesomeIcon icon={faMicrophone} size={25} />
             </TouchableOpacity>
+
+            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+              <TouchableOpacity onPress={() => setCommentsModal(true)}>
+                <Text style={{padding: 3}}>Other's comments</Text>
+              </TouchableOpacity>
+            </View>
 
             <PrimaryButton
               enable={ (dropDown1 ? newTerm != '' && newDefinition !='' && pickerStructure != ''  :  pickerStructure !=''  )}
@@ -950,6 +948,20 @@ export default function Disputed(props) {
               setConfirmModal(false);
             }}
           />
+          <CommentsModal
+            popupTitle="Other's comments"
+            comments={disputed.otherSolution}
+            term={disputed.term}
+            // userName={disputed.otherSolution}
+            isVisible={commentsModal}
+            handleYes={() => {
+              setCommentsModal(false);
+            }}
+            handleCancel={() => {
+              setCommentsModal(false);
+            }}
+        />
+
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
@@ -999,12 +1011,18 @@ const Styles = StyleSheet.create({
     //marginLeft: 30,
     marginHorizontal: 30,
     marginTop: 10,
-    width: '90%',flex:1, flexWrap: 'wrap'
+    width: '90%',
   },
   inputBoxView: {
     width: '95%',
     borderWidth: 1,
     height: 40,
     paddingLeft: 10,
+  },
+  otherDecision:{
+   
+    width: '92%',
+    marginHorizontal:10,
+    fontSize:12,
   },
 });
