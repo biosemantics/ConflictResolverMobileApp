@@ -61,7 +61,7 @@ export default CommentsModal = (props) => {
                 <View style={styles.modalContent}>
                     <Text style={{...styles.text, fontSize:19, lineHeight:24, marginTop:20, marginBottom: 10, fontWeight:'bold', color:'#E94C36'}}>{popupTitle}</Text>
                     {
-                        comments && comments.length > 0 &&
+                        comments && comments != "" &&
                         comments.map((comment, index) => (
                             <View key={"comment"+index}>
                                 <Text style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginTop:10}}><Text style={{ fontWeight: 'bold' }}>{comment.comment}</Text>: Commented on <Text style={{ color: 'blue' }}>{term}</Text> by <Text style={{ color: 'red' }}>{comment.username}</Text></Text>
