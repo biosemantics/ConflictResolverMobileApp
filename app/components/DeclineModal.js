@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, ScrollView} from 'react-native';
 import Modal from 'react-native-modal';
 import {Dimensions} from 'react-native';
 // import Picker from '@react-native-picker/picker'
@@ -94,7 +94,8 @@ export default DeclineModal = (props) => {
       <View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Modal isVisible={props.isVisible} deviceWidth={deviceWidth} deviceHeight={deviceHeight}>
-            <View style={styles.modalContainer}>
+            <ScrollView>
+              <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={{...styles.text, fontSize: 19, lineHeight: 24, marginTop: 20, fontWeight: 'bold'}}>{'Reject the Term'}</Text>
                 <Text
@@ -258,6 +259,7 @@ export default DeclineModal = (props) => {
                 </View>
               </View>
             </View>
+            </ScrollView>
             <PopupConfirm
               popupTitle="Are you sure to reject the term?"
               message={'You will not be able to change this decision after reject.'}

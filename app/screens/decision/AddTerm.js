@@ -383,11 +383,11 @@ export default Category = (props) => {
   const category = ['Structure', 'Character'];
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, margin: 10}}>
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : StatusBar.currentHeight + 50} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -300 : StatusBar.currentHeight} // 50 is Button height
         enabled>
         <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
@@ -408,549 +408,544 @@ export default Category = (props) => {
               <Text style={{...styles.senctence, fontSize: 14, color: 'red', fontWeight: 'bold'}}>You declined the term.</Text>
             )}
           </View>
-          <ScrollView
-            contentContainerStyle={{padding: 10, paddingTop: 3}}
-            style={{height: deviceHeight - 270}}
-            nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="always">
-            <Text style={{...styles.sentence, color: '#003458'}}>Term definition:</Text>
-            <Text style={{marginLeft: 15}}>{task.data.replace(/"/g, '')}</Text>
-            <Text style={{...styles.sentence, color: '#003458'}}>Example sentences:</Text>
-            {options &&
-              options.sentence &&
-              options.sentence.map((item, index) => (
-                <Text key={'sentence' + index} style={{marginLeft: 15}}>
-                  {index + 1}. "{item.sentence}"
-                </Text>
-              ))}
-            {options && options.sentence && options.sentence.length == 0 && <Text style={{marginLeft: 15}}> Example sentences not available </Text>}
-            <View style={{borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 15, paddingTop: 15}}>
-              <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
-                <Text style={{...styles.sentence, color: '#fff', marginLeft: 10}}>
-                  Use example senctences and the definition to help answer questions below:
-                </Text>
+
+          <Text style={{...styles.sentence, color: '#003458'}}>Term definition:</Text>
+          <Text style={{marginLeft: 15}}>{task.data.replace(/"/g, '')}</Text>
+          <Text style={{...styles.sentence, color: '#003458'}}>Example sentences:</Text>
+          {options &&
+            options.sentence &&
+            options.sentence.map((item, index) => (
+              <Text key={'sentence' + index} style={{marginLeft: 15}}>
+                {index + 1}. "{item.sentence}"
+              </Text>
+            ))}
+          {options && options.sentence && options.sentence.length == 0 && <Text style={{marginLeft: 15}}> Example sentences not available </Text>}
+          <View style={{borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 15, paddingTop: 15}}>
+            <View style={{alignContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'green'}}>
+              <Text style={{...styles.sentence, color: '#fff', marginLeft: 10}}>
+                Use example senctences and the definition to help answer questions below:
+              </Text>
+            </View>
+          </View>
+          <View style={{padding: 10}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <Text style={{color: 'black', width: '45%'}}>
+                Is {task.term} a structure or a character?
+                {options && options.characterCount > 0 && <Text style={{color: 'black'}}> Character({options.characterCount})</Text>}
+                {options && options.structureCount > 0 && <Text style={{color: 'black'}}> Structure({options.structureCount})</Text>}
+              </Text>
+              <View style={{borderWidth: 1, width: '60%'}}>
+                <SelectDropdown
+                  data={category}
+                  onSelect={(selectedItem, index) => {
+                    console.log(selectedItem, index);
+                    setTermType(selectedItem);
+                  }}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return selectedItem;
+                  }}
+                  rowTextForSelection={(item, index) => {
+                    return item;
+                  }}
+                  dropdownStyle={styles.dropdown1DropdownStyle}
+                  buttonStyle={styles.dropdown2BtnStyle}
+                />
               </View>
             </View>
-            <View style={{padding: 10}}>
-              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={{color: 'black', width: '45%'}}>
-                  Is {task.term} a structure or a character?
-                  {options && options.characterCount > 0 && <Text style={{color: 'black'}}> Character({options.characterCount})</Text>}
-                  {options && options.structureCount > 0 && <Text style={{color: 'black'}}> Structure({options.structureCount})</Text>}
-                </Text>
-                <View style={{borderWidth: 1, width: '60%'}}>
-                  <SelectDropdown
-                    data={category}
-                    onSelect={(selectedItem, index) => {
-                      console.log(selectedItem, index);
-                      setTermType(selectedItem);
+            {termType == 'Character' && (
+              <View>
+                <Text style={{color: 'black'}}>Select a group that {task.term} belong:</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{color: 'black'}}> Other's decisions: </Text>
+                  {options &&
+                    options.characterSubpartData &&
+                    options.characterSubpartData.length > 0 &&
+                    options.characterSubpartData.map((subpart, index) => (
+                      <Text style={{color: 'black'}} key={'characterSubPart' + index}>
+                        {' '}
+                        {subpart.name}({subpart.count}){' '}
+                      </Text>
+                    ))}
+                </View>
+                <View style={{borderWidth: 0}}>
+                  <SearchableDropdown
+                    onItemSelect={(item) => {
+                      setGroup(item.name);
+                      setCharacterDefaultIndex(item.id - 1);
                     }}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                      return selectedItem;
+                    itemValue={group}
+                    containerStyle={{padding: 5, width: '100%'}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
+                      borderWidth: 1,
+                      borderRadius: 5,
                     }}
-                    rowTextForSelection={(item, index) => {
-                      return item;
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 140}}
+                    items={quailtyData}
+                    defaultIndex={characterDefaultIndex}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Enter a quality name ',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                      },
                     }}
-                    dropdownStyle={styles.dropdown1DropdownStyle}
-                    buttonStyle={styles.dropdown2BtnStyle}
+                    listProps={{
+                      nestedScrollEnabled: true,
+                    }}
                   />
                 </View>
               </View>
-              {termType == 'Character' && (
-                <View>
-                  <Text style={{color: 'black'}}>Select a group that {task.term} belong:</Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{color: 'black'}}> Other's decisions: </Text>
-                    {options &&
-                      options.characterSubpartData &&
-                      options.characterSubpartData.length > 0 &&
-                      options.characterSubpartData.map((subpart, index) => (
-                        <Text style={{color: 'black'}} key={'characterSubPart' + index}>
-                          {' '}
-                          {subpart.name}({subpart.count}){' '}
-                        </Text>
-                      ))}
-                  </View>
-                  <View style={{borderWidth: 0}}>
-                    <SearchableDropdown
-                      onItemSelect={(item) => {
-                        setGroup(item.name);
-                        setCharacterDefaultIndex(item.id - 1);
-                      }}
-                      itemValue={group}
-                      containerStyle={{padding: 5, width: '100%'}}
-                      itemStyle={{
-                        padding: 10,
-                        marginTop: 2,
-                        backgroundColor: '#ddd',
-                        borderColor: '#bbb',
+            )}
+            {termType == 'Structure' && (
+              <View>
+                <Text style={{color: 'black'}}>Select a structure that has {task.term} as a subclass.</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{color: 'black'}}> Other's decisions: </Text>
+                  {options &&
+                    options.subclassOfData &&
+                    options.subclassOfData.length > 0 &&
+                    options.subclassOfData.map((ind, index) => (
+                      <Text style={{color: 'black'}} key={'subclassof' + index}>
+                        {' '}
+                        {ind.name}({ind.count}){' '}
+                      </Text>
+                    ))}
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <SearchableDropdown
+                    onItemSelect={(item) => {
+                      setSubClassOf(item.name);
+                      setSubclassDefaultIndex(item.id - 1);
+                    }}
+                    containerStyle={{padding: 5, width: '100%'}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 140}}
+                    items={structureData}
+                    defaultIndex={subclassDefaultIndex}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Enter a structure name ',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
                         borderWidth: 1,
+                        borderColor: '#ccc',
                         borderRadius: 5,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{maxHeight: 140}}
-                      items={quailtyData}
-                      defaultIndex={characterDefaultIndex}
-                      resetValue={false}
-                      textInputProps={{
-                        placeholder: 'Enter a quality name ',
-                        underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: 12,
+                      },
+                    }}
+                    listProps={{
+                      nestedScrollEnabled: true,
+                    }}
+                  />
+                </View>
+                <Text style={{color: 'black'}}>Fill in the blanks below if applicable.</Text>
+
+                <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{width: '70%'}}>
+                      <SearchableDropdown
+                        multi={true}
+                        selectedItems={alwaysPartOf}
+                        onItemSelect={(item) => {
+                          setAlwaysPartOf([...alwaysPartOf, item]);
+                        }}
+                        containerStyle={{padding: 5, width: '100%'}}
+                        onRemoveItem={(item, index) => {
+                          const items = alwaysPartOf.filter((sitem) => sitem.id !== item.id);
+                          setAlwaysPartOf(items);
+                        }}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
                           borderWidth: 1,
-                          borderColor: '#ccc',
                           borderRadius: 5,
-                        },
-                      }}
-                      listProps={{
-                        nestedScrollEnabled: true,
-                      }}
-                    />
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureData}
+                        defaultIndex={0}
+                        chip={true}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
+                    </View>
+                    <View style={{width: '70%'}}>
+                      <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>always has part of {task.term}.</Text>
+                    </View>
+                  </View>
+                  <View style={{textAlign: 'left'}}>
+                    <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
+                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      {options &&
+                        options.alwaysPartOfData &&
+                        options.alwaysPartOfData.length > 0 &&
+                        options.alwaysPartOfData.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'alwaysPartOf' + index}>
+                            {' '}
+                            {ind.name}({ind.count}){' '}
+                          </Text>
+                        ))}
+                    </View>
                   </View>
                 </View>
-              )}
-              {termType == 'Structure' && (
-                <View>
-                  <Text style={{color: 'black'}}>Select a structure that has {task.term} as a subclass.</Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{color: 'black'}}> Other's decisions: </Text>
-                    {options &&
-                      options.subclassOfData &&
-                      options.subclassOfData.length > 0 &&
-                      options.subclassOfData.map((ind, index) => (
-                        <Text style={{color: 'black'}} key={'subclassof' + index}>
-                          {' '}
-                          {ind.name}({ind.count}){' '}
-                        </Text>
-                      ))}
-                  </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <SearchableDropdown
-                      onItemSelect={(item) => {
-                        setSubClassOf(item.name);
-                        setSubclassDefaultIndex(item.id - 1);
-                      }}
-                      containerStyle={{padding: 5, width: '100%'}}
-                      itemStyle={{
-                        padding: 10,
-                        marginTop: 2,
-                        backgroundColor: '#ddd',
-                        borderColor: '#bbb',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{maxHeight: 140}}
-                      items={structureData}
-                      defaultIndex={subclassDefaultIndex}
-                      resetValue={false}
-                      textInputProps={{
-                        placeholder: 'Enter a structure name ',
-                        underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: 12,
+
+                <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{width: '70%'}}>
+                      <SearchableDropdown
+                        multi={true}
+                        selectedItems={alwaysHasPart}
+                        onItemSelect={(item) => {
+                          setAlwaysHasPart([...alwaysHasPart, item]);
+                        }}
+                        containerStyle={{padding: 5, width: '100%'}}
+                        onRemoveItem={(item, index) => {
+                          const items = alwaysHasPart.filter((sitem) => sitem.id !== item.id);
+                          setAlwaysHasPart(items);
+                        }}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
                           borderWidth: 1,
-                          borderColor: '#ccc',
                           borderRadius: 5,
-                        },
-                      }}
-                      listProps={{
-                        nestedScrollEnabled: true,
-                      }}
-                    />
-                  </View>
-                  <Text style={{color: 'black'}}>Fill in the blanks below if applicable.</Text>
-
-                  <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
-                    <View style={{alignItems: 'center'}}>
-                      <View style={{width: '70%'}}>
-                        <SearchableDropdown
-                          multi={true}
-                          selectedItems={alwaysPartOf}
-                          onItemSelect={(item) => {
-                            setAlwaysPartOf([...alwaysPartOf, item]);
-                          }}
-                          containerStyle={{padding: 5, width: '100%'}}
-                          onRemoveItem={(item, index) => {
-                            const items = alwaysPartOf.filter((sitem) => sitem.id !== item.id);
-                            setAlwaysPartOf(items);
-                          }}
-                          itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureData}
+                        defaultIndex={0}
+                        chip={true}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
                             borderWidth: 1,
+                            borderColor: '#ccc',
                             borderRadius: 5,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={{maxHeight: 140}}
-                          items={structureData}
-                          defaultIndex={0}
-                          chip={true}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Enter structure name ',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: 12,
-                              borderWidth: 1,
-                              borderColor: '#ccc',
-                              borderRadius: 5,
-                            },
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                      </View>
-                      <View style={{width: '70%'}}>
-                        <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>always has part of {task.term}.</Text>
-                      </View>
+                          },
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
                     </View>
-                    <View style={{textAlign: 'left'}}>
-                      <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                        <Text style={{color: 'black'}}> Other's decisions: </Text>
-                        {options &&
-                          options.alwaysPartOfData &&
-                          options.alwaysPartOfData.length > 0 &&
-                          options.alwaysPartOfData.map((ind, index) => (
-                            <Text style={{color: 'black', marginLeft: 5}} key={'alwaysPartOf' + index}>
-                              {' '}
-                              {ind.name}({ind.count}){' '}
-                            </Text>
-                          ))}
-                      </View>
+                    <View style={{width: '70%'}}>
+                      <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>is always part of {task.term}.</Text>
                     </View>
                   </View>
-
-                  <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
-                    <View style={{alignItems: 'center'}}>
-                      <View style={{width: '70%'}}>
-                        <SearchableDropdown
-                          multi={true}
-                          selectedItems={alwaysHasPart}
-                          onItemSelect={(item) => {
-                            setAlwaysHasPart([...alwaysHasPart, item]);
-                          }}
-                          containerStyle={{padding: 5, width: '100%'}}
-                          onRemoveItem={(item, index) => {
-                            const items = alwaysHasPart.filter((sitem) => sitem.id !== item.id);
-                            setAlwaysHasPart(items);
-                          }}
-                          itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={{maxHeight: 140}}
-                          items={structureData}
-                          defaultIndex={0}
-                          chip={true}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Enter structure name ',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: 12,
-                              borderWidth: 1,
-                              borderColor: '#ccc',
-                              borderRadius: 5,
-                            },
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                      </View>
-                      <View style={{width: '70%'}}>
-                        <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>is always part of {task.term}.</Text>
-                      </View>
-                    </View>
-                    <View style={{textAlign: 'left'}}>
-                      <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                        <Text style={{color: 'black'}}> Other's decisions: </Text>
-                        {options &&
-                          options.alwaysHasPartData &&
-                          options.alwaysHasPartData.length > 0 &&
-                          options.alwaysHasPartData.map((ind, index) => (
-                            <Text style={{color: 'black', marginLeft: 5}} key={'alwaysHasPart' + index}>
-                              {' '}
-                              {ind.name}({ind.count}){' '}
-                            </Text>
-                          ))}
-                      </View>
-                    </View>
-                  </View>
-
-                  <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
-                    <View style={{alignItems: 'center'}}>
-                      <View style={{width: '70%'}}>
-                        <SearchableDropdown
-                          multi={true}
-                          selectedItems={maybePartOf}
-                          onItemSelect={(item) => {
-                            setMaybePartOf([...maybePartOf, item]);
-                          }}
-                          containerStyle={{padding: 5, width: '100%'}}
-                          onRemoveItem={(item, index) => {
-                            const items = maybePartOf.filter((sitem) => sitem.id !== item.id);
-                            setMaybePartOf(items);
-                          }}
-                          itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={{maxHeight: 140}}
-                          items={structureData}
-                          defaultIndex={0}
-                          chip={true}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Enter structure name ',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: 12,
-                              borderWidth: 1,
-                              borderColor: '#ccc',
-                              borderRadius: 5,
-                            },
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                      </View>
-                      <View style={{width: '70%'}}>
-                        <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>may have part {task.term}.</Text>
-                      </View>
-                    </View>
-                    <View>
-                      <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                        <Text style={{color: 'black'}}> Other's decisions: </Text>
-                        {options &&
-                          options.maybePartOfData &&
-                          options.maybePartOfData.length > 0 &&
-                          options.maybePartOfData.map((ind, index) => (
-                            <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
-                              {' '}
-                              {ind.name}({ind.count}){' '}
-                            </Text>
-                          ))}
-                      </View>
-                    </View>
-                  </View>
-
-                  <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
-                    <View style={{alignItems: 'center'}}>
-                      <View style={{width: '70%'}}>
-                        <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>{task.term} always has part</Text>
-                      </View>
-                      <View style={{width: '70%'}}>
-                        <SearchableDropdown
-                          multi={true}
-                          selectedItems={subPart}
-                          onItemSelect={(item) => {
-                            setSubPart([...subPart, item]);
-                          }}
-                          containerStyle={{padding: 5, width: '100%'}}
-                          onRemoveItem={(item, index) => {
-                            const items = subPart.filter((sitem) => sitem.id !== item.id);
-                            setSubPart(items);
-                          }}
-                          itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={{maxHeight: 140}}
-                          items={structureData}
-                          defaultIndex={0}
-                          chip={true}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Enter structure name ',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: 12,
-                              borderWidth: 1,
-                              borderColor: '#ccc',
-                              borderRadius: 5,
-                            },
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                      </View>
-                    </View>
-                    <View>
-                      <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                        <Text style={{color: 'black'}}> Other's decisions: </Text>
-                        {options &&
-                          options.subpartData &&
-                          options.subpartData.length > 0 &&
-                          options.subpartData.map((ind, index) => (
-                            <Text style={{color: 'black', marginLeft: 5}} key={'subpart' + index}>
-                              {' '}
-                              {ind.name}({ind.count}){' '}
-                            </Text>
-                          ))}
-                      </View>
-                    </View>
-                  </View>
-
-                  <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
-                    <View style={{alignItems: 'center'}}>
-                      <View style={{width: '70%'}}>
-                        <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>{task.term} is always part of</Text>
-                      </View>
-                      <View style={{width: '70%'}}>
-                        <SearchableDropdown
-                          multi={true}
-                          selectedItems={superPart}
-                          onItemSelect={(item) => {
-                            setSuperPart([...superPart, item]);
-                          }}
-                          containerStyle={{padding: 5, width: '100%'}}
-                          onRemoveItem={(item, index) => {
-                            const items = superPart.filter((sitem) => sitem.id !== item.id);
-                            setSuperPart(items);
-                          }}
-                          itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={{maxHeight: 140}}
-                          items={structureData}
-                          defaultIndex={0}
-                          chip={true}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Enter structure name ',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: 12,
-                              borderWidth: 1,
-                              borderColor: '#ccc',
-                              borderRadius: 5,
-                            },
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                      </View>
-                    </View>
-                    <View>
-                      <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                        <Text style={{color: 'black'}}> Other's decisions: </Text>
-                        {options &&
-                          options.superpartData &&
-                          options.superpartData.length > 0 &&
-                          options.superpartData.map((ind, index) => (
-                            <Text style={{color: 'black', marginLeft: 5}} key={'superpart' + index}>
-                              {' '}
-                              {ind.name}({ind.count}){' '}
-                            </Text>
-                          ))}
-                      </View>
+                  <View style={{textAlign: 'left'}}>
+                    <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
+                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      {options &&
+                        options.alwaysHasPartData &&
+                        options.alwaysHasPartData.length > 0 &&
+                        options.alwaysHasPartData.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'alwaysHasPart' + index}>
+                            {' '}
+                            {ind.name}({ind.count}){' '}
+                          </Text>
+                        ))}
                     </View>
                   </View>
                 </View>
-              )}
-              {
-                <View>
-                  <View style={{...styles.inputContainer, marginTop: 15}}>
-                    <TextInput
-                      placeholder={'Enter a term exchangable with ' + task.term}
-                      style={{color: '#003458', width: '75%', marginLeft: 5}}
-                      onChangeText={(txt) => {
-                        setSynonym(txt);
-                      }}>
-                      {synonym}
-                    </TextInput>
-                    <TouchableOpacity
-                      disabled={synonym == ''}
-                      style={{...styles.button, backgroundColor: synonym == '' ? 'grey' : '#003458'}}
-                      onPress={() => {
-                        setSynonyms([...synonyms, {synonym: synonym, expertId: auth.expertId}]);
-                        setSynonym('');
-                      }}>
-                      <FontAwesomeIcon icon={faPlus} size={25} color={'white'} />
-                    </TouchableOpacity>
+
+                <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{width: '70%'}}>
+                      <SearchableDropdown
+                        multi={true}
+                        selectedItems={maybePartOf}
+                        onItemSelect={(item) => {
+                          setMaybePartOf([...maybePartOf, item]);
+                        }}
+                        containerStyle={{padding: 5, width: '100%'}}
+                        onRemoveItem={(item, index) => {
+                          const items = maybePartOf.filter((sitem) => sitem.id !== item.id);
+                          setMaybePartOf(items);
+                        }}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
+                          borderWidth: 1,
+                          borderRadius: 5,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureData}
+                        defaultIndex={0}
+                        chip={true}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
+                    </View>
+                    <View style={{width: '70%'}}>
+                      <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>may have part {task.term}.</Text>
+                    </View>
                   </View>
-                  <Text style={{color: 'black', marginTop: 5}}>List terms that are exchangable with {task.term}.</Text>
-                  <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
-                    {synonyms.map(
-                      (sy, index) =>
-                        sy.expertId === auth.expertId && (
-                          <View key={'synonym' + index} style={{...styles.synonym, backgroundColor: index % 2 ? 'lightcyan' : 'rgb(200,224,240)'}}>
-                            <Text>{sy.synonym}</Text>
-                            <TouchableOpacity
-                              style={{...styles.button, width: 26, height: 26, backgroundColor: 'red'}}
-                              onPress={() => {
-                                setSynonyms(synonyms.filter((it) => it != sy));
-                              }}>
-                              <FontAwesomeIcon icon={faRemove} size={16} color={'white'} />
-                            </TouchableOpacity>
-                          </View>
-                        ),
-                    )}
-                  </View>
-                  <Text style={{color: 'black', marginTop: 5}}>Other's synonyms</Text>
-                  <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
-                    {synonyms.map(
-                      (sy, index) =>
-                        sy.expertId !== auth.expertId && (
-                          <View key={'synonym' + index} style={{...styles.synonym, backgroundColor: index % 2 ? 'lightcyan' : 'rgb(200,224,240)'}}>
-                            <Text>{sy.synonym}</Text>
-                          </View>
-                        ),
-                    )}
+                  <View>
+                    <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
+                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      {options &&
+                        options.maybePartOfData &&
+                        options.maybePartOfData.length > 0 &&
+                        options.maybePartOfData.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
+                            {' '}
+                            {ind.name}({ind.count}){' '}
+                          </Text>
+                        ))}
+                    </View>
                   </View>
                 </View>
-              }
-            </View>
-            <View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Enter or record comment"
-                  style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth:1}}
-                  onChangeText={(txt) => {
-                    setComment(txt);
-                  }}>
-                  {comment}
-                </TextInput>
-                <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
-                  <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
-                </TouchableOpacity>
+
+                <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{width: '70%'}}>
+                      <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>{task.term} always has part</Text>
+                    </View>
+                    <View style={{width: '70%'}}>
+                      <SearchableDropdown
+                        multi={true}
+                        selectedItems={subPart}
+                        onItemSelect={(item) => {
+                          setSubPart([...subPart, item]);
+                        }}
+                        containerStyle={{padding: 5, width: '100%'}}
+                        onRemoveItem={(item, index) => {
+                          const items = subPart.filter((sitem) => sitem.id !== item.id);
+                          setSubPart(items);
+                        }}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
+                          borderWidth: 1,
+                          borderRadius: 5,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureData}
+                        defaultIndex={0}
+                        chip={true}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
+                    </View>
+                  </View>
+                  <View>
+                    <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
+                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      {options &&
+                        options.subpartData &&
+                        options.subpartData.length > 0 &&
+                        options.subpartData.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'subpart' + index}>
+                            {' '}
+                            {ind.name}({ind.count}){' '}
+                          </Text>
+                        ))}
+                    </View>
+                  </View>
+                </View>
+
+                <View style={{marginBottom: 10, borderBottomWidth: 1, borderColor: 'grey', paddingBottom: 5}}>
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{width: '70%'}}>
+                      <Text style={{color: 'black', fontSize: 16, fontWeight: '900'}}>{task.term} is always part of</Text>
+                    </View>
+                    <View style={{width: '70%'}}>
+                      <SearchableDropdown
+                        multi={true}
+                        selectedItems={superPart}
+                        onItemSelect={(item) => {
+                          setSuperPart([...superPart, item]);
+                        }}
+                        containerStyle={{padding: 5, width: '100%'}}
+                        onRemoveItem={(item, index) => {
+                          const items = superPart.filter((sitem) => sitem.id !== item.id);
+                          setSuperPart(items);
+                        }}
+                        itemStyle={{
+                          padding: 10,
+                          marginTop: 2,
+                          backgroundColor: '#ddd',
+                          borderColor: '#bbb',
+                          borderWidth: 1,
+                          borderRadius: 5,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{maxHeight: 140}}
+                        items={structureData}
+                        defaultIndex={0}
+                        chip={true}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Enter structure name ',
+                          underlineColorAndroid: 'transparent',
+                          style: {
+                            padding: 12,
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 5,
+                          },
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
+                    </View>
+                  </View>
+                  <View>
+                    <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
+                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      {options &&
+                        options.superpartData &&
+                        options.superpartData.length > 0 &&
+                        options.superpartData.map((ind, index) => (
+                          <Text style={{color: 'black', marginLeft: 5}} key={'superpart' + index}>
+                            {' '}
+                            {ind.name}({ind.count}){' '}
+                          </Text>
+                        ))}
+                    </View>
+                  </View>
+                </View>
               </View>
-              <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-                <TouchableOpacity onPress={handleClickOtherComment}>
-                  <Text style={{padding: 3}}>Other's comments</Text>
-                </TouchableOpacity>
+            )}
+            {
+              <View>
+                <View style={{...styles.inputContainer, marginTop: 15}}>
+                  <TextInput
+                    placeholder={'Enter a term exchangable with ' + task.term}
+                    style={{color: '#003458', width: '75%', marginLeft: 5}}
+                    onChangeText={(txt) => {
+                      setSynonym(txt);
+                    }}>
+                    {synonym}
+                  </TextInput>
+                  <TouchableOpacity
+                    disabled={synonym == ''}
+                    style={{...styles.button, backgroundColor: synonym == '' ? 'grey' : '#003458'}}
+                    onPress={() => {
+                      setSynonyms([...synonyms, {synonym: synonym, expertId: auth.expertId}]);
+                      setSynonym('');
+                    }}>
+                    <FontAwesomeIcon icon={faPlus} size={25} color={'white'} />
+                  </TouchableOpacity>
+                </View>
+                <Text style={{color: 'black', marginTop: 5}}>List terms that are exchangable with {task.term}.</Text>
+                <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
+                  {synonyms.map(
+                    (sy, index) =>
+                      sy.expertId === auth.expertId && (
+                        <View key={'synonym' + index} style={{...styles.synonym, backgroundColor: index % 2 ? 'lightcyan' : 'rgb(200,224,240)'}}>
+                          <Text>{sy.synonym}</Text>
+                          <TouchableOpacity
+                            style={{...styles.button, width: 26, height: 26, backgroundColor: 'red'}}
+                            onPress={() => {
+                              setSynonyms(synonyms.filter((it) => it != sy));
+                            }}>
+                            <FontAwesomeIcon icon={faRemove} size={16} color={'white'} />
+                          </TouchableOpacity>
+                        </View>
+                      ),
+                  )}
+                </View>
+                <Text style={{color: 'black', marginTop: 5}}>Other's synonyms</Text>
+                <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
+                  {synonyms.map(
+                    (sy, index) =>
+                      sy.expertId !== auth.expertId && (
+                        <View key={'synonym' + index} style={{...styles.synonym, backgroundColor: index % 2 ? 'lightcyan' : 'rgb(200,224,240)'}}>
+                          <Text>{sy.synonym}</Text>
+                        </View>
+                      ),
+                  )}
+                </View>
               </View>
+            }
+          </View>
+          <View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Enter or record comment"
+                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth: 1}}
+                onChangeText={(txt) => {
+                  setComment(txt);
+                }}>
+                {comment}
+              </TextInput>
+              <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
+                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+              </TouchableOpacity>
             </View>
-          </ScrollView>
+            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+              <TouchableOpacity onPress={handleClickOtherComment}>
+                <Text style={{padding: 3}}>Other's comments</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           <PrimaryButton
             enable={(termType == 'Character' && group != '') || (termType == 'Structure' && subclassOf != '')}
@@ -970,44 +965,43 @@ export default Category = (props) => {
             bgColor={'#F4463A'}
             borderColor={'#F4463A'}
           />
-
-          <PopupConfirm
-            popupTitle="Are you sure to submit?"
-            stateMessage={stateMessage}
-            message={'You will not be able to change this decision after submit.'}
-            isVisible={confirmModal}
-            handleYes={() => {
-              setConfirmModal(false);
-              onConfirmSubmit();
-            }}
-            handleCancel={() => {
-              setConfirmModal(false);
-            }}
-          />
-          <PopupAlert
-            popupTitle="Message"
-            message={'Submit Successfully'}
-            isVisible={newWarning}
-            handleOK={() => {
-              setNewWarning(false);
-              props.navigation.goBack();
-            }}
-          />
-
-          <CommentsModal
-            popupTitle="Other's comments"
-            comments={options.comments}
-            term={task.term}
-            isVisible={commentsModal}
-            handleYes={() => {
-              setCommentsModal(false);
-            }}
-            handleCancel={() => {
-              setCommentsModal(false);
-            }}
-          />
         </ScrollView>
       </KeyboardAvoidingView>
+      <PopupConfirm
+        popupTitle="Are you sure to submit?"
+        stateMessage={stateMessage}
+        message={'You will not be able to change this decision after submit.'}
+        isVisible={confirmModal}
+        handleYes={() => {
+          setConfirmModal(false);
+          onConfirmSubmit();
+        }}
+        handleCancel={() => {
+          setConfirmModal(false);
+        }}
+      />
+      <PopupAlert
+        popupTitle="Message"
+        message={'Submit Successfully'}
+        isVisible={newWarning}
+        handleOK={() => {
+          setNewWarning(false);
+          props.navigation.goBack();
+        }}
+      />
+
+      <CommentsModal
+        popupTitle="Other's comments"
+        comments={options.comments}
+        term={task.term}
+        isVisible={commentsModal}
+        handleYes={() => {
+          setCommentsModal(false);
+        }}
+        handleCancel={() => {
+          setCommentsModal(false);
+        }}
+      />
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -1044,11 +1038,12 @@ const styles = {
   inputContainer: {
     borderRadius: 9999,
     backgroundColor: '#f1f1f1',
-    width: '100%',
+    width: '88%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     alignContent: 'center',
+    marginHorizontal: 14,
   },
   button: {
     borderRadius: 9999,

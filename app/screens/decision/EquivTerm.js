@@ -25,9 +25,9 @@ export default EquivTerm = (props) => {
   const [isNone, setIsNone] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
   const [stateMessage, setStateMessage] = useState('');
-  const [message,setMessage] = useState('');
+  const [message, setMessage] = useState('');
   const [confirmModal, setConfirmModal] = useState(false);
-  const [newWarning,setNewWarning] = useState(false);
+  const [newWarning, setNewWarning] = useState(false);
   const [reason, setReason] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
@@ -175,11 +175,11 @@ export default EquivTerm = (props) => {
   const submitDecesion = async () => {
     if (none == false) {
       api.submitExactDecesions(auth.expertId, task.termId, optionIndexes, reason).then((result) => {
-          setTimeout(()=>setNewWarning(true),1000)
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
-          setMessage('Not Submitted')
+          setMessage('Not Submitted');
         } else if (result.data.error == false) {
-          setMessage('Submitted successfully')
+          setMessage('Submitted successfully');
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
           });
@@ -218,16 +218,13 @@ export default EquivTerm = (props) => {
   };
 
   return (
-
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, margin: 10}}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -400 : StatusBar.currentHeight} // 50 is Button height
         enabled>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
-
-  
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
             size={22}
@@ -238,89 +235,82 @@ export default EquivTerm = (props) => {
               props.navigation.goBack();
             }}
           />
-          <ScrollView
-            contentContainerStyle={{padding: 10}}
-            style={{height: deviceHeight - 205}}
-            nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
-            {options.definition && (
-              <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{' ' + options.definition.replace(/"/g, '')}</Text>
-            )}
-            {
-              // options.sentences && options.sentences != "" &&
-              <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>
-                {options.sentences != '' ? ' Used in: ' + options.sentences : ' '}
-              </Text>
-            }
-            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
-              <Image source={require('../../assets/images/noimage.png')} />
-            </View>
-            <View
-              style={{
-                alignContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                backgroundColor: 'green',
-                padding: 10,
-                paddingTop: 2,
-                paddingBottom: 2,
-              }}>
-              <Text style={{...styles.sentence, color: '#fff'}}>
-                Which of the following terms are equivalent with {task.term}, regardless of context?
-              </Text>
-            </View>
-            {options &&
-              options.data &&
-              options.data.map((option, index) => (
-                <TouchableOpacity key={index} onPress={() => clickOption(option.id)}>
-                  <View style={styles.option}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
-                      <Text style={{fontSize: 20}}>
-                        {option.label} ({option.count})
-                      </Text>
-                      {optionIndexes.map((indOpt, it) => {
-                        if (indOpt == option.id) {
-                          return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
-                        }
-                      })}
-                    </View>
-                    <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>
-                      {'- ' + option.definition.replace(/"/g, '')}
+
+          {options.definition && (
+            <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{' ' + options.definition.replace(/"/g, '')}</Text>
+          )}
+          {
+            // options.sentences && options.sentences != "" &&
+            <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>
+              {options.sentences != '' ? ' Used in: ' + options.sentences : ' '}
+            </Text>
+          }
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
+            <Image source={require('../../assets/images/noimage.png')} />
+          </View>
+          <View
+            style={{
+              alignContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              backgroundColor: 'green',
+              padding: 10,
+              paddingTop: 2,
+              paddingBottom: 2,
+            }}>
+            <Text style={{...styles.sentence, color: '#fff'}}>
+              Which of the following terms are equivalent with {task.term}, regardless of context?
+            </Text>
+          </View>
+          {options &&
+            options.data &&
+            options.data.map((option, index) => (
+              <TouchableOpacity key={index} onPress={() => clickOption(option.id)}>
+                <View style={styles.option}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
+                    <Text style={{fontSize: 20}}>
+                      {option.label} ({option.count})
                     </Text>
-                    {option.sentences != '' && (
-                      <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- Used in: ' + option.sentences}</Text>
-                    )}
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
-                      <Image source={require('../../assets/images/noimage.png')} />
-                    </View>
+                    {optionIndexes.map((indOpt, it) => {
+                      if (indOpt == option.id) {
+                        return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
+                      }
+                    })}
                   </View>
-                </TouchableOpacity>
-              ))}
-            <TouchableOpacity onPress={() => clickNone()}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
-                <Text style={{fontSize: 20}}>None of above ({options.noneCount})</Text>
-                {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
-              </View>
+                  <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- ' + option.definition.replace(/"/g, '')}</Text>
+                  {option.sentences != '' && (
+                    <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- Used in: ' + option.sentences}</Text>
+                  )}
+                  <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
+                    <Image source={require('../../assets/images/noimage.png')} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          <TouchableOpacity onPress={() => clickNone()}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
+              <Text style={{fontSize: 20}}>None of above ({options.noneCount})</Text>
+              {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
+            </View>
+          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="enter or record comment"
+              style={{color: '#003458', width: '100%', borderWidth: 1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+              onChangeText={(txt) => {
+                setComment(txt);
+              }}>
+              {comment}
+            </TextInput>
+            <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
+              <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
             </TouchableOpacity>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="enter or record comment"
-                style={{color: '#003458', width: '100%', borderWidth:1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
-                onChangeText={(txt) => {
-                  setComment(txt);
-                }}>
-                {comment}
-              </TextInput>
-              <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
-              </TouchableOpacity>
-            </View>
-            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-              <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                <Text style={{padding: 3}}>Other's comments</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+          </View>
+          <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+            <TouchableOpacity onPress={() => setCommentsModal(true)}>
+              <Text style={{padding: 3}}>Other's comments</Text>
+            </TouchableOpacity>
+          </View>
 
           <PrimaryButton
             buttonText={'Submit'}
@@ -330,63 +320,62 @@ export default EquivTerm = (props) => {
             marginBottom={5}
             enable={none == true || optionIndexes.length > 0}
           />
-
-          <WarningModal
-            popupTitle="Warning"
-            message={'You need to select at least one category.'}
-            isVisible={warningModal}
-            handleYes={() => {
-              setWarningModal(false);
-            }}
-            handleCancel={() => {
-              setWarningModal(false);
-            }}
-          />
-
-          <PopupConfirm
-            popupTitle="Are you sure to submit?"
-            stateMessage={stateMessage}
-            isVisible={confirmModal}
-            handleYes={() => {
-              setConfirmModal(false);
-              submitDecesion();
-            }}
-            yes={'Confirm'}
-            handleChangeReason={(text) => {
-              setReason(text);
-            }}
-            reason={reason}
-            isReason={isNone}
-            placeholder={placeholder}
-            handleCancel={() => {
-              setConfirmModal(false);
-            }}
-          />
-          <PopupAlert
-            popupTitle="Message"
-            message={message}
-            isVisible={newWarning}
-            handleOK={() => {
-              setNewWarning(false);
-              props.navigation.goBack();
-            }}
-          />
-          <CommentsModal
-            popupTitle="Other's comments"
-            comments={options.reasons}
-            isVisible={commentsModal}
-            term={task.term}
-            noneText="No comments"
-            handleYes={() => {
-              setCommentsModal(false);
-            }}
-            handleCancel={() => {
-              setCommentsModal(false);
-            }}
-          />
-        
-      </ScrollView>
+        </ScrollView>
       </KeyboardAvoidingView>
+
+      <WarningModal
+        popupTitle="Warning"
+        message={'You need to select at least one category.'}
+        isVisible={warningModal}
+        handleYes={() => {
+          setWarningModal(false);
+        }}
+        handleCancel={() => {
+          setWarningModal(false);
+        }}
+      />
+
+      <PopupConfirm
+        popupTitle="Are you sure to submit?"
+        stateMessage={stateMessage}
+        isVisible={confirmModal}
+        handleYes={() => {
+          setConfirmModal(false);
+          submitDecesion();
+        }}
+        yes={'Confirm'}
+        handleChangeReason={(text) => {
+          setReason(text);
+        }}
+        reason={reason}
+        isReason={isNone}
+        placeholder={placeholder}
+        handleCancel={() => {
+          setConfirmModal(false);
+        }}
+      />
+      <PopupAlert
+        popupTitle="Message"
+        message={message}
+        isVisible={newWarning}
+        handleOK={() => {
+          setNewWarning(false);
+          props.navigation.goBack();
+        }}
+      />
+      <CommentsModal
+        popupTitle="Other's comments"
+        comments={options.reasons}
+        isVisible={commentsModal}
+        term={task.term}
+        noneText="No comments"
+        handleYes={() => {
+          setCommentsModal(false);
+        }}
+        handleCancel={() => {
+          setCommentsModal(false);
+        }}
+      />
     </View>
   );
 };
@@ -404,7 +393,7 @@ const styles = {
   inputContainer: {
     borderRadius: 9999,
     backgroundColor: '#f1f1f1',
-    width: '100%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

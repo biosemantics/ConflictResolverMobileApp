@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {faSignOut} from '@fortawesome/free-solid-svg-icons';
+
 export default class NavHeader extends React.Component {
   _menu = null;
 
@@ -43,11 +44,21 @@ export default class NavHeader extends React.Component {
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
+
+        {this.props.headerText == 'Home' ? 
+          <TouchableOpacity style={{position: 'absolute', top: 7, right: 10, padding: 10}} onPress={() => {
+            AsyncStorage.clear();
+            this.props.navigation.navigate('Splash'); 
+            }}>
+            <FontAwesomeIcon icon={faSignOut} color={'black'} size={25} />
+          </TouchableOpacity>
+          : null
+        }
       </View>
     );
   }
 }
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
     display: 'flex',
     flexDirection: 'row',

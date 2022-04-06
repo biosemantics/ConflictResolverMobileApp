@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
 import {Dimensions} from 'react-native';
 import PropTypes from 'prop-types'
@@ -53,10 +53,19 @@ export default CommentsModal = (props) => {
     const deviceHeight = Platform.OS === "ios"
       ? Dimensions.get("window").height
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
+    useEffect(() =>{
+        if(props.modalVisible){
+            scrollYPos = props.screenHeight * 1;
+            scroller.scrollTo({x: 0, y: scrollYPos});
+         }
+    
+    }),[];
     return (
         <Modal isVisible={props.isVisible}
         deviceWidth={deviceWidth}
         deviceHeight={deviceHeight}>
+            <ScrollView>
             <View style={styles.modalContainer} >
                 <View style={styles.modalContent}>
                     <Text style={{...styles.text, fontSize:19, lineHeight:24, marginTop:20, marginBottom: 10, fontWeight:'bold', color:'#E94C36'}}>{popupTitle}</Text>
@@ -81,9 +90,10 @@ export default CommentsModal = (props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
+                  
                 </View>
             </View>
-
+            </ScrollView>            
         </Modal>
     );
 }

@@ -1,5 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, SafeAreaView, Platform, StatusBar} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -40,7 +52,6 @@ export default Category = (props) => {
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.options);
   const quailtyData = useSelector((state) => state.main.metaData.quality);
-  
 
   const [pitch, setPitch] = useState('');
 
@@ -159,6 +170,8 @@ export default Category = (props) => {
 
   const onSubmit = () => {
     var canSubmit = 0;
+
+
     if (optionIndexes.length !== 0 || group != '') {
       canSubmit = 1;
     }
@@ -168,6 +181,7 @@ export default Category = (props) => {
     } else {
       var messageVal = "You've decided that " + task.term + ' belongs to categories: ';
       var ind = 0;
+
       if (optionIndexes.length === 0) {
         messageVal += group;
       } else {
@@ -196,15 +210,19 @@ export default Category = (props) => {
       }
       setStateMessage(messageVal);
       setConfirmModal(true);
+     
     }
   };
 
   const submitDecesion = async () => {
+    console.log("submit decision run successfully");
     if (optionIndexes.length !== 0) {
-      let choices = [];+
-      optionIndexes.map((indOpt) => {
+      console.log('if condition');
+      let choices = [];
+      +optionIndexes.map((indOpt) => {
         choices.push(options.data[indOpt].option_);
       });
+      console.log("api run");
       api.submitDecesions(auth.expertId, task.termId, choices, comment).then((result) => {
         setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
@@ -217,9 +235,12 @@ export default Category = (props) => {
         }
       });
     } else {
+      console.log("else part executed");
       api.submitDecesion(auth.expertId, task.termId, group, comment).then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
         } else if (result.data.error == false) {
+          setMessage('Submitted Successfully');
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
           });
@@ -240,11 +261,11 @@ export default Category = (props) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, margin: 10}}>
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : StatusBar.currentHeight + 50} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -400 : StatusBar.currentHeight} // 50 is Button height
         enabled>
         <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           {/* <KeyboardAwareScrollView contentContainerStyle={{flex:1}}> */}
@@ -355,7 +376,7 @@ export default Category = (props) => {
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Enter or record comment"
-                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth:1}}
+                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth: 1}}
                 onChangeText={(txt) => {
                   setComment(txt);
                 }}>
@@ -371,74 +392,70 @@ export default Category = (props) => {
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
 
-        <WarningModal
-          popupTitle="Warning"
-          message={'You need to select at least one category.'}
-          isVisible={warningModal}
-          handleYes={() => {
-            setWarningModal(false);
-          }}
-          handleCancel={() => {
-            setWarningModal(false);
-          }}
-        />
+          <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
 
-        <PopupConfirm
-          popupTitle="Are you sure to submit?"
-          stateMessage={stateMessage}
-          message={'You will not be able to change this decision after submit.'}
-          isVisible={confirmModal}
-          handleYes={() => {
-            setConfirmModal(false);
-            submitDecesion();
-          }}
-          handleCancel={() => {
-            setConfirmModal(false);
-          }}>
-        </PopupConfirm>
-        <PopupAlert
-          popupTitle="Message"
-          message={message}
-          isVisible={newWarning}
-          handleOK={() => {
-            setNewWarning(false);
-            props.navigation.goBack();
-          }}
-        />
-
-        <CommentsModal
-          popupTitle="Other's comments"
-          comments={options.comments}
-          term={task.term}
-          isVisible={commentsModal}
-          handleYes={() => {
-            setCommentsModal(false);
-          }}
-          handleCancel={() => {
-            setCommentsModal(false);
-          }}
-        />
-
-        <PrimaryButton
-          buttonText={'Submit'} 
-          onPressFunc={onSubmit} 
-          marginLeft={20} 
-          marginRight={20} 
-          marginBottom={5} 
+          <PrimaryButton
+            buttonText={'Reject the Term'}
+            onPressFunc={onDecline}
+            marginLeft={20}
+            marginRight={20}
+            marginBottom={5}
+            bgColor={'#F4463A'}
+            borderColor={'#F4463A'}
           />
-
-        <PrimaryButton
-          buttonText={'Reject the Term'}
-          onPressFunc={onDecline}
-          marginLeft={20}
-          marginRight={20}
-          marginBottom={5}
-          bgColor={'#F4463A'}
-          borderColor={'#F4463A'}
-        />
+        </ScrollView>
       </KeyboardAvoidingView>
+      <WarningModal
+        popupTitle="Warning"
+        message={'You need to select at least one category.'}
+        isVisible={warningModal}
+        handleYes={() => {
+          setWarningModal(false);
+        }}
+        handleCancel={() => {
+          setWarningModal(false);
+        }}
+      />
+
+      <PopupConfirm
+        popupTitle="Are you sure to submit?"
+        stateMessage={stateMessage}
+        message={'You will not be able to change this decision after submit.'}
+        isVisible={confirmModal}
+        handleYes={() => {
+          submitDecesion();
+
+          setConfirmModal(false);
+        }}
+        handleCancel={() => {
+          setConfirmModal(false);
+        }}
+      />
+
+      <PopupAlert
+        popupTitle="Message"
+        message={message}
+        isVisible={newWarning}
+        handleOK={() => {
+          setNewWarning(false);
+          props.navigation.goBack();
+        }}
+      />
+
+      <CommentsModal
+        popupTitle="Other's comments"
+        comments={options.comments}
+        term={task.term}
+        isVisible={commentsModal}
+        handleYes={() => {
+          setCommentsModal(false);
+        }}
+        handleCancel={() => {
+          setCommentsModal(false);
+        }}
+      />
+
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}

@@ -16,8 +16,7 @@ export default Tasks = (props) => {
     })
         
     disputedOptions.map((item) =>{
-       
-       
+              
     })
 
     const [isUnCategory, setIsUnCategory] = useState(true);

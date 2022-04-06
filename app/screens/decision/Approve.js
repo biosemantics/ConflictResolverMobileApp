@@ -269,13 +269,13 @@ export default Approve = (props) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, margin: 10}}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -480 : StatusBar.currentHeight} // 50 is Button height
         enabled>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term + ' (' + task.data.substring(0, task.data.length - 1) + ')'}
             size={22}
@@ -302,13 +302,13 @@ export default Approve = (props) => {
             </View>
           </View>
           {/* <ScrollView contentContainerStyle={{padding: 10}} style={{height: deviceHeight - 320}} nestedScrollEnabled={true}> */}
-          <Text style={{...styles.sentence, color: '#003458'}}>Proposed definitions:</Text>
+          <Text style={{...styles.sentence, color: '#003458', marginHorizontal: 10}}>Proposed definitions:</Text>
           {options &&
             options.definition &&
             options.definition.map((item, index) => {
               return (
                 <View key={'sentence' + index}>
-                  <View style={{flexDirection: 'column', marginBottom: 10 /*, backgroundColor: color*/}}>
+                  <View style={{flexDirection: 'column', marginBottom: 10, marginRight: 20}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, marginRight: 20}}>
                       <Text>
                         {index + 1}. {item.definition.replace(/"/g, '')}
@@ -396,11 +396,11 @@ export default Approve = (props) => {
               </TouchableOpacity>
             </View>
           </View>
-          <Text style={{...styles.sentence, color: '#003458'}}>Select example sentences:</Text>
+          <Text style={{...styles.sentence, color: '#003458', marginHorizontal: 10}}>Select example sentences:</Text>
           {options &&
             options.sentence &&
             options.sentence.map((item, index) => (
-              <View key={'sentence' + index} style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View key={'sentence' + index} style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
                 {selection[index] ? (
                   <Checkbox.Android
                     status={selectedSentences.includes(item.id) ? 'checked' : 'unchecked'}
@@ -428,20 +428,20 @@ export default Approve = (props) => {
                 </Text>
               </View>
             ))}
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="Enter or record comment"
-                style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth:1}}
-                onChangeText={(txt) => {
-                  setComment(txt);
-                }}>
-                {comment}
-              </TextInput>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Enter or record comment"
+              style={{color: '#003458', width: '100%', paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50, borderWidth: 1}}
+              onChangeText={(txt) => {
+                setComment(txt);
+              }}>
+              {comment}
+            </TextInput>
 
-              <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
+              <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+            </TouchableOpacity>
+          </View>
           {/* </ScrollView> */}
 
           <PrimaryButton buttonText={'Submit'} onPressFunc={onSubmit} marginLeft={20} marginRight={20} marginBottom={5} />
@@ -455,69 +455,67 @@ export default Approve = (props) => {
             bgColor={'#F4463A'}
             borderColor={'#F4463A'}
           />
+        </ScrollView>
+      </KeyboardAvoidingView>
+      <PopupConfirm
+        popupTitle="Are you sure to submit?"
+        stateMessage={stateMessage}
+        message={'You will not be able to change this decision after submit.'}
+        isVisible={confirmModal}
+        handleYes={() => {
+          setConfirmModal(false);
+          onConfirmSubmit();
+        }}
+        handleCancel={() => {
+          setConfirmModal(false);
+        }}
+      />
+      <PopupAlert
+        popupTitle="Message"
+        message={'Submit Successfully'}
+        isVisible={newWarning}
+        handleOK={() => {
+          setNewWarning(false);
+          props.navigation.goBack();
+        }}
+      />
 
-          <PopupConfirm
-            popupTitle="Are you sure to submit?"
-            stateMessage={stateMessage}
-            message={'You will not be able to change this decision after submit.'}
-            isVisible={confirmModal}
-            handleYes={() => {
-              setConfirmModal(false);
-              onConfirmSubmit();
-            }}
-            handleCancel={() => {
-              setConfirmModal(false);
-            }}
-          />
-          <PopupAlert
-            popupTitle="Message"
-            message={'Submit Successfully'}
-            isVisible={newWarning}
-            handleOK={() => {
-              setNewWarning(false);
-              props.navigation.goBack();
-            }}
-          />
+      <WarningModal
+        popupTitle="Warning"
+        message={'You need to select/provide at least one definition AND example sentence.'}
+        isVisible={warningModal}
+        handleYes={() => {
+          setWarningModal(false);
+        }}
+        handleCancel={() => {
+          setWarningModal(false);
+        }}
+      />
 
-          <WarningModal
-            popupTitle="Warning"
-            message={'You need to select/provide at least one definition AND example sentence.'}
-            isVisible={warningModal}
-            handleYes={() => {
-              setWarningModal(false);
-            }}
-            handleCancel={() => {
-              setWarningModal(false);
-            }}
-          />
+      <WarningModal
+        popupTitle="Warning"
+        message={'Select at least one example sentence.'}
+        isVisible={noSentencewarningModal}
+        handleYes={() => {
+          setNoSentencewarningModal(false);
+        }}
+        handleCancel={() => {
+          setNoSentencewarningModal(false);
+        }}
+      />
 
-          <WarningModal
-            popupTitle="Warning"
-            message={'Select at least one example sentence.'}
-            isVisible={noSentencewarningModal}
-            handleYes={() => {
-              setNoSentencewarningModal(false);
-            }}
-            handleCancel={() => {
-              setNoSentencewarningModal(false);
-            }}
-          />
-
-          <CommentsModal
-            popupTitle="Other's comments"
-            comments={options.comments}
-            term={task.term}
-            isVisible={commentsModal}
-            handleYes={() => {
-              setCommentsModal(false);
-            }}
-            handleCancel={() => {
-              setCommentsModal(false);
-            }}
-          />
-      </ScrollView>
-        </KeyboardAvoidingView>
-        
+      <CommentsModal
+        popupTitle="Other's comments"
+        comments={options.comments}
+        term={task.term}
+        isVisible={commentsModal}
+        handleYes={() => {
+          setCommentsModal(false);
+        }}
+        handleCancel={() => {
+          setCommentsModal(false);
+        }}
+      />
       <DeclineModal
         popupTitle="Are you sure to deline the term?"
         message={'You will not be able to change this decision after decline.'}
@@ -547,11 +545,12 @@ const styles = {
   inputContainer: {
     borderRadius: 9999,
     backgroundColor: '#f1f1f1',
-    width: '100%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     alignContent: 'center',
+    margin: 10,
   },
   noneOfAbove: {
     width: '100%',

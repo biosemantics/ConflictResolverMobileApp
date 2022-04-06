@@ -89,7 +89,6 @@ export default HomeLayout = (props) => {
         });
         api.getDisputed(auth.expertId).then(result=>{
             dispatch(set_disputed_options(result.data));
-        
         });
         api.getStructure().then(result => {
             let structures = [];

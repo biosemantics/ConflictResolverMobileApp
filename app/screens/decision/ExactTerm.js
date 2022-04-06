@@ -214,11 +214,11 @@ export default ExactTerm = (props) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, margin:10}}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ?  64: StatusBar.currentHeight + 50} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ?  -400: StatusBar.currentHeight} // 50 is Button height
         enabled>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
           <NavHeader
@@ -247,11 +247,11 @@ export default ExactTerm = (props) => {
               </Text>
             </View>
           </View>
-          <ScrollView
+          {/* <ScrollView
             contentContainerStyle={{padding: 10}}
             style={{height: deviceHeight - 265}}
             nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="always">
+            keyboardShouldPersistTaps="always"> */}
           
             {options &&
               options.data &&
@@ -304,7 +304,7 @@ export default ExactTerm = (props) => {
                 <Text style={{padding: 3}}>Other's comments</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
+          {/* </ScrollView> */}
 
           <PrimaryButton
             buttonText={'Submit'}
@@ -389,7 +389,7 @@ const styles = {
   inputContainer: {
     borderRadius: 9999,
     backgroundColor: '#f1f1f1',
-    width: '100%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
