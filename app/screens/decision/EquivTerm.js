@@ -32,6 +32,7 @@ export default EquivTerm = (props) => {
   const [placeholder, setPlaceholder] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
   const [comment, setComment] = useState('');
+  const [color, setColor] = useState('');
 
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.equivTermOptions);
@@ -65,7 +66,14 @@ export default EquivTerm = (props) => {
 
   const start = (inputName) => {
     startRecognizing(inputName);
+    setColor(true);
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
+
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
@@ -80,7 +88,17 @@ export default EquivTerm = (props) => {
     //Invoked when an error occurs.
     setError(JSON.stringify(e.error));
   };
-
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
+  };
   const saveValue = (msg) => {
     setComment(msg);
   };
@@ -303,7 +321,7 @@ export default EquivTerm = (props) => {
               {comment}
             </TextInput>
             <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
-              <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+              <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
             </TouchableOpacity>
           </View>
           <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>

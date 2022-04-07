@@ -54,7 +54,7 @@ export default Category = (props) => {
   const quailtyData = useSelector((state) => state.main.metaData.quality);
 
   const [pitch, setPitch] = useState('');
-
+  const [color, setColor] = useState('');
   const [error, setError] = useState('');
   const [end, setEnd] = useState('');
   const [started, setStarted] = useState('');
@@ -82,14 +82,29 @@ export default Category = (props) => {
   }, []);
 
   const start = (inputName) => {
-    console.log('hello start');
-
     startRecognizing(inputName);
+    setColor(true);
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
+
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
-
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
+  };
   const onSpeechRecognized = (e) => {};
 
   const onSpeechEnd = (e) => {
@@ -171,7 +186,6 @@ export default Category = (props) => {
   const onSubmit = () => {
     var canSubmit = 0;
 
-
     if (optionIndexes.length !== 0 || group != '') {
       canSubmit = 1;
     }
@@ -210,19 +224,18 @@ export default Category = (props) => {
       }
       setStateMessage(messageVal);
       setConfirmModal(true);
-     
     }
   };
 
   const submitDecesion = async () => {
-    console.log("submit decision run successfully");
+    console.log('submit decision run successfully');
     if (optionIndexes.length !== 0) {
       console.log('if condition');
       let choices = [];
       +optionIndexes.map((indOpt) => {
         choices.push(options.data[indOpt].option_);
       });
-      console.log("api run");
+      console.log('api run');
       api.submitDecesions(auth.expertId, task.termId, choices, comment).then((result) => {
         setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
@@ -235,7 +248,7 @@ export default Category = (props) => {
         }
       });
     } else {
-      console.log("else part executed");
+      console.log('else part executed');
       api.submitDecesion(auth.expertId, task.termId, group, comment).then((result) => {
         setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
@@ -333,7 +346,7 @@ export default Category = (props) => {
           <TouchableOpacity>
             <View>
               <Text style={{fontSize: 20}}>None of above, select a new category:</Text>
-              <View style={{borderWidth: 1, borderRadius: 5, borderColor: 'grey', marginTop: 3}}>
+              <View style={{marginTop: 3}}>
                 <SearchableDropdown
                   onItemSelect={(item) => {
                     let newArr = [...optionIndexes];
@@ -363,7 +376,7 @@ export default Category = (props) => {
                     style: {
                       padding: 12,
                       borderWidth: 1,
-                      borderColor: '#ccc',
+                      //borderColor: '#ccc',
                       borderRadius: 5,
                     },
                   }}
@@ -383,7 +396,7 @@ export default Category = (props) => {
                 {comment}
               </TextInput>
               <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+                <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
               </TouchableOpacity>
             </View>
             <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>

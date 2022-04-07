@@ -45,7 +45,7 @@ export default Category = (props) => {
   const [characterDefaultIndex, setCharacterDefaultIndex] = useState(0);
   const [subclassDefaultIndex, setSubclassDefaultIndex] = useState(0);
   const [commentsModal, setCommentsModal] = useState(false);
-
+  const [color, setColor] = useState('');
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.addTermOptions);
   const quailtyData = useSelector((state) => state.main.metaData.quality);
@@ -81,6 +81,12 @@ export default Category = (props) => {
 
   const start = (inputName) => {
     startRecognizing(inputName);
+    setColor(true);
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
@@ -118,6 +124,18 @@ export default Category = (props) => {
   const onSpeechPartialResults = (e) => {
     //Invoked when any results are computed
     setPartialResults(e.value);
+  };
+
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
   };
 
   const startRecognizing = async (inputName) => {
@@ -434,7 +452,7 @@ export default Category = (props) => {
                 {options && options.characterCount > 0 && <Text style={{color: 'black'}}> Character({options.characterCount})</Text>}
                 {options && options.structureCount > 0 && <Text style={{color: 'black'}}> Structure({options.structureCount})</Text>}
               </Text>
-              <View style={{borderWidth: 1, width: '60%'}}>
+              <View style={{borderWidth: 1, width: '50%'}}>
                 <SelectDropdown
                   data={category}
                   onSelect={(selectedItem, index) => {
@@ -494,8 +512,9 @@ export default Category = (props) => {
                       style: {
                         padding: 12,
                         borderWidth: 1,
-                        borderColor: '#ccc',
+                        // borderColor: '#ccc',
                         borderRadius: 5,
+                        borderWidth: 1,
                       },
                     }}
                     listProps={{
@@ -546,7 +565,7 @@ export default Category = (props) => {
                       style: {
                         padding: 12,
                         borderWidth: 1,
-                        borderColor: '#ccc',
+                        // borderColor: '#ccc',
                         borderRadius: 5,
                       },
                     }}
@@ -591,7 +610,7 @@ export default Category = (props) => {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            //borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -654,7 +673,7 @@ export default Category = (props) => {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            //borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -717,7 +736,7 @@ export default Category = (props) => {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            // borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -783,7 +802,7 @@ export default Category = (props) => {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            //borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -846,7 +865,7 @@ export default Category = (props) => {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            //borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -875,7 +894,7 @@ export default Category = (props) => {
             )}
             {
               <View>
-                <View style={{...styles.inputContainer, marginTop: 15}}>
+                <View style={{...styles.inputContainer, marginTop: 15, borderWidth: 1}}>
                   <TextInput
                     placeholder={'Enter a term exchangable with ' + task.term}
                     style={{color: '#003458', width: '75%', marginLeft: 5}}
@@ -895,7 +914,7 @@ export default Category = (props) => {
                   </TouchableOpacity>
                 </View>
                 <Text style={{color: 'black', marginTop: 5}}>List terms that are exchangable with {task.term}.</Text>
-                <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
+                <View>
                   {synonyms.map(
                     (sy, index) =>
                       sy.expertId === auth.expertId && (
@@ -912,8 +931,8 @@ export default Category = (props) => {
                       ),
                   )}
                 </View>
-                <Text style={{color: 'black', marginTop: 5}}>Other's synonyms</Text>
-                <View style={{marginHorizontal: 10, borderWidth: 1, minHeight: 50, paddingHorizontal: 1}}>
+                <Text style={{color: 'black', marginTop: 30}}>Other's synonyms</Text>
+                <View>
                   {synonyms.map(
                     (sy, index) =>
                       sy.expertId !== auth.expertId && (
@@ -923,6 +942,7 @@ export default Category = (props) => {
                       ),
                   )}
                 </View>
+                <View style={{marginTop: 30}}></View>
               </View>
             }
           </View>
@@ -937,7 +957,7 @@ export default Category = (props) => {
                 {comment}
               </TextInput>
               <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+                <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
               </TouchableOpacity>
             </View>
             <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
@@ -1039,6 +1059,7 @@ const styles = {
     borderRadius: 9999,
     backgroundColor: '#f1f1f1',
     width: '88%',
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

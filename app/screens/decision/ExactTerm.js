@@ -27,8 +27,9 @@ export default ExactTerm = (props) => {
   const [placeholder, setPlaceholder] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
   const [comment, setComment] = useState('');
-  const[newWarning,setNewWarning] = useState(false);
-  const[message,setMessage] = useState('');
+  const [newWarning, setNewWarning] = useState(false);
+  const [message, setMessage] = useState('');
+  const [color, setColor] = useState('');
 
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.exactTermOptions);
@@ -62,11 +63,17 @@ export default ExactTerm = (props) => {
 
   const start = (inputName) => {
     startRecognizing(inputName);
+    setColor(true);
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
+  
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
-
   const onSpeechRecognized = (e) => {};
 
   const onSpeechEnd = (e) => {
@@ -81,7 +88,17 @@ export default ExactTerm = (props) => {
   const saveValue = (msg) => {
     setComment(msg);
   };
-
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
+  };
   const onSpeechResults = (e) => {
     //Invoked when SpeechRecognizer is finished recognizing
 
@@ -172,9 +189,9 @@ export default ExactTerm = (props) => {
   const submitDecesion = async () => {
     if (none == false) {
       api.submitExactDecesions(auth.expertId, task.termId, optionIndexes, reason).then((result) => {
-        setTimeout(()=>setNewWarning(true),1000)
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
-          setMessage('Not submitted')
+          setMessage('Not submitted');
         } else if (result.data.error == false) {
           setMessage('Submit successfully');
           api.getTasks(auth.expertId).then((result) => {
@@ -184,8 +201,11 @@ export default ExactTerm = (props) => {
       });
     } else {
       api.submitExactDecesionsNone(auth.expertId, task.termId, reason).then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error) {
+          setMessage('Not submitted');
         } else if (result.data.error == false) {
+          setMessage('Submit successfully');
           api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
           });
@@ -214,13 +234,13 @@ export default ExactTerm = (props) => {
   };
 
   return (
-    <View style={{flex: 1, margin:10}}>
+    <View style={{flex: 1, margin: 10}}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ?  -400: StatusBar.currentHeight} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -400 : StatusBar.currentHeight} // 50 is Button height
         enabled>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
             size={22}
@@ -252,58 +272,56 @@ export default ExactTerm = (props) => {
             style={{height: deviceHeight - 265}}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="always"> */}
-          
-            {options &&
-              options.data &&
-              options.data.map((option, index) => (
-                <TouchableOpacity key={index} onPress={() => clickOption(option.id)}>
-                  <View style={styles.option}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
-                      <Text style={{fontSize: 20}}>
-                        {option.label} ({option.count})
-                      </Text>
-                      {optionIndexes.map((indOpt, it) => {
-                        if (indOpt == option.id) {
-                          return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
-                        }
-                      })}
-                    </View>
-                    <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>
-                      {'- ' + option.definition.replace(/"/g, '')}
+
+          {options &&
+            options.data &&
+            options.data.map((option, index) => (
+              <TouchableOpacity key={index} onPress={() => clickOption(option.id)}>
+                <View style={styles.option}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
+                    <Text style={{fontSize: 20}}>
+                      {option.label} ({option.count})
                     </Text>
-                    {option.sentences != '' && (
-                      <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- Used in: ' + option.sentences}</Text>
-                    )}
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
-                      <Image source={require('../../assets/images/noimage.png')} />
-                    </View>
+                    {optionIndexes.map((indOpt, it) => {
+                      if (indOpt == option.id) {
+                        return <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} key={it} />;
+                      }
+                    })}
                   </View>
-                </TouchableOpacity>
-              ))}
-            <TouchableOpacity onPress={() => clickNone()}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
-                <Text style={{fontSize: 20}}>None of above ({options.noneCount})</Text>
-                {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
-              </View>
+                  <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- ' + option.definition.replace(/"/g, '')}</Text>
+                  {option.sentences != '' && (
+                    <Text style={{fontSize: 13, textAlign: 'left', marginLeft: 10, marginRight: 10}}>{'- Used in: ' + option.sentences}</Text>
+                  )}
+                  <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '95%'}}>
+                    <Image source={require('../../assets/images/noimage.png')} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          <TouchableOpacity onPress={() => clickNone()}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '95%'}}>
+              <Text style={{fontSize: 20}}>None of above ({options.noneCount})</Text>
+              {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
+            </View>
+          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="enter or record comment"
+              style={{color: '#003458', width: '100%', borderWidth: 1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
+              onChangeText={(txt) => {
+                setComment(txt);
+              }}>
+              {comment}
+            </TextInput>
+            <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
+              <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
             </TouchableOpacity>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="enter or record comment"
-                style={{color: '#003458', width: '100%', borderWidth:1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
-                onChangeText={(txt) => {
-                  setComment(txt);
-                }}>
-                {comment}
-              </TextInput>
-              <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
-              </TouchableOpacity>
-            </View>
-            <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-              <TouchableOpacity onPress={() => setCommentsModal(true)}>
-                <Text style={{padding: 3}}>Other's comments</Text>
-              </TouchableOpacity>
-            </View>
+          </View>
+          <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+            <TouchableOpacity onPress={() => setCommentsModal(true)}>
+              <Text style={{padding: 3}}>Other's comments</Text>
+            </TouchableOpacity>
+          </View>
           {/* </ScrollView> */}
 
           <PrimaryButton
@@ -369,8 +387,7 @@ export default ExactTerm = (props) => {
               setCommentsModal(false);
             }}
           />
-        
-      </ScrollView>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );

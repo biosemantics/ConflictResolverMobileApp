@@ -44,6 +44,7 @@ export default function Disputed(props) {
   const [end, setEnd] = useState('');
   const [started, setStarted] = useState('');
   const [qualityType, setQualityType] = useState('');
+  const [color, setColor] = useState('');
 
   const [pickerStructure, setPickerStructure] = useState('');
   const [qualityDefault, _qualityDefault] = useState(null);
@@ -160,7 +161,7 @@ export default function Disputed(props) {
           let responseQuality = qualityItems.find((item) => item.id == searchItem);
 
           if (responseQuality != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 1) {
-            console.log("data goes here in existing quality "+ responseQualityIndex);
+            console.log('data goes here in existing quality ' + responseQualityIndex);
 
             handleChange('disable2');
             setChecked('Quality');
@@ -174,7 +175,7 @@ export default function Disputed(props) {
             setCharacterDefaultIndex(responseQuality.id - 1);
             _qualityDefaultExisting(responseQualityIndex);
           } else if (responseQuality != undefined && disputed.userSolution.newOrExisting == 1 && disputed.userSolution.type == 1) {
-            console.log("data goes here in new quality "+ responseQualityIndex);
+            console.log('data goes here in new quality ' + responseQualityIndex);
 
             handleChange('disable');
             setChecked('Quality');
@@ -200,17 +201,16 @@ export default function Disputed(props) {
       if (searchItem) {
         if (structureItems.length > 0) {
           //_structureDefault(5)
-         
+
           let responseStructureIndex = structureItems.findIndex((item) => item.id == searchItem);
           let responseStructure = structureItems.find((item) => item.id == searchItem);
           console.log(searchItem);
           if (responseStructure != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 2) {
-            console.log("data goes here in exisiting structure " + responseStructureIndex);
-           
+            console.log('data goes here in exisiting structure ' + responseStructureIndex);
+
             _structureDefaultExisting(responseStructureIndex);
             handleChange('disable2');
             setChecked('Structure');
-            
 
             let newArr = [...optionIndexes];
             newArr = [];
@@ -220,8 +220,7 @@ export default function Disputed(props) {
             setGroup(responseStructure.name);
             setCharacterDefaultIndex(responseStructure.id - 1);
           } else if (responseStructure != undefined && disputed.userSolution.newOrExisting == 1 && disputed.userSolution.type == 2) {
-       
-            console.log("data goes here in new structure "+ responseStructureIndex);
+            console.log('data goes here in new structure ' + responseStructureIndex);
             _structureDefault(responseStructureIndex);
             handleChange('disable');
             setChecked('Structure');
@@ -335,9 +334,14 @@ export default function Disputed(props) {
   };
 
   const start = (inputName) => {
+    setColor(true);
     setActivebtn(inputName);
     startRecognizing(inputName);
-  
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
 
   const onSpeechStart = (e) => {
@@ -354,18 +358,6 @@ export default function Disputed(props) {
     //Invoked when an error occurs.
     setError(JSON.stringify(e.error));
   };
-
-  const stopRecognizing = async () => {
-    // console.log('hi');
-    //Stops listening for speech
-    try {
-        await Voice.stop();
-        // console.log('hi');
-    } catch (e) {
-        //eslint-disable-next-line
-        console.error(e);
-    }
-};
 
   const saveValue = (msg) => {
     // console.log('saveMsg', msg)
@@ -407,7 +399,7 @@ export default function Disputed(props) {
 
   const onSpeechResults = (e) => {
     //Invoked when SpeechRecognizer is finished recognizing
-    console.log('results', e)
+    console.log('results', e);
     let msg = '';
     setResults(e.value);
     if (e.value.length > 0) {
@@ -426,7 +418,7 @@ export default function Disputed(props) {
 
   const startRecognizing = async (inputName) => {
     try {
-      console.log('initializeddd')
+      console.log('initializeddd');
       await Voice.start('en-US');
 
       setPitch('');
@@ -435,6 +427,18 @@ export default function Disputed(props) {
       setResults([]);
       setPartialResults([]);
       setEnd('');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
+  };
+
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
     } catch (e) {
       //eslint-disable-next-line
       console.error(e);
@@ -522,11 +526,11 @@ export default function Disputed(props) {
               {
                 <View style={Styles.mainView}>
                   {/* Another Existing Section */}
-
+                  <Text style={Styles.otherText}> Other's decision : </Text>
                   {disputed.otherSolution.length != null && disputed.qualitySuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Other's quality decision : </Text>
+                        <Text style={Styles.otherText}> Quality : </Text>
                         <Text style={Styles.otherQuality}>{disputed.qualitySuperclassExisting}</Text>
                       </Text>
                     </View>
@@ -535,12 +539,12 @@ export default function Disputed(props) {
                   {disputed.otherSolution.length != null && disputed.structureSuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Other's structure decision :</Text>
+                        <Text style={Styles.otherText}> Structure :</Text>
                         <Text style={Styles.otherQuality}> {disputed.structureSuperclassExisting}</Text>
                       </Text>
                     </View>
                   ) : null}
-
+                  <View style={{marginTop: 25}}></View>
                   <View style={Styles.radioContainer}>
                     <RadioButton.Android
                       value="Quality"
@@ -613,7 +617,7 @@ export default function Disputed(props) {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            // borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -658,7 +662,7 @@ export default function Disputed(props) {
                         style: {
                           padding: 12,
                           borderWidth: 1,
-                          borderColor: '#ccc',
+                          // borderColor: '#ccc',
                           borderRadius: 5,
                         },
                       }}
@@ -685,9 +689,10 @@ export default function Disputed(props) {
               {
                 <View style={Styles.mainView}>
                   {/* <View style={{padding: 10}}> */}
+                  <Text style={Styles.otherText}>Other's decision :</Text>
                   <View style={Styles.otherDecision}>
                     <Text style={Styles.TextMain}>
-                      <Text style={Styles.otherText}>Other's term :</Text>
+                      <Text style={Styles.otherText}>Terms:</Text>
                       {disputed.otherSolution &&
                         disputed.otherSolution.length > 0 &&
                         disputed.otherSolution.map((ind, index) => (
@@ -699,7 +704,25 @@ export default function Disputed(props) {
                     </Text>
                   </View>
 
-                  <View style={{marginTop: 10}}></View>
+                  {disputed.otherSolution.length != null && disputed.qualitySuperclassNew != null ? (
+                    <View style={Styles.otherDecision}>
+                      <Text style={Styles.TextMain}>
+                        <Text style={Styles.otherText}> Quality :</Text>
+                        <Text style={Styles.otherQuality}> {disputed.qualitySuperclassNew}</Text>
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {disputed.otherSolution.length != null && disputed.structureSuperclassNew != null ? (
+                    <View style={Styles.otherDecision}>
+                      <Text style={Styles.TextMain}>
+                        <Text style={Styles.otherText}> Structure :</Text>
+                        <Text style={Styles.otherQuality}>{disputed.structureSuperclassNew}</Text>
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  <View style={{marginTop: 30}}></View>
 
                   <View style={Styles.inputView}>
                     <TextInput
@@ -709,7 +732,7 @@ export default function Disputed(props) {
                       onChangeText={(text) => setNewTerm(text)}
                     />
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(1)}>
-                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                      <FontAwesomeIcon icon={faMicrophone} size={25} color={activebtn == 1 && color ? 'green' : 'black'} />
                     </TouchableOpacity>
                   </View>
 
@@ -722,7 +745,7 @@ export default function Disputed(props) {
                     />
 
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(2)}>
-                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                      <FontAwesomeIcon icon={faMicrophone} size={25} color={activebtn == 2 && color ? 'green' : 'black'} />
                     </TouchableOpacity>
                   </View>
                   {/* //Existing value Section */}
@@ -760,23 +783,6 @@ export default function Disputed(props) {
                     <Text style={{margin: 8}}>Structure</Text>
                   </View>
 
-                  {disputed.otherSolution.length != null && disputed.qualitySuperclassNew != null ? (
-                    <View style={Styles.otherDecision}>
-                      <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Other's quality decision :</Text>
-                        <Text style={Styles.otherQuality}> {disputed.qualitySuperclassNew}</Text>
-                      </Text>
-                    </View>
-                  ) : null}
-
-                  {disputed.otherSolution.length != null && disputed.structureSuperclassNew != null ? (
-                    <View style={Styles.otherDecision}>
-                      <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Other's structure decision :</Text>
-                        <Text style={Styles.otherQuality}>{disputed.structureSuperclassNew}</Text>
-                      </Text>
-                    </View>
-                  ) : null}
                   {/* </View> */}
 
                   {checked == 'Quality' ? (
@@ -817,7 +823,7 @@ export default function Disputed(props) {
                           style: {
                             padding: 12,
                             borderWidth: 1,
-                            borderColor: '#ccc',
+                            // borderColor: '#ccc',
                             borderRadius: 5,
                           },
                         }}
@@ -860,7 +866,7 @@ export default function Disputed(props) {
                         style: {
                           padding: 12,
                           borderWidth: 1,
-                          borderColor: '#ccc',
+                          // borderColor: '#ccc',
                           borderRadius: 5,
                         },
                       }}
@@ -880,7 +886,7 @@ export default function Disputed(props) {
                     />
 
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(3)}>
-                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                      <FontAwesomeIcon icon={faMicrophone} size={25} color={activebtn == 3 && color ? 'green' : 'black'} />
                     </TouchableOpacity>
                   </View>
                   <View style={Styles.inputView}>
@@ -891,7 +897,7 @@ export default function Disputed(props) {
                       onChangeText={(text) => setinput4(text)}
                     />
                     <TouchableOpacity style={{position: 'absolute', left: '85%', top: '20%'}} onPress={() => start(4)}>
-                      <FontAwesomeIcon icon={faMicrophone} size={25} />
+                      <FontAwesomeIcon icon={faMicrophone} size={25} color={activebtn == 4 && color ? 'green' : 'black'} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -917,7 +923,7 @@ export default function Disputed(props) {
                 onChangeText={(text) => setinput5(text)}
               />
               <TouchableOpacity style={{position: 'absolute', left: '85%', top: '14%'}} onPress={() => start(5)}>
-                <FontAwesomeIcon icon={faMicrophone} size={25} />
+                <FontAwesomeIcon icon={faMicrophone} size={25} color={activebtn == 5 && color ? 'green' : 'black'} />
               </TouchableOpacity>
             </View>
             <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
@@ -1037,6 +1043,7 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     height: 40,
     paddingLeft: 10,
+    color: 'black',
   },
   otherDecision: {
     flexDirection: 'row',
@@ -1060,7 +1067,6 @@ const Styles = StyleSheet.create({
     alignSelf: 'auto',
   },
   otherText: {
-    fontWeight: 'bold',
     alignSelf: 'auto',
     fontSize: 14,
   },

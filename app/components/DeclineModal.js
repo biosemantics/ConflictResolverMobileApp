@@ -151,7 +151,7 @@ export default DeclineModal = (props) => {
                     rowTextForSelection={(item, index) => {
                       return item;
                     }}
-                    defaultButtonText={'Select Item'}
+                    defaultButtonText={'First select a category'}
                     dropdownIconPosition="right"
                     dropdownBackgroundColor="#fff"
                     // buttonStyle={Styles.dropdown1BtnStyle}

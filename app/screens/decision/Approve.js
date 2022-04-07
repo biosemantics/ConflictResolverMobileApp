@@ -40,7 +40,7 @@ export default Approve = (props) => {
   const [stateMessage, setStateMessage] = useState('');
   const [commentsModal, setCommentsModal] = useState(false);
   const [checked, setChecked] = useState(false);
-
+  const [color, setColor] = useState('');
   const auth = useSelector((state) => state.main.auth);
   const options = useSelector((state) => state.main.data.approveOptions);
 
@@ -72,7 +72,14 @@ export default Approve = (props) => {
 
   const start = (inputName) => {
     startRecognizing(inputName);
+    setColor(true);
+
+    setTimeout(() => {
+      stopRecognizing();
+      setColor(false);
+    }, 3000);
   };
+
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
   };
@@ -109,6 +116,18 @@ export default Approve = (props) => {
   const onSpeechPartialResults = (e) => {
     //Invoked when any results are computed
     setPartialResults(e.value);
+  };
+
+  const stopRecognizing = async () => {
+    // console.log('hi');
+    //Stops listening for speech
+    try {
+      await Voice.stop();
+      // console.log('hi');
+    } catch (e) {
+      //eslint-disable-next-line
+      console.error(e);
+    }
   };
 
   const startRecognizing = async (inputName) => {
@@ -377,7 +396,7 @@ export default Approve = (props) => {
               </View>
             )}
             {options && options.definition && options.definition.length !== 0 && <Text>Or add a new definition:</Text>}
-            <View style={styles.inputContainer}>
+            <View style={{...styles.inputContainer, borderWidth: 1}}>
               <TextInput
                 placeholder="Enter or record new definition"
                 style={{color: '#003458', width: '75%', marginLeft: 5, height: 50}}
@@ -439,7 +458,7 @@ export default Approve = (props) => {
             </TextInput>
 
             <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start()}>
-              <FontAwesomeIcon icon={faMicrophone} size={25} color={'#000'} />
+              <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
             </TouchableOpacity>
           </View>
           {/* </ScrollView> */}
