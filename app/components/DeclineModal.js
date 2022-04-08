@@ -31,6 +31,7 @@ export default DeclineModal = (props) => {
       justifyContent: 'center',
       alignContent: 'center',
       alignItems: 'center',
+      marginTop:'40%',
     },
     modalContent: {
       width: '90%',
@@ -94,7 +95,7 @@ export default DeclineModal = (props) => {
       <View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Modal isVisible={props.isVisible} deviceWidth={deviceWidth} deviceHeight={deviceHeight}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
               <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={{...styles.text, fontSize: 19, lineHeight: 24, marginTop: 20, fontWeight: 'bold'}}>{'Reject the Term'}</Text>
@@ -136,14 +137,18 @@ export default DeclineModal = (props) => {
                   }}>
                   Choose a term to replace {task.term}
                 </Text>
-                <View style={{...styles.inputContainer, justifyContent: 'center', width: '50%', borderWidth: 0}}>
+                <View style={{...styles.inputContainer, justifyContent: 'center', width: '90%', borderWidth: 0, alignSelf:'baseline'}}>
                   <SelectDropdown
                     //ref={dropdownRef}
-                    style={{height: 50}}
+                    style={{height: 50, width:'90%' }}
                     data={myTerm}
                     onSelect={(selectedItem, index) => {
                       setTermType(selectedItem);
                       //setPickerStructure(selectedItem.id)
+                    }}
+                    buttonStyle={{
+                      width: '90%',
+                      
                     }}
                     buttonTextAfterSelection={(selectedItem, index) => {
                       return selectedItem;
@@ -157,7 +162,9 @@ export default DeclineModal = (props) => {
                     // buttonStyle={Styles.dropdown1BtnStyle}
                     renderDropdownIcon={(isOpened) => {
                       return <AntDesignIcon name={isOpened ? 'caretup' : 'caretdown'} size={20} />;
-                    }}></SelectDropdown>
+                    }}
+                     listProps={{nestedScrollEnabled: true}}
+                    ></SelectDropdown>
                 </View>
                 <View style={{...styles.inputContainer, justifyContent: 'flex-start', width: '80%', borderRadius: 1}}>
                   {termType === 'Character' && (

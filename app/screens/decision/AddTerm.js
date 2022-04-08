@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 import SelectDropdown from 'react-native-select-dropdown';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import Voice from '@react-native-community/voice';
-import {faAngleLeft, faL, faMicrophone, faMinus, faPlus, faPlusCircle, faRemove} from '@fortawesome/free-solid-svg-icons';
+import {faAngleLeft, faL, faMicrophone, faMinus, faPlus, faRemove} from '@fortawesome/free-solid-svg-icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -159,6 +159,7 @@ export default Category = (props) => {
 
   const getTerm = () => {
     api.getAddTermOptions(task.termId, auth.expertId).then((result) => {
+            
       if (result.data.curComment != '') {
         setComment(result.data.curComment);
       }
@@ -474,12 +475,12 @@ export default Category = (props) => {
               <View>
                 <Text style={{color: 'black'}}>Select a group that {task.term} belong:</Text>
                 <View style={{flexDirection: 'row'}}>
-                  <Text style={{color: 'black'}}> Other's decisions: </Text>
+                  <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                   {options &&
                     options.characterSubpartData &&
                     options.characterSubpartData.length > 0 &&
                     options.characterSubpartData.map((subpart, index) => (
-                      <Text style={{color: 'black'}} key={'characterSubPart' + index}>
+                      <Text style={{color: 'black', fontSize:12}} key={'characterSubPart' + index}>
                         {' '}
                         {subpart.name}({subpart.count}){' '}
                       </Text>
@@ -528,12 +529,12 @@ export default Category = (props) => {
               <View>
                 <Text style={{color: 'black'}}>Select a structure that has {task.term} as a subclass.</Text>
                 <View style={{flexDirection: 'row'}}>
-                  <Text style={{color: 'black'}}> Other's decisions: </Text>
+                  <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                   {options &&
                     options.subclassOfData &&
                     options.subclassOfData.length > 0 &&
                     options.subclassOfData.map((ind, index) => (
-                      <Text style={{color: 'black'}} key={'subclassof' + index}>
+                      <Text style={{color: 'black', fontSize:12}} key={'subclassof' + index}>
                         {' '}
                         {ind.name}({ind.count}){' '}
                       </Text>
@@ -625,12 +626,12 @@ export default Category = (props) => {
                   </View>
                   <View style={{textAlign: 'left'}}>
                     <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                       {options &&
                         options.alwaysPartOfData &&
                         options.alwaysPartOfData.length > 0 &&
                         options.alwaysPartOfData.map((ind, index) => (
-                          <Text style={{color: 'black', marginLeft: 5}} key={'alwaysPartOf' + index}>
+                          <Text style={{color: 'black', marginLeft: 5, fontSize:12}} key={'alwaysPartOf' + index}>
                             {' '}
                             {ind.name}({ind.count}){' '}
                           </Text>
@@ -688,12 +689,12 @@ export default Category = (props) => {
                   </View>
                   <View style={{textAlign: 'left'}}>
                     <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                       {options &&
                         options.alwaysHasPartData &&
                         options.alwaysHasPartData.length > 0 &&
                         options.alwaysHasPartData.map((ind, index) => (
-                          <Text style={{color: 'black', marginLeft: 5}} key={'alwaysHasPart' + index}>
+                          <Text style={{color: 'black', marginLeft: 5, fontSize:12}} key={'alwaysHasPart' + index}>
                             {' '}
                             {ind.name}({ind.count}){' '}
                           </Text>
@@ -751,12 +752,12 @@ export default Category = (props) => {
                   </View>
                   <View>
                     <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                       {options &&
                         options.maybePartOfData &&
                         options.maybePartOfData.length > 0 &&
                         options.maybePartOfData.map((ind, index) => (
-                          <Text style={{color: 'black', marginLeft: 5}} key={'maybePartOf' + index}>
+                          <Text style={{color: 'black', marginLeft: 5, fontSize:12}} key={'maybePartOf' + index}>
                             {' '}
                             {ind.name}({ind.count}){' '}
                           </Text>
@@ -814,12 +815,12 @@ export default Category = (props) => {
                   </View>
                   <View>
                     <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                       {options &&
                         options.subpartData &&
                         options.subpartData.length > 0 &&
                         options.subpartData.map((ind, index) => (
-                          <Text style={{color: 'black', marginLeft: 5}} key={'subpart' + index}>
+                          <Text style={{color: 'black', marginLeft: 5, fontSize:12}} key={'subpart' + index}>
                             {' '}
                             {ind.name}({ind.count}){' '}
                           </Text>
@@ -877,12 +878,12 @@ export default Category = (props) => {
                   </View>
                   <View>
                     <View style={{width: '100%', marginLeft: 5, flexDirection: 'row'}}>
-                      <Text style={{color: 'black'}}> Other's decisions: </Text>
+                      <Text style={{color: 'black', fontSize:12}}> Other's decisions: </Text>
                       {options &&
                         options.superpartData &&
                         options.superpartData.length > 0 &&
                         options.superpartData.map((ind, index) => (
-                          <Text style={{color: 'black', marginLeft: 5}} key={'superpart' + index}>
+                          <Text style={{color: 'black', marginLeft: 5, fontSize:12}} key={'superpart' + index}>
                             {' '}
                             {ind.name}({ind.count}){' '}
                           </Text>
@@ -913,7 +914,7 @@ export default Category = (props) => {
                     <FontAwesomeIcon icon={faPlus} size={25} color={'white'} />
                   </TouchableOpacity>
                 </View>
-                <Text style={{color: 'black', marginTop: 5}}>List terms that are exchangable with {task.term}.</Text>
+                <Text style={{color: 'black', marginTop: 5}}>List of terms that are exchangable with {task.term}.</Text>
                 <View>
                   {synonyms.map(
                     (sy, index) =>
@@ -931,13 +932,13 @@ export default Category = (props) => {
                       ),
                   )}
                 </View>
-                <Text style={{color: 'black', marginTop: 30}}>Other's synonyms</Text>
+                <Text style={{color: 'black', marginTop: 30, fontSize:12}}>Other's synonyms</Text>
                 <View>
                   {synonyms.map(
                     (sy, index) =>
                       sy.expertId !== auth.expertId && (
                         <View key={'synonym' + index} style={{...styles.synonym, backgroundColor: index % 2 ? 'lightcyan' : 'rgb(200,224,240)'}}>
-                          <Text>{sy.synonym}</Text>
+                          <Text style={{fontSize:12}}>{sy.synonym}</Text>
                         </View>
                       ),
                   )}

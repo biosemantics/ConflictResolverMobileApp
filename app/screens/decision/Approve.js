@@ -47,7 +47,7 @@ export default Approve = (props) => {
   const [selectedSentences, _selectedSentences] = useState([]);
 
   const dispatch = useDispatch();
-
+  
   const [pitch, setPitch] = useState('');
   const [error, setError] = useState('');
   const [end, setEnd] = useState('');
@@ -407,7 +407,8 @@ export default Approve = (props) => {
               </TextInput>
 
               <TouchableOpacity
-                style={{...styles.button, backgroundColor: '#013458'}}
+                disabled={newDefinition == ''}
+                style={{...styles.button, backgroundColor: newDefinition == '' ? 'grey' : '#003458'}}
                 onPress={() => {
                   addDefinition();
                 }}>

@@ -60,7 +60,6 @@ export default function Disputed(props) {
   const [structureItems, setStructureItems] = useState([]);
   const [commentsModal, setCommentsModal] = useState(false);
 
-  // {disputed.solutionGiven ? disputed.userSolution.newTerm
   const [newTerm, setNewTerm] = useState(disputed.solutionGiven ? disputed.userSolution.newTerm : '');
   const [newDefinition, setNewDefinition] = useState(disputed.solutionGiven ? disputed.userSolution.newDefinition : '');
   const [input3, setinput3] = useState(disputed.solutionGiven ? disputed.userSolution.exampleSentence : '');
@@ -85,29 +84,48 @@ export default function Disputed(props) {
 
   const dispatch = useDispatch();
 
-  // const quailtyData = useSelector((state) => state.main.metaData.quality);
-  // const structureData = useSelector((state) => state.main.metaData.structure);
   useEffect(() => {
+    // api.getQuality().then((result) => {
+    //   let qualityItem = [];
+    //   qualityItem.push({
+    //     id: result.data.data.details[0].IRI,
+    //     name: result.data.text,
+    //   });
+    //   qualityItem = getQuality(result.data.children, qualityItem);
+
     api.getQuality().then((result) => {
       let qualityItem = [];
-      qualityItem.push({
-        id: result.data.data.details[0].IRI,
-        name: result.data.text,
-      });
-      qualityItem = getQuality(result.data.children, qualityItem);
+      if (result.data.children) {
+        customLoop(result.data.children, qualityItem)
+      }
+      setQualityItems(qualityItem)
 
       // dispatch(set_quality_item(qualityItem));
     });
+
     api.getStructure().then((result) => {
       let structureItem = [];
-      structureItem.push({
-        id: result.data.data.details[0].IRI,
-        name: result.data.text,
-      });
-      structureItem = getStructure(result.data.children, structureItem);
-      // dispatch(set_structure_item(structureItem));
-    });
+      if (result.data.children) {
+        customLoop(result.data.children, structureItem)
+      }
+      setStructureItems(structureItem)
+    });   
   }, []);
+
+  const customLoop = (array, returnedArray) => {
+    if (array) {
+      array.forEach((element) => {
+        if (element.children) {
+          customLoop(element.children, returnedArray);
+        } else {
+          returnedArray.push({
+            id: element.data.details[0].IRI,
+            name: element.text,
+          });
+        }
+      });
+    }
+  }
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -155,11 +173,12 @@ export default function Disputed(props) {
   useEffect(() => {
     if ('userSolution' in disputed) {
       let searchItem = disputed.userSolution.superclass;
+      console.log(searchItem)
       if (searchItem) {
         if (qualityItems.length > 0) {
           let responseQualityIndex = qualityItems.findIndex((item) => item.id == searchItem);
           let responseQuality = qualityItems.find((item) => item.id == searchItem);
-
+          console.log('data goes here in existing quality ' + responseQualityIndex);
           if (responseQuality != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 1) {
             console.log('data goes here in existing quality ' + responseQualityIndex);
 
@@ -174,8 +193,9 @@ export default function Disputed(props) {
             setGroup(responseQuality.name);
             setCharacterDefaultIndex(responseQuality.id - 1);
             _qualityDefaultExisting(responseQualityIndex);
+            console.log("helo "+ qualityDefalutExisting);
           } else if (responseQuality != undefined && disputed.userSolution.newOrExisting == 1 && disputed.userSolution.type == 1) {
-            console.log('data goes here in new quality ' + responseQualityIndex);
+            console.log('data goes here in new quality ' + responseQualityIndex );
 
             handleChange('disable');
             setChecked('Quality');
@@ -200,15 +220,13 @@ export default function Disputed(props) {
       let searchItem = disputed.userSolution.superclass;
       if (searchItem) {
         if (structureItems.length > 0) {
-          //_structureDefault(5)
-
+         
           let responseStructureIndex = structureItems.findIndex((item) => item.id == searchItem);
           let responseStructure = structureItems.find((item) => item.id == searchItem);
-          console.log(searchItem);
+          
           if (responseStructure != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 2) {
-            console.log('data goes here in exisiting structure ' + responseStructureIndex);
+            console.log('data goes here in exisiting structure ' + responseStructureIndex );
 
-            _structureDefaultExisting(responseStructureIndex);
             handleChange('disable2');
             setChecked('Structure');
 
@@ -219,9 +237,10 @@ export default function Disputed(props) {
             setPickerStructure(responseStructure.id);
             setGroup(responseStructure.name);
             setCharacterDefaultIndex(responseStructure.id - 1);
+            _structureDefaultExisting(responseStructureIndex);
           } else if (responseStructure != undefined && disputed.userSolution.newOrExisting == 1 && disputed.userSolution.type == 2) {
             console.log('data goes here in new structure ' + responseStructureIndex);
-            _structureDefault(responseStructureIndex);
+           
             handleChange('disable');
             setChecked('Structure');
 
@@ -232,10 +251,12 @@ export default function Disputed(props) {
             setPickerStructure(responseStructure.id);
             setGroup(responseStructure.name);
             setCharacterDefaultIndex(responseStructure.id - 1);
+            _structureDefault(responseStructureIndex);
           }
         }
       }
     }
+    
   }, [structureItems]);
 
   const getQuality = (data, qualityItem) => {
@@ -376,7 +397,7 @@ export default function Disputed(props) {
   };
 
   const handleChange = (clickedValue) => {
-    setPickerStructure('');
+   // setPickerStructure('');
     if (clickedValue == 'disable') {
       setDropDown1(true);
       setDropDown2(false);
@@ -466,13 +487,13 @@ export default function Disputed(props) {
           <View style={[Styles.rowText, {marginTop: 20}]}>
             <Text>
               <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Definition: </Text>
-              <Text style={Styles.TextMain}>{disputed.term}</Text>
+              <Text style={Styles.TextMain1}>{disputed.term}</Text>
             </Text>
           </View>
-          <View style={([Styles.rowText], {marginBottom: 10, width: '100%', paddingLeft: 10})}>
-            <Text style={Styles.TextMain}>
+          <View style={([Styles.rowText], {marginBottom: 7, width: '100%', paddingLeft: 10})}>
+            <Text style={Styles.TextMain1}>
               <Text style={[Styles.rowDefinition, {color: '#003458'}]}>Deprecations reasons: </Text>
-              <Text style={Styles.TextMain}>{disputed.deprecatedReason}</Text>
+              <Text style={Styles.TextMain1}>{disputed.deprecatedReason}</Text>
             </Text>
           </View>
 
@@ -480,28 +501,28 @@ export default function Disputed(props) {
             style={
               ([Styles.rowText], {borderTopWidth: 1, borderTopColor: 'lightgrey', marginTop: 10, paddingTop: 10, width: '100%', paddingLeft: 10})
             }>
-            <Text style={Styles.TextMain}>
+            <Text style={Styles.TextMain1}>
               <Text style={Styles.rowDefinition}>Dispute reason: </Text>
-              <Text style={Styles.TextMain}>{disputed.disputedReason}</Text>
+              <Text style={Styles.TextMain1}>{disputed.disputedReason}</Text>
             </Text>
           </View>
 
           <View style={Styles.rowText}>
-            <Text style={Styles.TextMain}>
+            <Text style={Styles.TextMain1}>
               <Text style={Styles.rowDefinition}>Proposed definition for restored </Text>
-              <Text style={Styles.TextMain}>{disputed.newDefinition}</Text>
+              <Text style={Styles.TextMain1}>{disputed.newDefinition}</Text>
             </Text>
           </View>
           <View style={Styles.rowText}>
             <Text style={Styles.rowDefinition}>Disputed by </Text>
-            <Text style={Styles.TextMain}>{disputed.disputedBy}</Text>
+            <Text style={Styles.TextMain1}>{disputed.disputedBy}</Text>
           </View>
 
           <View style={{width: '100%', padding: 10, marginTop: 0}}>
             <Text
               style={{
                 // margin: 15,
-                fontSize: 16,
+                fontSize: 14,
                 padding: 5,
                 color: '#fff',
                 // fontWeight: 'bold',
@@ -526,11 +547,11 @@ export default function Disputed(props) {
               {
                 <View style={Styles.mainView}>
                   {/* Another Existing Section */}
-                  <Text style={Styles.otherText}> Other's decision : </Text>
+                  <Text style={Styles.otherText}>Other's decision : </Text>
                   {disputed.otherSolution.length != null && disputed.qualitySuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Quality : </Text>
+                        <Text style={Styles.otherText}>Quality : </Text>
                         <Text style={Styles.otherQuality}>{disputed.qualitySuperclassExisting}</Text>
                       </Text>
                     </View>
@@ -539,8 +560,8 @@ export default function Disputed(props) {
                   {disputed.otherSolution.length != null && disputed.structureSuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Structure :</Text>
-                        <Text style={Styles.otherQuality}> {disputed.structureSuperclassExisting}</Text>
+                        <Text style={Styles.otherText}>Structure : </Text>
+                        <Text style={Styles.otherQuality}>{disputed.structureSuperclassExisting}</Text>
                       </Text>
                     </View>
                   ) : null}
@@ -624,7 +645,7 @@ export default function Disputed(props) {
                         listProps={{nestedScrollEnabled: true}}
                       />
                     </KeyboardAvoidingView>
-                  ) : (
+                  ) : checked == 'Structure' ? (
                     <SearchableDropdown
                       // ref={customRef}
                       onItemSelect={(item) => {
@@ -668,7 +689,8 @@ export default function Disputed(props) {
                       }}
                       listProps={{nestedScrollEnabled: true}}
                     />
-                  )}
+                  )
+                :null}
                 </View>
               }
             </View>
@@ -692,7 +714,7 @@ export default function Disputed(props) {
                   <Text style={Styles.otherText}>Other's decision :</Text>
                   <View style={Styles.otherDecision}>
                     <Text style={Styles.TextMain}>
-                      <Text style={Styles.otherText}>Terms:</Text>
+                      <Text style={Styles.otherText}>Terms : </Text>
                       {disputed.otherSolution &&
                         disputed.otherSolution.length > 0 &&
                         disputed.otherSolution.map((ind, index) => (
@@ -707,8 +729,8 @@ export default function Disputed(props) {
                   {disputed.otherSolution.length != null && disputed.qualitySuperclassNew != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Quality :</Text>
-                        <Text style={Styles.otherQuality}> {disputed.qualitySuperclassNew}</Text>
+                        <Text style={Styles.otherText}>Quality : </Text>
+                        <Text style={Styles.otherQuality}>{disputed.qualitySuperclassNew}</Text>
                       </Text>
                     </View>
                   ) : null}
@@ -716,7 +738,7 @@ export default function Disputed(props) {
                   {disputed.otherSolution.length != null && disputed.structureSuperclassNew != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
-                        <Text style={Styles.otherText}> Structure :</Text>
+                        <Text style={Styles.otherText}>Structure : </Text>
                         <Text style={Styles.otherQuality}>{disputed.structureSuperclassNew}</Text>
                       </Text>
                     </View>
@@ -812,10 +834,10 @@ export default function Disputed(props) {
                           borderWidth: 1,
                           borderRadius: 5,
                         }}
+                        defaultIndex={qualityDefault}
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
                         items={qualityItems}
-                        defaultIndex={qualityDefault}
                         resetValue={false}
                         textInputProps={{
                           placeholder: 'Enter a quality term ',
@@ -1002,11 +1024,16 @@ const Styles = StyleSheet.create({
   },
   rowDefinition: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     alignSelf: 'auto',
   },
   TextMain: {
-    fontSize: 16,
+    fontSize: 14,
+    flex: 1,
+    marginTop:5,
+  },
+  TextMain1: {
+    fontSize: 14,
     flex: 1,
   },
   button: {
@@ -1068,12 +1095,15 @@ const Styles = StyleSheet.create({
   },
   otherText: {
     alignSelf: 'auto',
-    fontSize: 14,
+    fontSize: 12,
+    marginBottom:5,
+    marginTop:5,
   },
   otherQuality: {
     // width: '50%',
-    alignSelf: 'auto',
-    fontSize: 14,
+    // alignSelf: 'auto',
+    fontSize: 12,
+    marginBottom:10,
   },
   dropdownView: {
     display: 'flex',
@@ -1085,7 +1115,7 @@ const Styles = StyleSheet.create({
     marginTop: 10,
   },
   dropdownText: {
-    fontSize: 16,
+    fontSize: 14,
     width: '100%',
   },
   dropdownInner: {

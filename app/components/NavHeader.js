@@ -38,9 +38,12 @@ export default class NavHeader extends React.Component {
     var onBackFunc = this.props.onBackFunc ? this.props.onBackFunc : this.handleBack;
     return (
       <View style={styles.container}>
+         {this.props.headerText != 'Home' ? 
         <TouchableOpacity style={styles.backBtn} onPress={() => onBackFunc()}>
           <AntDesignIcon name="left" size={25} />
         </TouchableOpacity>
+        :null}
+        
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
