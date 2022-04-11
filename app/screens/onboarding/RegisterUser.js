@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, KeyboardAvoidingView } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -71,7 +71,12 @@ export default RegisterUser = ( props ) => {
           saveData(email, result.data.expertId);
           setMessage(result.data.message);
           setSuccessInfoModal(true);
-          props.navigation.navigate('HomeLayout');
+          //props.navigation.navigate('HomeLayout');
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: 'HomeLayout' }],
+          });
+          
       }
     }).catch( err => {
       let msg = 'Connection error. Please check your network connection.';
@@ -94,12 +99,13 @@ export default RegisterUser = ( props ) => {
     });
   }
   return (
-    // <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+    <View style={{flex: 1}}>
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? -480 : StatusBar.currentHeight} // 50 is Button height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -100 : StatusBar.currentHeight}
         enabled>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
       <NavHeader
           headerText={'Register User'}
           size={22}
@@ -137,7 +143,9 @@ export default RegisterUser = ( props ) => {
         isVisible={successInfoModal}
         handleOK={()=>{setSuccessInfoModal(false)}}
       />
+      </ScrollView>
       </KeyboardAvoidingView>
+      </View>
   );
 };
 
@@ -148,7 +156,7 @@ const styles = {
     justifyContent: 'space-between',
     alignContent: 'space-between',
     alignItems: 'center',
-    height: '100%',
+    // height: '100%',
     width: '100%',
     paddingVertical: 30,
   },

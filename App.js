@@ -9,9 +9,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView} from 'react-native';
 import Root from './app/Root';
-
+// import App1 from './app/Root';
 import { Provider } from 'react-redux';
 import initStore from './app/store';
+// import { NavigationContainer } from "@react-navigation/native";
 
 const App: () => React$Node = () => {
   const [store, setStore] = useState(initStore());
@@ -19,6 +20,10 @@ const App: () => React$Node = () => {
     <SafeAreaView style={styles.container}>
       <Provider store={store}>
         <Root />
+
+      {/* <NavigationContainer>
+          <App1/>
+        </NavigationContainer> */}
       </Provider>
     </SafeAreaView>
   );

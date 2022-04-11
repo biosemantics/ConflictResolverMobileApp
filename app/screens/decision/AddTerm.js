@@ -450,8 +450,8 @@ export default Category = (props) => {
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
               <Text style={{color: 'black', width: '45%'}}>
                 Is {task.term} a structure or a character?
-                {options && options.characterCount > 0 && <Text style={{color: 'black'}}> Character({options.characterCount})</Text>}
-                {options && options.structureCount > 0 && <Text style={{color: 'black'}}> Structure({options.structureCount})</Text>}
+                {options && options.characterCount > 0 && <Text style={{color: 'black', fontSize:12}}> Character({options.characterCount})</Text>}
+                {options && options.structureCount > 0 && <Text style={{color: 'black', fontSize:12}}> Structure({options.structureCount})</Text>}
               </Text>
               <View style={{borderWidth: 1, width: '50%'}}>
                 <SelectDropdown

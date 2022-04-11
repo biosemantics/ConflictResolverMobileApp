@@ -82,7 +82,6 @@ export default api = {
 
   submitExactDecesionsNone : async (expertId, termId, reason) => {
     const data = {expertId, termId, reason};
-    
     let apiUrl = baseUrl + 'DailyOperations/ProcessExactDecisionsNone.php';
 
     return await axios.get(apiUrl, 

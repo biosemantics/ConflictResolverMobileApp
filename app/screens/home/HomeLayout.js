@@ -128,6 +128,7 @@ export default HomeLayout = (props) => {
     return (
       <View style={styles.container}>
         
+      
         <View style={{height: 112, display: 'flex', justifyContent: 'center', zIndex: 99999}}>
           <NavTabs active={tabID} changeFunc={onChangTab} navigation={props.navigation} />
         </View>

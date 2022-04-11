@@ -167,12 +167,12 @@ export default EquivTerm = (props) => {
     var messageVal = "You've decided that " + task.term + ' is NOT equivalent with ';
     var placeholderVal = '';
     var ind = 0;
-    if (optionIndexes.length == options.data.length) {
+    if (options.data && optionIndexes.length == options.data.length) {
       placeholderVal = "Enter the reason why you've decided none of above.";
       messageVal = "You've confirmed " + task.term + ' is equivalent with all candidate terms';
       setIsNone(false);
     } else {
-      options.data.map((eachOption) => {
+      options.data && options.data.map((eachOption) => {
         if (optionIndexes.indexOf(eachOption.id) < 0) {
           if (ind !== 0) {
             messageVal += ', ';
@@ -205,9 +205,8 @@ export default EquivTerm = (props) => {
       });
     } else {
       api.submitExactDecesionsNone(auth.expertId, task.termId, reason).then((result) => {
-        if (result.data.error) {
-        } else if (result.data.error == false) {
-          api.getTasks(auth.expertId).then((result) => {
+        if (result.data.error == true) {
+            api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
             props.navigation.goBack();
           });

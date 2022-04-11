@@ -145,7 +145,7 @@ export default function Disputed(props) {
   useEffect(() => {
     if (results.length > 0) {
       var msg = results[0];
-      if (activebtn == 1) {
+      if (activebtn == 1) {  
         setNewTerm(msg);
         msg = '';
       }
@@ -431,7 +431,6 @@ export default function Disputed(props) {
 
     saveValue(msg);
   };
-
   const onSpeechPartialResults = (e) => {
     //Invoked when any results are computed
     setPartialResults(e.value);
@@ -548,23 +547,25 @@ export default function Disputed(props) {
                 <View style={Styles.mainView}>
                   {/* Another Existing Section */}
                   <Text style={Styles.otherText}>Other's decision : </Text>
-                  {disputed.otherSolution.length != null && disputed.qualitySuperclassExisting != null ? (
+                  {disputed.otherSolution && disputed.otherSolution.length != "" && disputed.qualitySuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
                         <Text style={Styles.otherText}>Quality : </Text>
                         <Text style={Styles.otherQuality}>{disputed.qualitySuperclassExisting}</Text>
                       </Text>
                     </View>
-                  ) : null}
+                  ) : null
+                  }
 
-                  {disputed.otherSolution.length != null && disputed.structureSuperclassExisting != null ? (
+                  {disputed.otherSolution && disputed.otherSolution.length != "" && disputed.structureSuperclassExisting != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
                         <Text style={Styles.otherText}>Structure : </Text>
                         <Text style={Styles.otherQuality}>{disputed.structureSuperclassExisting}</Text>
                       </Text>
                     </View>
-                  ) : null}
+                  ) : null
+                  }
                   <View style={{marginTop: 25}}></View>
                   <View style={Styles.radioContainer}>
                     <RadioButton.Android
@@ -716,7 +717,7 @@ export default function Disputed(props) {
                     <Text style={Styles.TextMain}>
                       <Text style={Styles.otherText}>Terms : </Text>
                       {disputed.otherSolution &&
-                        disputed.otherSolution.length > 0 &&
+                        disputed.otherSolution.length > 0 && 
                         disputed.otherSolution.map((ind, index) => (
                           <Text style={Styles.otherQuality} key={'maybePartOf' + index}>
                             {ind.newTerm}
@@ -726,23 +727,25 @@ export default function Disputed(props) {
                     </Text>
                   </View>
 
-                  {disputed.otherSolution.length != null && disputed.qualitySuperclassNew != null ? (
+                  { disputed.otherSolution && disputed.otherSolution.length != "" && disputed.qualitySuperclassNew != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
                         <Text style={Styles.otherText}>Quality : </Text>
                         <Text style={Styles.otherQuality}>{disputed.qualitySuperclassNew}</Text>
                       </Text>
                     </View>
-                  ) : null}
+                  ) : null
+                  }
 
-                  {disputed.otherSolution.length != null && disputed.structureSuperclassNew != null ? (
+                  {disputed.otherSolution && disputed.otherSolution.length != "" && disputed.structureSuperclassNew != null ? (
                     <View style={Styles.otherDecision}>
                       <Text style={Styles.TextMain}>
                         <Text style={Styles.otherText}>Structure : </Text>
                         <Text style={Styles.otherQuality}>{disputed.structureSuperclassNew}</Text>
                       </Text>
                     </View>
-                  ) : null}
+                  ) : null
+                  }
 
                   <View style={{marginTop: 30}}></View>
 
@@ -1000,7 +1003,6 @@ export default function Disputed(props) {
         popupTitle="Other's comments"
         comments={disputed.otherSolution}
         term={disputed.term}
-        // userName={disputed.otherSolution}
         isVisible={commentsModal}
         handleYes={() => {
           setCommentsModal(false);
