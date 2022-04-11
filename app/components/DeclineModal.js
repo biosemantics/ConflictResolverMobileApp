@@ -137,7 +137,8 @@ export default DeclineModal = (props) => {
                   }}>
                   Choose a term to replace {task.term}
                 </Text>
-                <View style={{...styles.inputContainer, justifyContent: 'center', width: '90%', borderWidth: 0, alignSelf:'baseline'}}>
+                <View style={{...styles.inputContainer, justifyContent: 'center', width: '90%', borderWidth: 0}}>
+                  <KeyboardAvoidingView behavior="padding">
                   <SelectDropdown
                     //ref={dropdownRef}
                     style={{height: 50, width:'90%' }}
@@ -147,8 +148,8 @@ export default DeclineModal = (props) => {
                       //setPickerStructure(selectedItem.id)
                     }}
                     buttonStyle={{
-                      width: '90%',
-                      
+                      width: '80%',
+                      alignSelf:'center',
                     }}
                     buttonTextAfterSelection={(selectedItem, index) => {
                       return selectedItem;
@@ -165,6 +166,7 @@ export default DeclineModal = (props) => {
                     }}
                      listProps={{nestedScrollEnabled: true}}
                     ></SelectDropdown>
+                    </KeyboardAvoidingView>
                 </View>
                 <View style={{...styles.inputContainer, justifyContent: 'flex-start', width: '80%', borderRadius: 1}}>
                   {termType === 'Character' && (

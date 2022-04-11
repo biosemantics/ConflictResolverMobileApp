@@ -6,13 +6,13 @@ import FormField from '../../components/FormField';
 import PopupAlert from '../../components/PopupAlert';
 import NavHeader from '../../components/NavHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 
+import { NavigationActions, StackActions } from 'react-navigation';
 import {login} from '../../api/auth';
 
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/actions/main';
-
-
 
 export default Login = (props) => {
   const [username, setUsername] = useState('');
@@ -20,17 +20,17 @@ export default Login = (props) => {
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
 
-  const saveData = async (email,expertId ) => {
+  const saveData = async (email, expertId) => {
     try {
       await AsyncStorage.setItem('email', email);
       await AsyncStorage.setItem('expertId', expertId.toString());
-      // console.log(value);
+
     } catch (e) {
-      // saving error
+
       console.log('error : ', e);
     }
 
-    return email,expertId;
+    return email, expertId;
   };
 
   const dispatch = useDispatch();
@@ -48,8 +48,6 @@ export default Login = (props) => {
   // };
 
   const onLogin = () => {
-    
-    
     login(username, password)
       .then((result) => {
         console.log(result.data);
@@ -58,8 +56,20 @@ export default Login = (props) => {
           setErrorInfoModal(true);
         } else {
           dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
-          saveData(result.data.email,result.data.expertId);
-          props.navigation.navigate('HomeLayout');
+          saveData(result.data.email, result.data.expertId);
+          // props.navigation.navigate('HomeLayout');
+          // props.navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: 'HomeLayout' }]
+          // })
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [
+                { name: 'HomeLayout' }
+              ],
+            })
+          );
         }
       })
       .catch((err) => {

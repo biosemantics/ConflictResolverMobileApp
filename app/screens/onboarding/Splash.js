@@ -19,7 +19,7 @@ export default Splash = (props) => {
       
       let userEmail = await AsyncStorage.getItem('email');
       let userExpertId = await AsyncStorage.getItem('expertId');
-
+     
       if(userEmail != null && userExpertId != null){
         dispatch(setUser({email: userEmail,  expertId: userExpertId}));
         props.navigation.navigate('HomeLayout');

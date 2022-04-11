@@ -36,6 +36,12 @@ export default class NavHeader extends React.Component {
 
   render() {
     var onBackFunc = this.props.onBackFunc ? this.props.onBackFunc : this.handleBack;
+
+    const clearAsyncStorage = async() => {
+  
+      await AsyncStorage.clear();
+      this.props.navigation.navigate('Splash'); 
+    }
     return (
       <View style={styles.container}>
          {this.props.headerText != 'Home' ? 
@@ -49,10 +55,7 @@ export default class NavHeader extends React.Component {
         </View>
 
         {this.props.headerText == 'Home' ? 
-          <TouchableOpacity style={{position: 'absolute', top: 7, right: 10, padding: 10}} onPress={() => {
-            AsyncStorage.clear();
-            this.props.navigation.navigate('Splash'); 
-            }}>
+          <TouchableOpacity style={{position: 'absolute', top: 7, right: 10, padding: 10}} onPress={() => clearAsyncStorage()}>
             <FontAwesomeIcon icon={faSignOut} color={'black'} size={25} />
           </TouchableOpacity>
           : null

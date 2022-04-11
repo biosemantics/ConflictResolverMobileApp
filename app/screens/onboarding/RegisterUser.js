@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { ScrollView, View } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '../../components/PrimaryButton';
 import FormField from '../../components/FormField';
 import PopupAlert from '../../components/PopupAlert';
@@ -46,6 +47,19 @@ export default RegisterUser = ( props ) => {
     setLastname(s);
   }
 
+  const saveData = async (email, expertId) => {
+    try {
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('expertId', expertId.toString());
+
+    } catch (e) {
+      
+      console.log('error : ', e);
+    }
+
+    return email, expertId;
+  };
+
   const onResigerUser = () => {
     registerUser(email, username, firstname, lastname, password).then(result => {
       if (result.data.error) {
@@ -54,6 +68,7 @@ export default RegisterUser = ( props ) => {
       }
       else {
           dispatch(setUser({email, username, expertId: result.data.expertId}));
+          saveData(email, result.data.expertId);
           setMessage(result.data.message);
           setSuccessInfoModal(true);
           props.navigation.navigate('HomeLayout');
