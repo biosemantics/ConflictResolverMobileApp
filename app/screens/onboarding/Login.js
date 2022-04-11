@@ -7,7 +7,9 @@ import PopupAlert from '../../components/PopupAlert';
 import NavHeader from '../../components/NavHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { NavigationActions, StackActions } from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
+
+
 import {login} from '../../api/auth';
 
 import {useDispatch} from 'react-redux';
@@ -56,11 +58,12 @@ export default Login = ( props) => {
         } else {
           dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
           saveData(result.data.email, result.data.expertId);
-          props.navigation.navigate('HomeLayout');
-          // props.navigation.reset({
-          //   index: 0,
-          //   routes: [{ name: 'HomeLayout' }]
-          // })
+         // props.navigation.navigate('HomeLayout');
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'HomeLayout' })],
+          });
+          props.navigation.dispatch(resetAction);
         
         }
       })

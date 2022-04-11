@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import {setUser} from '../../store/actions/main';
 
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default Splash = (props) => {
   useEffect(() => {
@@ -22,7 +23,12 @@ export default Splash = (props) => {
      
       if(userEmail != null && userExpertId != null){
         dispatch(setUser({email: userEmail,  expertId: userExpertId}));
-        props.navigation.navigate('HomeLayout');
+        // props.navigation.navigate('HomeLayout');
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'HomeLayout' })],
+        });
+        props.navigation.dispatch(resetAction);
       }
      
     } catch (err) {

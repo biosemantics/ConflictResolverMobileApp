@@ -13,6 +13,8 @@ import {useDispatch} from 'react-redux';
 
 import {setUser} from '../../store/actions/main';
 
+import { StackActions, NavigationActions } from 'react-navigation';
+
 export default RegisterUser = ( props ) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -72,10 +74,11 @@ export default RegisterUser = ( props ) => {
           setMessage(result.data.message);
           setSuccessInfoModal(true);
           //props.navigation.navigate('HomeLayout');
-          props.navigation.reset({
+          const resetAction = StackActions.reset({
             index: 0,
-            routes: [{ name: 'HomeLayout' }],
+            actions: [NavigationActions.navigate({ routeName: 'HomeLayout' })],
           });
+          props.navigation.dispatch(resetAction);
           
       }
     }).catch( err => {

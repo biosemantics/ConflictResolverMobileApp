@@ -85,13 +85,6 @@ export default function Disputed(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // api.getQuality().then((result) => {
-    //   let qualityItem = [];
-    //   qualityItem.push({
-    //     id: result.data.data.details[0].IRI,
-    //     name: result.data.text,
-    //   });
-    //   qualityItem = getQuality(result.data.children, qualityItem);
 
     api.getQuality().then((result) => {
       let qualityItem = [];
@@ -355,18 +348,32 @@ export default function Disputed(props) {
   };
 
   const start = (inputName) => {
-    setColor(true);
-    setActivebtn(inputName);
-    startRecognizing(inputName);
-
-    setTimeout(() => {
-      stopRecognizing();
+    
+   
+     // stopRecognizing();
+    
+//   setColor(true);
+    if(color == true){
       setColor(false);
-    }, 3000);
+      Voice.stop();
+    }else if(color == false){
+      setColor(true);
+      setActivebtn(inputName);
+      startRecognizing(inputName);
+    }
+   console.log(color, "color");
+      
+
+    
+
+    // setTimeout(() => {
+      // stopRecognizing();
+    // }, 3000);
   };
 
   const onSpeechStart = (e) => {
     //Invoked when .start() is called without error
+    setStarted('')
   };
 
   const onSpeechRecognized = (e) => {};
@@ -381,19 +388,26 @@ export default function Disputed(props) {
   };
 
   const saveValue = (msg) => {
-    // console.log('saveMsg', msg)
+
+    console.log('saveMsg', msg);
     if (activebtn == 1) {
       setNewTerm(msg);
+      
     } else if (activebtn == 2) {
       setNewDefinition(msg);
+     
     } else if (activebtn == 3) {
       setinput3(msg);
+    
     } else if (activebtn == 4) {
       setinput4(msg);
+    
     } else if (activebtn == 5) {
       setinput5(msg);
     } else {
     }
+    msg = ''
+
   };
 
   const handleChange = (clickedValue) => {
@@ -420,25 +434,34 @@ export default function Disputed(props) {
 
   const onSpeechResults = (e) => {
     //Invoked when SpeechRecognizer is finished recognizing
-    console.log('results', e);
+    console.log('results ', e);
+
     let msg = '';
     setResults(e.value);
     if (e.value.length > 0) {
       msg = e.value[0];
+    
     } else {
       msg = 'Wrong Value';
     }
 
+     e.value = '';
+    //  Voice.cancel();
+     console.log("value of e", e.value);
     saveValue(msg);
+   
+   
+  
+
   };
   const onSpeechPartialResults = (e) => {
     //Invoked when any results are computed
-    setPartialResults(e.value);
+    //setPartialResults(e.value);
   };
 
   const startRecognizing = async (inputName) => {
     try {
-      console.log('initializeddd');
+      
       await Voice.start('en-US');
 
       setPitch('');
@@ -458,6 +481,7 @@ export default function Disputed(props) {
     //Stops listening for speech
     try {
       await Voice.stop();
+
       // console.log('hi');
     } catch (e) {
       //eslint-disable-next-line
@@ -774,7 +798,8 @@ export default function Disputed(props) {
                     </TouchableOpacity>
                   </View>
                   {/* //Existing value Section */}
-                  {/* <View style={{marginHorizontal: 30, width: '90%'}}> */}
+                  {/* <View style={{marginHorizontal: 30, 
+                    width: '90%'}}> */}
                   <View style={Styles.radioContainer}>
                     <RadioButton.Android
                       value="Quality"
