@@ -94,7 +94,12 @@ export default RegisterUser = ( props ) => {
     });
   }
   return (
-    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+    // <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -480 : StatusBar.currentHeight} // 50 is Button height
+        enabled>
       <NavHeader
           headerText={'Register User'}
           size={22}
@@ -132,7 +137,7 @@ export default RegisterUser = ( props ) => {
         isVisible={successInfoModal}
         handleOK={()=>{setSuccessInfoModal(false)}}
       />
-    </ScrollView>
+      </KeyboardAvoidingView>
   );
 };
 
