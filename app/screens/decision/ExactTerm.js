@@ -304,7 +304,7 @@ export default ExactTerm = (props) => {
               {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
             </View>
           </TouchableOpacity>
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <TextInput
               placeholder="enter or record comment"
               style={{color: '#003458', width: '100%', borderWidth: 1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
@@ -316,7 +316,7 @@ export default ExactTerm = (props) => {
             <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
               <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
             <TouchableOpacity onPress={() => setCommentsModal(true)}>
               <Text style={{padding: 3}}>Other's comments</Text>

@@ -60,6 +60,7 @@ export default function Disputed(props) {
   const [structureItems, setStructureItems] = useState([]);
   const [commentsModal, setCommentsModal] = useState(false);
 
+
   const [newTerm, setNewTerm] = useState(disputed.solutionGiven ? disputed.userSolution.newTerm : '');
   const [newDefinition, setNewDefinition] = useState(disputed.solutionGiven ? disputed.userSolution.newDefinition : '');
   const [input3, setinput3] = useState(disputed.solutionGiven ? disputed.userSolution.exampleSentence : '');
@@ -82,43 +83,50 @@ export default function Disputed(props) {
 
   const [checked, setChecked] = React.useState('Quality');
 
+  const quailtyData = useSelector((state) => state.main.metaData.quality);
+  const structureData = useSelector((state) => state.main.metaData.structure);
+
+  // console.log(quailtyData);
   const dispatch = useDispatch();
 
   useEffect(() => {
 
-    api.getQuality().then((result) => {
-      let qualityItem = [];
-      if (result.data.children) {
-        customLoop(result.data.children, qualityItem)
-      }
-      setQualityItems(qualityItem)
+    // api.getQuality().then((result) => {
+    //   let qualityItem = [];
+    //   if (result.data.children) {
+    //     customLoop(result.data.children, qualityItem)
+    //   }
+    //   setQualityItems(qualityItem)
 
-      // dispatch(set_quality_item(qualityItem));
-    });
+    //   // dispatch(set_quality_item(qualityItem));
+    // });
 
-    api.getStructure().then((result) => {
-      let structureItem = [];
-      if (result.data.children) {
-        customLoop(result.data.children, structureItem)
-      }
-      setStructureItems(structureItem)
-    });   
+    // api.getStructure().then((result) => {
+    //   let structureItem = [];
+    //   if (result.data.children) {
+    //     customLoop(result.data.children, structureItem)
+    //   }
+    //   setStructureItems(structureItem)
+    // });  
+
   }, []);
 
-  const customLoop = (array, returnedArray) => {
-    if (array) {
-      array.forEach((element) => {
-        if (element.children) {
-          customLoop(element.children, returnedArray);
-        } else {
-          returnedArray.push({
-            id: element.data.details[0].IRI,
-            name: element.text,
-          });
-        }
-      });
-    }
-  }
+  // console.log(qualityItems);
+
+  // const customLoop = (array, returnedArray) => {
+  //   if (array) {
+  //     array.forEach((element) => {
+  //       if (element.children) {
+  //         customLoop(element.children, returnedArray);
+  //       } else {
+  //         returnedArray.push({
+  //           id: element.data.details[0].IRI,
+  //           name: element.text,
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   useEffect(() => {
     //Setting callbacks for the process status
@@ -168,9 +176,9 @@ export default function Disputed(props) {
       let searchItem = disputed.userSolution.superclass;
       console.log(searchItem)
       if (searchItem) {
-        if (qualityItems.length > 0) {
-          let responseQualityIndex = qualityItems.findIndex((item) => item.id == searchItem);
-          let responseQuality = qualityItems.find((item) => item.id == searchItem);
+        if (quailtyData.length > 0){
+          let responseQualityIndex = quailtyData.findIndex((item) => item.id == searchItem);
+          let responseQuality = quailtyData.find((item) => item.id == searchItem);
           console.log('data goes here in existing quality ' + responseQualityIndex);
           if (responseQuality != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 1) {
             console.log('data goes here in existing quality ' + responseQualityIndex);
@@ -205,17 +213,17 @@ export default function Disputed(props) {
         }
       }
     }
-  }, [qualityItems]);
+  }, [quailtyData]);
 
   //const setDefaultStructure = (structureItems) => {
   useEffect(() => {
     if ('userSolution' in disputed) {
       let searchItem = disputed.userSolution.superclass;
       if (searchItem) {
-        if (structureItems.length > 0) {
+        if (structureData.length > 0) {
          
-          let responseStructureIndex = structureItems.findIndex((item) => item.id == searchItem);
-          let responseStructure = structureItems.find((item) => item.id == searchItem);
+          let responseStructureIndex = structureData.findIndex((item) => item.id == searchItem);
+          let responseStructure = structureData.find((item) => item.id == searchItem);
           
           if (responseStructure != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 2) {
             console.log('data goes here in exisiting structure ' + responseStructureIndex );
@@ -250,27 +258,27 @@ export default function Disputed(props) {
       }
     }
     
-  }, [structureItems]);
+  }, [structureData]);
 
-  const getQuality = (data, qualityItem) => {
-    if (data) {
-      data.forEach((element) => {
-        if (element.children) {
-          getQuality(element.children, qualityItem);
-        } else {
-          qualityItem.push({
-            id: element.data.details[0].IRI,
-            name: element.text,
-          });
-        }
-      });
-    }
-    if (qualityItem.length > 0) {
-      setQualityItems(qualityItem);
-    }
-    //return qualityItem;
-    return qualityItems;
-  };
+  // const getQuality = (data, qualityItem) => {
+  //   if (data) {
+  //     data.forEach((element) => {
+  //       if (element.children) {
+  //         getQuality(element.children, qualityItem);
+  //       } else {
+  //         qualityItem.push({
+  //           id: element.data.details[0].IRI,
+  //           name: element.text,
+  //         });
+  //       }
+  //     });
+  //   }
+  //   if (qualityItem.length > 0) {
+  //     setQualityItems(qualityItem);
+  //   }
+  //   //return qualityItem;
+  //   return qualityItems;
+  // };
 
   const getStructure = (data, structureItem) => {
     // let strcutureInfo = [...structureItems];
@@ -350,8 +358,6 @@ export default function Disputed(props) {
   const start = (inputName) => {
     
    
-     // stopRecognizing();
-    
 //   setColor(true);
     if(color == true){
       setColor(false);
@@ -363,12 +369,6 @@ export default function Disputed(props) {
     }
    console.log(color, "color");
       
-
-    
-
-    // setTimeout(() => {
-      // stopRecognizing();
-    // }, 3000);
   };
 
   const onSpeechStart = (e) => {
@@ -444,10 +444,6 @@ export default function Disputed(props) {
     } else {
       msg = 'Wrong Value';
     }
-
-     e.value = '';
-    //  Voice.cancel();
-     console.log("value of e", e.value);
     saveValue(msg);
    
    
@@ -654,7 +650,8 @@ export default function Disputed(props) {
                         }}
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
-                        items={qualityItems}
+                        //items={qualityItems}
+                        items={quailtyData}
                         // defaultIndex={2}
                         resetValue={false}
                         textInputProps={{
@@ -699,7 +696,8 @@ export default function Disputed(props) {
                       }}
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
-                      items={structureItems}
+                      // items={structureItems}
+                      items={structureData}
                       // defaultIndex={2}
                       resetValue={false}
                       textInputProps={{
@@ -865,7 +863,8 @@ export default function Disputed(props) {
                         defaultIndex={qualityDefault}
                         itemTextStyle={{color: '#222'}}
                         itemsContainerStyle={{maxHeight: 140}}
-                        items={qualityItems}
+                        //items={qualityItems}
+                        items={quailtyData}
                         resetValue={false}
                         textInputProps={{
                           placeholder: 'Enter a quality term ',
@@ -907,7 +906,7 @@ export default function Disputed(props) {
                       }}
                       itemTextStyle={{color: '#222'}}
                       itemsContainerStyle={{maxHeight: 140}}
-                      items={structureItems}
+                      items={structureData}
                       defaultIndex={structureDefault}
                       resetValue={false}
                       textInputProps={{

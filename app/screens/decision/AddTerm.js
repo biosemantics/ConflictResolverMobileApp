@@ -51,6 +51,7 @@ export default Category = (props) => {
   const quailtyData = useSelector((state) => state.main.metaData.quality);
   const structureData = useSelector((state) => state.main.metaData.structure);
 
+  
   const dispatch = useDispatch();
 
   const deviceWidth = Dimensions.get('window').width;

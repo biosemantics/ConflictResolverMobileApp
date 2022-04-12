@@ -32,6 +32,7 @@ const getStructure = (data, structures, index) => {
 const getQuality = (data, qualities, index) => {
     qualities.push({
         id: index,
+        url:data.data.details[0].IRI,
         name: data.text
     });
     if (data.children){
@@ -103,13 +104,13 @@ export default HomeLayout = (props) => {
             let qualities = [];
             qualities.push({
                 id: 1,
+                url: "",
                 name: ""
             });
             getQuality(result.data, qualities, 2);
             dispatch(set_quality(qualities));
         });
 
-  
     }, [])
 
     const renderContent =  () => {

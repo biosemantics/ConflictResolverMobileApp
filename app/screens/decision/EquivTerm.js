@@ -205,6 +205,7 @@ export default EquivTerm = (props) => {
       });
     } else {
       api.submitExactDecesionsNone(auth.expertId, task.termId, reason).then((result) => {
+        setTimeout(() => setNewWarning(true), 1000);
         if (result.data.error == true) {
             api.getTasks(auth.expertId).then((result) => {
             dispatch(set_tasks(result.data.task_data));
@@ -240,7 +241,7 @@ export default EquivTerm = (props) => {
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? -400 : StatusBar.currentHeight} // 50 is Button height
-        enabled>
+        enabled> 
         <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
           <NavHeader
             headerText={task.term}
@@ -310,7 +311,7 @@ export default EquivTerm = (props) => {
               {none == true && <Image source={require('../../assets/images/ok.png')} style={{width: 40, height: 40}} />}
             </View>
           </TouchableOpacity>
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <TextInput
               placeholder="enter or record comment"
               style={{color: '#003458', width: '100%', borderWidth: 1, paddingLeft: 10, paddingRight: 10, marginLeft: 5, height: 50}}
@@ -322,7 +323,7 @@ export default EquivTerm = (props) => {
             <TouchableOpacity style={{position: 'absolute', left: '90%', top: '20%'}} onPress={() => start(1)}>
               <FontAwesomeIcon icon={faMicrophone} size={25} color={color ? 'green' : 'black'} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={{borderWidth: 1, borderRadius: 4, width: 140, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
             <TouchableOpacity onPress={() => setCommentsModal(true)}>
               <Text style={{padding: 3}}>Other's comments</Text>
@@ -373,7 +374,7 @@ export default EquivTerm = (props) => {
       />
       <PopupAlert
         popupTitle="Message"
-        message={message}
+        message={"Submitted Successfully"}
         isVisible={newWarning}
         handleOK={() => {
           setNewWarning(false);
