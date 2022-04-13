@@ -20,9 +20,9 @@ export default Splash = (props) => {
       
       let userEmail = await AsyncStorage.getItem('email');
       let userExpertId = await AsyncStorage.getItem('expertId');
-     
-      if(userEmail != null && userExpertId != null){
-        dispatch(setUser({email: userEmail,  expertId: userExpertId}));
+      let userName = await AsyncStorage.getItem('username');
+      if(userEmail != null && userExpertId != null && userName != null){
+        dispatch(setUser({email: userEmail,  expertId: userExpertId, username: userName}));
         // props.navigation.navigate('HomeLayout');
         const resetAction = StackActions.reset({
           index: 0,

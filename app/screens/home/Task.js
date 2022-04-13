@@ -26,6 +26,7 @@ export default Tasks = (props) => {
     const [equivTerm, setEquivTerm] = useState(false);
     const [disPuted, setDisputed] = useState(false);
 
+    console.log("task screen call");
 
     const onTask = (termId) => {
         const task = tasks.find(t => t.termId == termId)

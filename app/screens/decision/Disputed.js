@@ -87,6 +87,7 @@ export default function Disputed(props) {
   const structureData = useSelector((state) => state.main.metaData.structure);
 
   // console.log(quailtyData);
+  // console.log(structureData);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -174,12 +175,14 @@ export default function Disputed(props) {
   useEffect(() => {
     if ('userSolution' in disputed) {
       let searchItem = disputed.userSolution.superclass;
-      console.log(searchItem)
+      console.log("prefatch data", searchItem);
+      // console.log(searchItem)
       if (searchItem) {
         if (quailtyData.length > 0){
-          let responseQualityIndex = quailtyData.findIndex((item) => item.id == searchItem);
-          let responseQuality = quailtyData.find((item) => item.id == searchItem);
-          console.log('data goes here in existing quality ' + responseQualityIndex);
+
+          let responseQualityIndex = quailtyData.findIndex((item) => item.url == searchItem);
+          let responseQuality = quailtyData.find((item) => item.url == searchItem);          
+          
           if (responseQuality != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 1) {
             console.log('data goes here in existing quality ' + responseQualityIndex);
 
@@ -190,7 +193,7 @@ export default function Disputed(props) {
             newArr = [];
 
             setOptionIndexes(newArr);
-            setPickerStructure(responseQuality.id);
+            setPickerStructure(responseQuality.url);
             setGroup(responseQuality.name);
             setCharacterDefaultIndex(responseQuality.id - 1);
             _qualityDefaultExisting(responseQualityIndex);
@@ -627,7 +630,8 @@ export default function Disputed(props) {
                           let newArr = [...optionIndexes];
                           newArr = [];
                           setOptionIndexes(newArr);
-                          setPickerStructure(item.id);
+                          setPickerStructure(item.url);
+                          console.log("exis ting quality ", pickerStructure);
                           setGroup(item.name);
                           setCharacterDefaultIndex(item.id - 1);
                         }}
@@ -674,7 +678,7 @@ export default function Disputed(props) {
                         let newArr = [...optionIndexes];
                         newArr = [];
                         setOptionIndexes(newArr);
-                        setPickerStructure(item.id);
+                        setPickerStructure(item.url);
                         setGroup(item.name);
                         setCharacterDefaultIndex(item.id - 1);
                       }}
@@ -738,14 +742,11 @@ export default function Disputed(props) {
                   <View style={Styles.otherDecision}>
                     <Text style={Styles.TextMain}>
                       <Text style={Styles.otherText}>Terms : </Text>
-                      {disputed.otherSolution &&
-                        disputed.otherSolution.length > 0 && 
-                        disputed.otherSolution.map((ind, index) => (
-                          <Text style={Styles.otherQuality} key={'maybePartOf' + index}>
-                            {ind.newTerm}
-                            {';'}
+                      
+                          <Text style={Styles.otherQuality}>
+                            {disputed.otherNewTerm}
+                            
                           </Text>
-                        ))}
                     </Text>
                   </View>
 
@@ -841,7 +842,7 @@ export default function Disputed(props) {
                           newArr = [];
 
                           setOptionIndexes(newArr);
-                          setPickerStructure(item.id);
+                          setPickerStructure(item.url);
                           setGroup(item.name);
                           setCharacterDefaultIndex(item.id - 1);
                         }}
@@ -885,7 +886,7 @@ export default function Disputed(props) {
                         let newArr = [...optionIndexes];
                         newArr = [];
                         setOptionIndexes(newArr);
-                        setPickerStructure(item.id);
+                        setPickerStructure(item.url);
                         setGroup(item.name);
                         setCharacterDefaultIndex(item.id - 1);
                       }}

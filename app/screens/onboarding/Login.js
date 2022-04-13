@@ -21,17 +21,17 @@ export default Login = ( props) => {
   const [message, setMessage] = useState('');
   const [errorInfoModal, setErrorInfoModal] = useState(false);
 
-  const saveData = async (email, expertId) => {
+  const saveData = async (email, expertId, username) => {
     try {
       await AsyncStorage.setItem('email', email);
       await AsyncStorage.setItem('expertId', expertId.toString());
-
+      await AsyncStorage.setItem('username', username);
     } catch (e) {
 
       console.log('error : ', e);
     }
 
-    return email, expertId;
+    return email, expertId, username;
   };
 
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export default Login = ( props) => {
           setErrorInfoModal(true);
         } else {
           dispatch(setUser({email: result.data.email, username, expertId: result.data.expertId}));
-          saveData(result.data.email, result.data.expertId);
+          saveData(result.data.email, result.data.expertId, username);
          // props.navigation.navigate('HomeLayout');
           const resetAction = StackActions.reset({
             index: 0,

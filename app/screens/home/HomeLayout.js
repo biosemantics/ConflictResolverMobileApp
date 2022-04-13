@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const getStructure = (data, structures, index) => {
     structures.push({
         id: index,
+        url:data.data.details[0].IRI,
         name: data.text
     });
     if (data.children){
@@ -56,6 +57,7 @@ export default HomeLayout = (props) => {
         : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
     const onChangTab = (id) => {
+       
         if (id == 0) {
             api.getCount(auth.expertId).then(result=>{
                 if (result.data.count != completedCount) {
@@ -78,8 +80,10 @@ export default HomeLayout = (props) => {
     const [message, setMessage] = useState('');
     const [errorInfoModal, setErrorInfoModal] = useState(false);
 
-    useEffect(() => {
     
+
+    useEffect(() => {
+       
         api.getCount(auth.expertId).then(result=>{
             if (result.data.count != completedCount) {
                 setCompletedCount(result.data.count);
@@ -95,6 +99,7 @@ export default HomeLayout = (props) => {
             let structures = [];
             structures.push({
                 id: 1,
+                url: "",
                 name: ""
             });
             getStructure(result.data, structures, 2);
@@ -111,6 +116,7 @@ export default HomeLayout = (props) => {
             dispatch(set_quality(qualities));
         });
 
+   
     }, [])
 
     const renderContent =  () => {
