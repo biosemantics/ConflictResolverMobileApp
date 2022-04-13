@@ -15,6 +15,7 @@ import { set_structure } from '../../store/actions'
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import { withNavigationFocus } from 'react-navigation';
 
 const getStructure = (data, structures, index) => {
     structures.push({
@@ -44,7 +45,7 @@ const getQuality = (data, qualities, index) => {
     return index;
 }
 
-export default HomeLayout = (props) => {
+const HomeLayout = (props) => {
     const [tabID, setTabID] = useState(0);
     const auth = useSelector(state => state.main.auth);
     const [completedCount, setCompletedCount] = useState(0);
@@ -83,9 +84,13 @@ export default HomeLayout = (props) => {
     
 
     useEffect(() => {
-       
+        const focusListener = props.navigation.addListener('didFocus', () => {
+            console.log("Focused", props.navigation.isFocused());
+
+            console.log("useEffect call");
         api.getCount(auth.expertId).then(result=>{
             if (result.data.count != completedCount) {
+                console.log("completed task ",result.data.count );
                 setCompletedCount(result.data.count);
             }
         });
@@ -116,7 +121,11 @@ export default HomeLayout = (props) => {
             dispatch(set_quality(qualities));
         });
 
-   
+    });
+    return () => {
+      // clean up event listener
+      focusListener.remove();
+    };
     }, [])
 
     const renderContent =  () => {
@@ -153,6 +162,8 @@ export default HomeLayout = (props) => {
       </View>
     );
 }
+
+export default HomeLayout
 
 const styles = {
     container: {

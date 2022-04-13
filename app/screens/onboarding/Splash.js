@@ -52,7 +52,12 @@ export default Splash = (props) => {
           marginLeft={28}
           marginRight={28}
         />
-        <PrimaryButton buttonText={'Register User'} onPressFunc={() => props.navigation.navigate('RegisterUser')} marginLeft={28} marginRight={28} />
+        <PrimaryButton 
+          buttonText={'Register User'} 
+          onPressFunc={() => props.navigation.navigate('RegisterUser')} 
+          marginLeft={28} 
+          marginRight={28} 
+        />
       </View>
     </View>
   );

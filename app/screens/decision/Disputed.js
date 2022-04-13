@@ -175,7 +175,7 @@ export default function Disputed(props) {
   useEffect(() => {
     if ('userSolution' in disputed) {
       let searchItem = disputed.userSolution.superclass;
-      console.log("prefatch data", searchItem);
+      // console.log("prefatch data", searchItem);
       // console.log(searchItem)
       if (searchItem) {
         if (quailtyData.length > 0){
@@ -208,7 +208,7 @@ export default function Disputed(props) {
             newArr = [];
 
             setOptionIndexes(newArr);
-            setPickerStructure(responseQuality.id);
+            setPickerStructure(responseQuality.url);
             setGroup(responseQuality.name);
             setCharacterDefaultIndex(responseQuality.id - 1);
             _qualityDefault(responseQualityIndex);
@@ -225,8 +225,8 @@ export default function Disputed(props) {
       if (searchItem) {
         if (structureData.length > 0) {
          
-          let responseStructureIndex = structureData.findIndex((item) => item.id == searchItem);
-          let responseStructure = structureData.find((item) => item.id == searchItem);
+          let responseStructureIndex = structureData.findIndex((item) => item.url == searchItem);
+          let responseStructure = structureData.find((item) => item.url == searchItem);
           
           if (responseStructure != undefined && disputed.userSolution.newOrExisting == 2 && disputed.userSolution.type == 2) {
             console.log('data goes here in exisiting structure ' + responseStructureIndex );
@@ -238,7 +238,7 @@ export default function Disputed(props) {
             newArr = [];
 
             setOptionIndexes(newArr);
-            setPickerStructure(responseStructure.id);
+            setPickerStructure(responseStructure.url);
             setGroup(responseStructure.name);
             setCharacterDefaultIndex(responseStructure.id - 1);
             _structureDefaultExisting(responseStructureIndex);
@@ -252,7 +252,7 @@ export default function Disputed(props) {
             newArr = [];
 
             setOptionIndexes(newArr);
-            setPickerStructure(responseStructure.id);
+            setPickerStructure(responseStructure.url);
             setGroup(responseStructure.name);
             setCharacterDefaultIndex(responseStructure.id - 1);
             _structureDefault(responseStructureIndex);

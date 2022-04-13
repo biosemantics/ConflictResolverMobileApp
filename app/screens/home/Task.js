@@ -10,7 +10,8 @@ export default Tasks = (props) => {
     const auth = useSelector(state => state.main.auth);
     const tasks = useSelector(state => state.main.data.tasks);
     const disputedOptions = useSelector(state => state.main.data.disputedOptions);
-
+    console.log("task screen call");
+    
     tasks.map((item) => {
     
     })
@@ -26,7 +27,7 @@ export default Tasks = (props) => {
     const [equivTerm, setEquivTerm] = useState(false);
     const [disPuted, setDisputed] = useState(false);
 
-    console.log("task screen call");
+   
 
     const onTask = (termId) => {
         const task = tasks.find(t => t.termId == termId)
@@ -46,9 +47,9 @@ export default Tasks = (props) => {
     const onTask1 = (termId) => {
         const disputed = disputedOptions.find(t => t.termId == termId)
         
-        const url = {
-            dispu: 'Disputed'
-        }
+        // const url = {
+        //     dispu: 'Disputed'
+        // }
         
         props.navigation.navigate('Disputed', { disputed });
     }

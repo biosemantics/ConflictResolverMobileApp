@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { ScrollView, View, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, KeyboardAvoidingView, StatusBar} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -49,11 +49,11 @@ export default RegisterUser = ( props ) => {
     setLastname(s);
   }
 
-  const saveData = async (email, expertId) => {
+  const saveData = async (email, expertId, username) => {
     try {
       await AsyncStorage.setItem('email', email);
       await AsyncStorage.setItem('expertId', expertId.toString());
-
+      await AsyncStorage.setItem('username', username);
     } catch (e) {
       
       console.log('error : ', e);
@@ -70,7 +70,7 @@ export default RegisterUser = ( props ) => {
       }
       else {
           dispatch(setUser({email, username, expertId: result.data.expertId}));
-          saveData(email, result.data.expertId);
+          saveData(email, result.data.expertId, username);
           setMessage(result.data.message);
           setSuccessInfoModal(true);
           //props.navigation.navigate('HomeLayout');
@@ -147,7 +147,7 @@ export default RegisterUser = ( props ) => {
         handleOK={()=>{setSuccessInfoModal(false)}}
       />
       </ScrollView>
-      </KeyboardAvoidingView>
+       </KeyboardAvoidingView>
       </View>
   );
 };
