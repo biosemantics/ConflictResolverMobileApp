@@ -6,7 +6,7 @@ export default PrimaryButton = (props) => {
   if(props.enable != undefined) 
     diableState = !props.enable;
   var borderColor = (props.borderColor ? props.borderColor : '#003458'),
-      backgroundColor = (props.bgColor ? props.bgColor : '#003458');
+    backgroundColor = (props.bgColor ? props.bgColor : '#003458');
   const styles = {
     container: {
       display: 'flex',

@@ -1,13 +1,13 @@
-platform :ios, '9.0'
+platform :ios, '11.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def add_flipper_pods!(versions = {})
-  versions['Flipper'] ||= '~> 0.33.1'
+  versions['Flipper'] ||= '0.87.0'
   versions['DoubleConversion'] ||= '1.1.7'
-  versions['Flipper-Folly'] ||= '~> 2.1'
+  versions['Flipper-Folly'] ||= '2.5.3'
   versions['Flipper-Glog'] ||= '0.3.6'
   versions['Flipper-PeerTalk'] ||= '~> 0.0.4'
-  versions['Flipper-RSocket'] ||= '~> 1.0'
+  versions['Flipper-RSocket'] ||= '1.3.1'
 
   pod 'FlipperKit', versions['Flipper'], :configuration => 'Debug'
   pod 'FlipperKit/FlipperKitLayoutPlugin', versions['Flipper'], :configuration => 'Debug'
@@ -15,6 +15,7 @@ def add_flipper_pods!(versions = {})
   pod 'FlipperKit/FlipperKitUserDefaultsPlugin', versions['Flipper'], :configuration => 'Debug'
   pod 'FlipperKit/FlipperKitReactPlugin', versions['Flipper'], :configuration => 'Debug'
 
+  # use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })
   # List all transitive dependencies for FlipperKit pods
   # to avoid them being linked in Release builds
   pod 'Flipper', versions['Flipper'], :configuration => 'Debug'
@@ -77,6 +78,10 @@ target 'ontologyConflictSolver' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  # pod 'react-native-voice', :path => '../node_modules/@react-native-voice/voice'
+
+  pod 'react-native-checkbox', :path => '../node_modules/@react-native-community/checkbox'
+
   target 'ontologyConflictSolverTests' do
     inherit! :complete
     # Pods for testing
@@ -90,8 +95,21 @@ target 'ontologyConflictSolver' do
   # you should disable these next few lines.
   add_flipper_pods!
   post_install do |installer|
-    flipper_post_install(installer)
+    ## Fix for XCode 12.5
+    find_and_replace("../node_modules/react-native/React/CxxBridge/RCTCxxBridge.mm", "_initializeModules:(NSArray<id<RCTBridgeModule>> *)modules", "_initializeModules:(NSArray<Class> *)modules")
+    find_and_replace("../node_modules/react-native/ReactCommon/turbomodule/core/platform/ios/RCTTurboModuleManager.mm", "RCTBridgeModuleNameForClass(strongModule))", "RCTBridgeModuleNameForClass(Class(strongModule)))")
   end
+  def find_and_replace(dir, findstr, replacestr)
+    Dir[dir].each do |name|
+        text = File.read(name)
+        replace = text.gsub(findstr,replacestr)
+        if text != replace
+            puts "Fix: " + name
+            File.open(name, "w") { |file| file.puts replace }
+            STDOUT.flush
+        end
+    end
+    Dir[dir + '*/'].each(&method(:find_and_replace))
 end
 
 target 'ontologyConflictSolver-tvOS' do
@@ -102,3 +120,5 @@ target 'ontologyConflictSolver-tvOS' do
     # Pods for testing
   end
 end
+end
+

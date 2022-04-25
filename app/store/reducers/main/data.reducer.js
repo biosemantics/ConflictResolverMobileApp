@@ -6,7 +6,10 @@ const initialState = {
   approveOptions: [],
   addTermOptions: [],
   exactTermOptions: [],
-  equivTermOptions: []
+  equivTermOptions: [],
+  disputedOptions: [],
+  qualityItem: [],
+  structureItem: [],
 };
 
 export default (state = initialState, action) => {
@@ -23,6 +26,12 @@ export default (state = initialState, action) => {
       return {...state, exactTermOptions: action.payload};
     case Actions.SET_EQUIVTERM_OPTIONS:
       return {...state, equivTermOptions: action.payload};
+      case Actions.SET_DISPUTED_OPTIONS:
+        return {...state, disputedOptions: action.payload};
+      case Actions.SET_QUALITY_ITEM:
+        return {...state, qualityItem: action.payload};
+      case Actions.SET_STRUCTURE_ITEM:
+        return {...state, structureItem: action.payload};
     default:
       return state;
   }

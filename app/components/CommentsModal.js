@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
 import {Dimensions} from 'react-native';
 import PropTypes from 'prop-types'
@@ -25,6 +25,7 @@ export default CommentsModal = (props) => {
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
+            marginTop:30,
         }, 
         modalContent: {
             width: '90%',
@@ -53,20 +54,33 @@ export default CommentsModal = (props) => {
     const deviceHeight = Platform.OS === "ios"
       ? Dimensions.get("window").height
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
+    // useEffect(() =>{
+    //     if(props.modalVisible){
+    //         scrollYPos = props.screenHeight * 1;
+    //         scroller.scrollTo({x: 0, y: scrollYPos});
+    //      }
+    
+    // }),[];
+
     return (
         <Modal isVisible={props.isVisible}
         deviceWidth={deviceWidth}
         deviceHeight={deviceHeight}>
+            {/* <ScrollView> */}
             <View style={styles.modalContainer} >
                 <View style={styles.modalContent}>
                     <Text style={{...styles.text, fontSize:19, lineHeight:24, marginTop:20, marginBottom: 10, fontWeight:'bold', color:'#E94C36'}}>{popupTitle}</Text>
                     {
-                        comments && comments.length > 0 &&
-                        comments.map((comment, index) => (
-                            <View key={"comment"+index}>
-                                <Text style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginTop:10}}><Text style={{ fontWeight: 'bold' }}>{comment.comment}</Text>: Commented on <Text style={{ color: 'blue' }}>{term}</Text> by <Text style={{ color: 'red' }}>{comment.username}</Text></Text>
-                            </View>
-                        ))
+                        comments && comments != "" &&
+                        comments.map((comment, index) => {
+                            return comment.comment !="" ? (
+                                <View key={"comment"+index}>
+                                    <Text style={{...styles.text, fontSize:15, lineHeight:20, marginLeft:10, marginRight:10, marginTop:10}}><Text style={{ fontWeight: 'bold' }}>{comment.comment}</Text>: Commented on <Text style={{ color: 'blue' }}>{term}</Text> by <Text style={{ color: 'red' }}>{comment.username}</Text></Text>
+                                </View>)
+                                :null
+                            
+                        })
                     }
                     {
                         (comments == undefined || comments.length == 0) &&
@@ -81,9 +95,10 @@ export default CommentsModal = (props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
+                  
                 </View>
             </View>
-
+            {/* </ScrollView>             */}
         </Modal>
     );
 }

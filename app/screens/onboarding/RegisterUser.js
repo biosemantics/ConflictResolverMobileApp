@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, KeyboardAvoidingView, StatusBar} from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '../../components/PrimaryButton';
 import FormField from '../../components/FormField';
 import PopupAlert from '../../components/PopupAlert';
@@ -11,6 +12,8 @@ import { registerUser } from '../../api/auth';
 import {useDispatch} from 'react-redux';
 
 import {setUser} from '../../store/actions/main';
+
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default RegisterUser = ( props ) => {
   const [username, setUsername] = useState('');
@@ -46,21 +49,39 @@ export default RegisterUser = ( props ) => {
     setLastname(s);
   }
 
+  const saveData = async (email, expertId, username) => {
+    try {
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('expertId', expertId.toString());
+      await AsyncStorage.setItem('username', username);
+    } catch (e) {
+      
+      console.log('error : ', e);
+    }
+
+    return email, expertId;
+  };
+
   const onResigerUser = () => {
     registerUser(email, username, firstname, lastname, password).then(result => {
-      console.log(result.data);
       if (result.data.error) {
         setMessage(result.data.message);
         setErrorInfoModal(true);
       }
       else {
           dispatch(setUser({email, username, expertId: result.data.expertId}));
+          saveData(email, result.data.expertId, username);
           setMessage(result.data.message);
           setSuccessInfoModal(true);
-          props.navigation.navigate('HomeLayout');
+          //props.navigation.navigate('HomeLayout');
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'HomeLayout' })],
+          });
+          props.navigation.dispatch(resetAction);
+          
       }
     }).catch( err => {
-      console.log(err);
       let msg = 'Connection error. Please check your network connection.';
       switch (err.response.status) {
         case 404:
@@ -81,9 +102,15 @@ export default RegisterUser = ( props ) => {
     });
   }
   return (
-    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? -100 : StatusBar.currentHeight}
+        enabled>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={'always'}>
       <NavHeader
-          headerText={'Resiger User'}
+          headerText={'Register User'}
           size={22}
           bold={true}
           letterSpacing={1.6}
@@ -99,7 +126,7 @@ export default RegisterUser = ( props ) => {
           <FormField placeholder={'Enter Last name'} value={lastname} onChange={handleLastname}/>
         </View>
         <PrimaryButton 
-          buttonText={'Resiger User'} 
+          buttonText={'Register User'} 
           onPressFunc={onResigerUser} 
           marginLeft={20} 
           marginRight={20} 
@@ -119,7 +146,9 @@ export default RegisterUser = ( props ) => {
         isVisible={successInfoModal}
         handleOK={()=>{setSuccessInfoModal(false)}}
       />
-    </ScrollView>
+      </ScrollView>
+       </KeyboardAvoidingView>
+      </View>
   );
 };
 
@@ -130,7 +159,7 @@ const styles = {
     justifyContent: 'space-between',
     alignContent: 'space-between',
     alignItems: 'center',
-    height: '100%',
+    // height: '100%',
     width: '100%',
     paddingVertical: 30,
   },

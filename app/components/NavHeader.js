@@ -1,11 +1,15 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 // import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {faSignOut} from '@fortawesome/free-solid-svg-icons';
 
 export default class NavHeader extends React.Component {
   _menu = null;
-  
+
   constructor(props) {
     super(props);
     this.handleBack = this.handleBack.bind(this);
@@ -15,10 +19,10 @@ export default class NavHeader extends React.Component {
     this.props.navigation.goBack();
   }
 
-  setMenuRef = ref => {
+  setMenuRef = (ref) => {
     this._menu = ref;
   };
-  
+
   hideMenu = () => {
     this._menu.hide();
   };
@@ -26,27 +30,46 @@ export default class NavHeader extends React.Component {
   showMenu = () => {
     this._menu.show();
   };
+  // valueGettingClear = () => {
+
+  // };
 
   render() {
     var onBackFunc = this.props.onBackFunc ? this.props.onBackFunc : this.handleBack;
+
+    const clearAsyncStorage = async() => {
+  
+      await AsyncStorage.clear();
+      this.props.navigation.navigate('Splash'); 
+    }
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.backBtn} onPress={()=> onBackFunc()}>
-          <Image source={require('../assets/images/back-arrow_2.png')} />
+         {this.props.headerText != 'Home' ? 
+        <TouchableOpacity style={styles.backBtn} onPress={() => onBackFunc()}>
+          <AntDesignIcon name="left" size={25} />
         </TouchableOpacity>
+        :null}
+        
         <View style={{width: '80%'}}>
           <Text style={styles.text}>&nbsp;{this.props.headerText}</Text>
         </View>
+
+        {this.props.headerText == 'Home' ? 
+          <TouchableOpacity style={{position: 'absolute', top: 7, right: 10, padding: 10}} onPress={() => clearAsyncStorage()}>
+            <FontAwesomeIcon icon={faSignOut} color={'black'} size={25} />
+          </TouchableOpacity>
+          : null
+        }
       </View>
     );
   }
-};
-const styles = StyleSheet.create({
+}
+const styles = StyleSheet.create({ 
   container: {
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     padding: 15,
   },
   icon: {
@@ -69,11 +92,11 @@ const styles = StyleSheet.create({
   gearBtn: {
     position: 'absolute',
     right: 5,
-    top: 7
+    top: 7,
   },
   menu: {
     position: 'absolute',
     right: 5,
     top: 7,
-  }
-})
+  },
+});

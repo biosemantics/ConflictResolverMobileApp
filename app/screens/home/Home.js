@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {View, Text, ScrollView, Image} from 'react-native';
-
 import { useDispatch, useSelector } from 'react-redux';
 
 export default Home = (props) => {
