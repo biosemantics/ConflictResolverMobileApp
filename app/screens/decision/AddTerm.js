@@ -901,7 +901,7 @@ export default Category = (props) => {
                     placeholder={'Enter a term exchangable with ' + task.term}
                     style={{color: '#003458', width: '75%', marginLeft: 5}}
                     onChangeText={(txt) => {
-                      setSynonym(txt);
+                      setSynonym(txt.trim());
                     }}>
                     {synonym}
                   </TextInput>

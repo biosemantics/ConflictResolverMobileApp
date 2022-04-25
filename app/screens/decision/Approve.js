@@ -401,7 +401,7 @@ export default Approve = (props) => {
                 placeholder="Enter or record new definition"
                 style={{color: '#003458', width: '75%', marginLeft: 5, height: 50}}
                 onChangeText={(txt) => {
-                  setNewDefinition(txt);
+                  setNewDefinition(txt.trim());
                 }}>
                 {newDefinition}
               </TextInput>
