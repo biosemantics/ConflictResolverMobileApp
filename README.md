@@ -14,3 +14,5 @@ https://reactnative.dev/docs/environment-setup
 - Run __npm run android__ or __react-native run-android__
 
 ---
+
+### How to install IAP : https://chrunos.com/install-ipa-on-iphone/
