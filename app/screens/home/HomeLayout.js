@@ -84,8 +84,8 @@ const HomeLayout = (props) => {
     
 
     useEffect(() => {
-        const focusListener = props.navigation.addListener('didFocus', () => {
-            console.log("Focused", props.navigation.isFocused());
+        // const focusListener = props.navigation.addListener('didFocus', () => {
+        //     console.log("Focused", props.navigation.isFocused());
 
             console.log("useEffect call");
         api.getCount(auth.expertId).then(result=>{
@@ -121,11 +121,11 @@ const HomeLayout = (props) => {
             dispatch(set_quality(qualities));
         });
 
-    });
-    return () => {
-      // clean up event listener
-      focusListener.remove();
-    };
+    // });
+    // return () => {
+    //   // clean up event listener
+    //   focusListener.remove();
+    // };
     }, [])
 
     const renderContent =  () => {
