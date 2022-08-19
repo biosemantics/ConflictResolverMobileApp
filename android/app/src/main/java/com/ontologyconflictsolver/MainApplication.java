@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.reactnativecommunity.checkbox.ReactCheckBoxPackage;
 import com.wenkesj.voice.VoicePackage;
 import com.facebook.react.ReactInstanceManager;
