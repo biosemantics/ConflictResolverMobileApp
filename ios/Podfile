@@ -82,6 +82,8 @@ target 'ontologyConflictSolver' do
 
   pod 'react-native-checkbox', :path => '../node_modules/@react-native-community/checkbox'
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'ontologyConflictSolverTests' do
     inherit! :complete
     # Pods for testing

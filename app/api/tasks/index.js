@@ -187,7 +187,7 @@ export default api = {
   getStructure : async () => {
     
     let apiUrl = baseUrl + 'DailyOperations/ShowClasses.php?type=1';
-
+    // let apiUrl = 'http://shark.sbs.arizona.edu:8080/carex/getSubclasses?baseIri=http://biosemantics.arizona.edu/ontologies/carex&term=anatomical%20structure';
     return await axios.get(apiUrl);
 
     
